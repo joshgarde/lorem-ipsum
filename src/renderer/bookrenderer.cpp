@@ -1,13 +1,9 @@
-#include "bookviewer.h"
+#include "bookrenderer.h"
 #include <QDebug>
 #include <QPainter>
-#include <QScrollBar>
-#include <QTextDocument>
 
-BookViewer::BookViewer(QWidget *parent) : QTextEdit(parent) {
-  layout = new BookLayout();
-  QTextDocument* doc = QTextEdit::document();
-  doc->setDocumentLayout(new QPlainTextDocumentLayout());
+BookViewer::BookViewer(QWidget *parent) : QScrollArea(parent) {
+
 }
 
 void BookViewer::paintEvent(QPaintEvent* event) {

@@ -1,11 +1,9 @@
 #ifndef BOOKVIEWER_H
 #define BOOKVIEWER_H
 
-#include <QPlainTextEdit>
-#include "booklayout.h"
+#include <QScrollArea>
 
-class BookViewer : public QTextEdit
-{
+class BookViewer : public QScrollArea {
   Q_OBJECT
   const int MARGIN_TOP = 30;
   const int MARGIN_BOTTOM = 30;
@@ -13,7 +11,6 @@ class BookViewer : public QTextEdit
   const int PAGE_HEIGHT = 1224;
 
   double scale = 1;
-  BookLayout* layout;
 public:
   explicit BookViewer(QWidget *parent = nullptr);
   void paintEvent(QPaintEvent* event);
