@@ -4,7 +4,7 @@
 #include <QJsonObject>
 
 class Serializable {
-  virtual QJsonObject serialize();
+  virtual QJsonObject serialize() = 0;
 };
 
 #endif

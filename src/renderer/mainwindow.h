@@ -5,7 +5,7 @@
 #include <QHBoxLayout>
 #include <QSplitter>
 #include <QListView>
-#include "bookviewer.h"
+#include "bookrenderer.h"
 
 class MainWindow : public QMainWindow {
 Q_OBJECT
@@ -14,7 +14,7 @@ QWidget* base;
 QHBoxLayout* layout;
 QSplitter* splitter;
 QListView* tableOfContents;
-BookViewer* viewer;
+BookRenderer* viewer;
 
 public:
     explicit MainWindow(QWidget *parent = nullptr);

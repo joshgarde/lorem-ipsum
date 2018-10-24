@@ -5,8 +5,7 @@
 
 class Section : public Serializable {
 public:
-  QString type;
-  QJsonObject serialize();
+  virtual QString getType() = 0;
 };
 
 #endif

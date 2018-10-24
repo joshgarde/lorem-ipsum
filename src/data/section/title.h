@@ -1,13 +1,15 @@
 #ifndef TITLE_H
 #define TITLE_H
 
-#include "section.h"
+#include "src/data/section.h"
 
 class Title : public Section {
+  QString type = "title";
+  QString* title;
 public:
-  Title() {
-    this->type = "title";
-  }
+  Title(QString* title);
+  QString getType();
+  QJsonObject serialize();
 };
 
 #endif

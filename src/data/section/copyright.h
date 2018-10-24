@@ -1,13 +1,15 @@
 #ifndef COPYRIGHT_H
 #define COPYRIGHT_H
 
-#include "section.h"
+#include "src/data/section.h"
 
 class Copyright : public Section {
+  QString type = "copyright";
 public:
-  Copyright() {
-    this->type = "copyright";
-  }
+  QString contents;
+  Copyright();
+  QString getType();
+  QJsonObject serialize();
 };
 
 #endif

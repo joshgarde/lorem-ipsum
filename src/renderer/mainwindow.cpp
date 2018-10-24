@@ -7,7 +7,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
   layout = new QHBoxLayout();
   splitter = new QSplitter();
   tableOfContents = new QListView();
-  viewer = new BookViewer();
+  viewer = new BookRenderer();
 
   base->setLayout(layout);
   layout->setMargin(0);

@@ -1,9 +1,9 @@
-#ifndef BOOKVIEWER_H
-#define BOOKVIEWER_H
+#ifndef BOOKRENDERER_H
+#define BOOKRENDERER_H
 
 #include <QScrollArea>
 
-class BookViewer : public QScrollArea {
+class BookRenderer : public QScrollArea {
   Q_OBJECT
   const int MARGIN_TOP = 30;
   const int MARGIN_BOTTOM = 30;
@@ -11,8 +11,9 @@ class BookViewer : public QScrollArea {
   const int PAGE_HEIGHT = 1224;
 
   double scale = 1;
+  QWidget* scrollPane;
 public:
-  explicit BookViewer(QWidget *parent = nullptr);
+  BookRenderer(QWidget *parent = nullptr);
   void paintEvent(QPaintEvent* event);
 
 signals:
@@ -20,4 +21,4 @@ signals:
 public slots:
 };
 
-#endif // BOOKVIEWER_H
+#endif // BOOKRENDERER_H

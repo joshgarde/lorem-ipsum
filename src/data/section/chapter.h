@@ -1,13 +1,16 @@
 #ifndef CHAPTER_H
 #define CHAPTER_H
 
-#include "section.h"
+#include "src/data/section.h"
 
 class Chapter : public Section {
+  QString type;
 public:
-  Chapter() {
-    this->type = "chapter";
-  }
+  QString title;
+  QString contents;
+  Chapter();
+  QString getType();
+  QJsonObject serialize();
 };
 
 #endif
