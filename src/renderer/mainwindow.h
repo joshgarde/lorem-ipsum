@@ -5,16 +5,32 @@
 #include <QHBoxLayout>
 #include <QSplitter>
 #include <QListView>
+#include <QToolBar>
+#include <QStatusBar>
+#include <QAction>
+#include <QFile>
 #include "bookrenderer.h"
+#include "src/data/book.h"
 
 class MainWindow : public QMainWindow {
-Q_OBJECT
+  Q_OBJECT
+  
+  QFile* currentFile;
+  Book* currentBook;
 
-QWidget* base;
-QHBoxLayout* layout;
-QSplitter* splitter;
-QListView* tableOfContents;
-BookRenderer* viewer;
+  QWidget base;
+  QVBoxLayout layout;
+  QToolBar toolbar;
+  QStatusBar statusbar;
+  QSplitter splitter;
+  QListView tableOfContents;
+  BookRenderer viewer;
+  
+  QAction* newBookAction;
+  QAction* openBookAction;
+  QAction* saveBookAction;
+  QAction* nextPageAction;
+  QAction* previousPageAction;
 
 public:
     explicit MainWindow(QWidget *parent = nullptr);
@@ -23,6 +39,12 @@ public:
 signals:
 
 public slots:
+  void newBook();
+  void openBook();
+  void showSectionMenu(QPoint pos);
+  void showAddSection();
+  void addSection(QString section);
+  void deleteSection();
 };
 
 #endif // MAINWINDOW_H

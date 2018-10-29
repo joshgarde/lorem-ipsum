@@ -33,18 +33,17 @@ HEADERS += src/data/book.h \
            src/renderer/bookrenderer.h \
            src/renderer/mainwindow.h \
            src/renderer/pagerenderer.h \
-           src/data/section/chapter.h \
-           src/data/section/copyright.h \
-           src/data/section/tableofcontents.h \
-           src/data/section/title.h
+           src/renderer/addsectiondialog.h
 SOURCES += src/main.cpp \
+           src/data/book.cpp \
            src/data/section/chapter.cpp \
            src/data/section/copyright.cpp \
            src/data/section/tableofcontents.cpp \
            src/data/section/title.cpp \
            src/renderer/bookrenderer.cpp \
            src/renderer/mainwindow.cpp \
-           src/renderer/pagerenderer.cpp
+           src/renderer/pagerenderer.cpp \
+           src/renderer/addsectiondialog.cpp
 
 DESTDIR = build
 OBJECTS_DIR = out

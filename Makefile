@@ -49,16 +49,20 @@ OBJECTS_DIR   = out/
 ####### Files
 
 SOURCES       = src/main.cpp \
+		src/data/book.cpp \
 		src/data/section/chapter.cpp \
 		src/data/section/copyright.cpp \
 		src/data/section/tableofcontents.cpp \
 		src/data/section/title.cpp \
 		src/renderer/bookrenderer.cpp \
 		src/renderer/mainwindow.cpp \
-		src/renderer/pagerenderer.cpp qrc_resources.cpp \
+		src/renderer/pagerenderer.cpp \
+		src/renderer/addsectiondialog.cpp qrc_resources.cpp \
 		moc_bookrenderer.cpp \
-		moc_mainwindow.cpp
+		moc_mainwindow.cpp \
+		moc_addsectiondialog.cpp
 OBJECTS       = out/main.o \
+		out/book.o \
 		out/chapter.o \
 		out/copyright.o \
 		out/tableofcontents.o \
@@ -66,9 +70,11 @@ OBJECTS       = out/main.o \
 		out/bookrenderer.o \
 		out/mainwindow.o \
 		out/pagerenderer.o \
+		out/addsectiondialog.o \
 		out/qrc_resources.o \
 		out/moc_bookrenderer.o \
-		out/moc_mainwindow.o
+		out/moc_mainwindow.o \
+		out/moc_addsectiondialog.o
 DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/unix.conf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/linux.conf \
@@ -137,17 +143,16 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		src/renderer/bookrenderer.h \
 		src/renderer/mainwindow.h \
 		src/renderer/pagerenderer.h \
-		src/data/section/chapter.h \
-		src/data/section/copyright.h \
-		src/data/section/tableofcontents.h \
-		src/data/section/title.h src/main.cpp \
+		src/renderer/addsectiondialog.h src/main.cpp \
+		src/data/book.cpp \
 		src/data/section/chapter.cpp \
 		src/data/section/copyright.cpp \
 		src/data/section/tableofcontents.cpp \
 		src/data/section/title.cpp \
 		src/renderer/bookrenderer.cpp \
 		src/renderer/mainwindow.cpp \
-		src/renderer/pagerenderer.cpp
+		src/renderer/pagerenderer.cpp \
+		src/renderer/addsectiondialog.cpp
 QMAKE_TARGET  = lorem-ipsum
 DESTDIR       = build/#avoid trailing-slash linebreak
 TARGET        = build/lorem-ipsum
@@ -321,8 +326,8 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents resources.qrc $(DISTDIR)/
-	$(COPY_FILE) --parents src/data/book.h src/data/section.h src/data/serializable.h src/data/section/chapter.h src/data/section/copyright.h src/data/section/tableofcontents.h src/data/section/title.h src/renderer/bookrenderer.h src/renderer/mainwindow.h src/renderer/pagerenderer.h src/data/section/chapter.h src/data/section/copyright.h src/data/section/tableofcontents.h src/data/section/title.h $(DISTDIR)/
-	$(COPY_FILE) --parents src/main.cpp src/data/section/chapter.cpp src/data/section/copyright.cpp src/data/section/tableofcontents.cpp src/data/section/title.cpp src/renderer/bookrenderer.cpp src/renderer/mainwindow.cpp src/renderer/pagerenderer.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents src/data/book.h src/data/section.h src/data/serializable.h src/data/section/chapter.h src/data/section/copyright.h src/data/section/tableofcontents.h src/data/section/title.h src/renderer/bookrenderer.h src/renderer/mainwindow.h src/renderer/pagerenderer.h src/renderer/addsectiondialog.h $(DISTDIR)/
+	$(COPY_FILE) --parents src/main.cpp src/data/book.cpp src/data/section/chapter.cpp src/data/section/copyright.cpp src/data/section/tableofcontents.cpp src/data/section/title.cpp src/renderer/bookrenderer.cpp src/renderer/mainwindow.cpp src/renderer/pagerenderer.cpp src/renderer/addsectiondialog.cpp $(DISTDIR)/
 
 
 clean: compiler_clean 
@@ -352,15 +357,21 @@ qrc_resources.cpp: resources.qrc \
 		assets/delete.png
 	/usr/lib/x86_64-linux-gnu/qt5/bin/rcc -name resources resources.qrc -o qrc_resources.cpp
 
-compiler_moc_header_make_all: moc_bookrenderer.cpp moc_mainwindow.cpp
+compiler_moc_header_make_all: moc_bookrenderer.cpp moc_mainwindow.cpp moc_addsectiondialog.cpp
 compiler_moc_header_clean:
-	-$(DEL_FILE) moc_bookrenderer.cpp moc_mainwindow.cpp
+	-$(DEL_FILE) moc_bookrenderer.cpp moc_mainwindow.cpp moc_addsectiondialog.cpp
 moc_bookrenderer.cpp: src/renderer/bookrenderer.h
 	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/jgarde/Development/lorem-ipsum -I/home/jgarde/Development/lorem-ipsum -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include src/renderer/bookrenderer.h -o moc_bookrenderer.cpp
 
 moc_mainwindow.cpp: src/renderer/bookrenderer.h \
+		src/data/book.h \
+		src/data/section.h \
+		src/data/serializable.h \
 		src/renderer/mainwindow.h
 	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/jgarde/Development/lorem-ipsum -I/home/jgarde/Development/lorem-ipsum -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include src/renderer/mainwindow.h -o moc_mainwindow.cpp
+
+moc_addsectiondialog.cpp: src/renderer/addsectiondialog.h
+	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/jgarde/Development/lorem-ipsum -I/home/jgarde/Development/lorem-ipsum -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include src/renderer/addsectiondialog.h -o moc_addsectiondialog.cpp
 
 compiler_moc_source_make_all:
 compiler_moc_source_clean:
@@ -377,8 +388,16 @@ compiler_clean: compiler_rcc_clean compiler_moc_header_clean
 ####### Compile
 
 out/main.o: src/main.cpp src/renderer/mainwindow.h \
-		src/renderer/bookrenderer.h
+		src/renderer/bookrenderer.h \
+		src/data/book.h \
+		src/data/section.h \
+		src/data/serializable.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o out/main.o src/main.cpp
+
+out/book.o: src/data/book.cpp src/data/book.h \
+		src/data/section.h \
+		src/data/serializable.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o out/book.o src/data/book.cpp
 
 out/chapter.o: src/data/section/chapter.cpp src/data/section/chapter.h \
 		src/data/section.h \
@@ -404,11 +423,18 @@ out/bookrenderer.o: src/renderer/bookrenderer.cpp src/renderer/bookrenderer.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o out/bookrenderer.o src/renderer/bookrenderer.cpp
 
 out/mainwindow.o: src/renderer/mainwindow.cpp src/renderer/mainwindow.h \
-		src/renderer/bookrenderer.h
+		src/renderer/bookrenderer.h \
+		src/data/book.h \
+		src/data/section.h \
+		src/data/serializable.h \
+		src/renderer/addsectiondialog.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o out/mainwindow.o src/renderer/mainwindow.cpp
 
 out/pagerenderer.o: src/renderer/pagerenderer.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o out/pagerenderer.o src/renderer/pagerenderer.cpp
+
+out/addsectiondialog.o: src/renderer/addsectiondialog.cpp src/renderer/addsectiondialog.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o out/addsectiondialog.o src/renderer/addsectiondialog.cpp
 
 out/qrc_resources.o: qrc_resources.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o out/qrc_resources.o qrc_resources.cpp
@@ -418,6 +444,9 @@ out/moc_bookrenderer.o: moc_bookrenderer.cpp
 
 out/moc_mainwindow.o: moc_mainwindow.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o out/moc_mainwindow.o moc_mainwindow.cpp
+
+out/moc_addsectiondialog.o: moc_addsectiondialog.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o out/moc_addsectiondialog.o moc_addsectiondialog.cpp
 
 ####### Install
 

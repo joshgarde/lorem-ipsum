@@ -19,6 +19,7 @@ public:
 signals:
 
 public slots:
+  void addSection(QString section);
 };
 
 #endif // BOOKRENDERER_H
