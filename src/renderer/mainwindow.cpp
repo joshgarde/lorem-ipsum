@@ -3,6 +3,7 @@
 #include <QIcon>
 #include <QFileDialog>
 #include <QMenu>
+#include <QListWidgetItem>
 #include "addsectiondialog.h"
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
@@ -10,13 +11,13 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 
   base.setLayout(&layout);
   base.setStyleSheet("");
-  
+
   layout.setContentsMargins(0,0,0,0);
   layout.setSpacing(0);
   layout.addWidget(&toolbar);
   layout.addWidget(&splitter);
   layout.addWidget(&statusbar);
-  
+
   toolbar.setMaximumHeight(32);
   newBookAction = toolbar.addAction(QIcon("assets/new.png"), "New Book");
   openBookAction = toolbar.addAction(QIcon("assets/open.png"), "Open Book");
@@ -25,20 +26,20 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
   previousPageAction = toolbar.addAction(QIcon("assets/previous.png"), "Previous Page");
   nextPageAction = toolbar.addAction(QIcon("assets/next.png"), "Next Page");
   statusbar.setMaximumHeight(statusbar.minimumHeight());
-  
+
   saveBookAction->setEnabled(false);
   previousPageAction->setEnabled(false);
   nextPageAction->setEnabled(false);
-  
+
   tableOfContents.setContextMenuPolicy(Qt::CustomContextMenu);
-  
+
   splitter.addWidget(&tableOfContents);
   splitter.addWidget(&viewer);
   splitter.setSizes(QList<int>({splitter.width() / 10 * 2, splitter.width() / 10 * 8}));
   splitter.setOrientation(Qt::Orientation::Horizontal);
 
   this->setCentralWidget(&base);
-  
+
   connect(newBookAction, SIGNAL(triggered()), this, SLOT(newBook()));
   connect(openBookAction, SIGNAL(triggered()), this, SLOT(openBook()));
   connect(&tableOfContents, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(showSectionMenu(QPoint)));
@@ -51,10 +52,11 @@ QSize MainWindow::sizeHint() const {
 void MainWindow::newBook() {
   QString filename = QFileDialog::getSaveFileName(this, "Create a New Book", "", "JSON Book Format (*.json)");
   if (!filename.endsWith(".json")) filename.append(".json");
-  qDebug() << "Creating new book @" << filename.toUtf8();
+  qDebug() << "[DEBUG] Creating new book:" << filename.toUtf8();
   currentFile = new QFile(filename);
   currentFile->open(QIODevice::ReadWrite);
-  currentBook = new Book();
+  currentBook = new SectionModel();
+  tableOfContents.setModel(currentBook);
   saveBookAction->setEnabled(true);
   previousPageAction->setEnabled(true);
   nextPageAction->setEnabled(true);
@@ -79,9 +81,21 @@ void MainWindow::showAddSection() {
 }
 
 void MainWindow::addSection(QString section) {
-  qDebug() << "[DEBUG] Adding section: " << section;
+  qDebug() << "[DEBUG] Adding section:" << section;
+  if (section == "Title") {
+    
+
+  } else if (section == "Copyright") {
+
+  } else if (section == "Table of Contents") {
+
+  } else if (section == "Chapter") {
+
+  } else {
+    throw std::runtime_error("Unimplemented section selection");
+  }
 }
 
 void MainWindow::deleteSection() {
-  
+
 }

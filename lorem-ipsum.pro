@@ -23,23 +23,22 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 # Input
-HEADERS += src/data/book.h \
-           src/data/section.h \
-           src/data/serializable.h \
-           src/data/section/chapter.h \
-           src/data/section/copyright.h \
-           src/data/section/tableofcontents.h \
-           src/data/section/title.h \
+HEADERS += src/sections/section.h \
+           src/sections/sectionmodel.h \
+           src/sections/chapter.h \
+           src/sections/copyright.h \
+           src/sections/tableofcontents.h \
+           src/sections/title.h \
            src/renderer/bookrenderer.h \
            src/renderer/mainwindow.h \
            src/renderer/pagerenderer.h \
            src/renderer/addsectiondialog.h
 SOURCES += src/main.cpp \
-           src/data/book.cpp \
-           src/data/section/chapter.cpp \
-           src/data/section/copyright.cpp \
-           src/data/section/tableofcontents.cpp \
-           src/data/section/title.cpp \
+           src/sections/sectionmodel.cpp \
+           src/sections/chapter.cpp \
+           src/sections/copyright.cpp \
+           src/sections/tableofcontents.cpp \
+           src/sections/title.cpp \
            src/renderer/bookrenderer.cpp \
            src/renderer/mainwindow.cpp \
            src/renderer/pagerenderer.cpp \

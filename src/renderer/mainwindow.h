@@ -10,13 +10,11 @@
 #include <QAction>
 #include <QFile>
 #include "bookrenderer.h"
-#include "src/data/book.h"
+#include "src/sections/sectionmodel.h"
 
 class MainWindow : public QMainWindow {
-  Q_OBJECT
-  
   QFile* currentFile;
-  Book* currentBook;
+  SectionModel* currentBook;
 
   QWidget base;
   QVBoxLayout layout;
@@ -25,7 +23,7 @@ class MainWindow : public QMainWindow {
   QSplitter splitter;
   QListView tableOfContents;
   BookRenderer viewer;
-  
+
   QAction* newBookAction;
   QAction* openBookAction;
   QAction* saveBookAction;
