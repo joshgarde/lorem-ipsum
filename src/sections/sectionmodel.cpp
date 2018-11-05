@@ -1,6 +1,10 @@
 #include "sectionmodel.h"
+#include <QDebug>
+#include <QBrush>
+#include "section.h"
+#include "title.h"
 
-SectionModel::SectionModel(QObject *parent) : QAbstractListModel(parent) {
+SectionModel::SectionModel(QSize size, QObject *parent) : QAbstractListModel(parent), size(size) {
 
 }
 
@@ -16,10 +20,29 @@ QVariant SectionModel::data(const QModelIndex &index, int role) const {
       return QVariant::fromValue(sections.at(index.row()));
       break;
     default:
-      throw std::runtime_error("Unsupported data role");
+      return QVariant();
   }
 }
 
 bool SectionModel::setData(const QModelIndex &index, const QVariant &value, int role) {
-  sections.insert(index.row(), value.value<Section*>());
+  if (value.canConvert<Section*>()) {
+    Section* section = value.value<Section*>();
+    sections[index.row()] = section;
+    return true;
+  } else {
+    return false;
+  }
+}
+
+bool SectionModel::insertRows(int row, int count, const QModelIndex &parent) {
+  beginInsertRows(parent, row, row + count - 1);
+  for (int i = 0; i < count; i++) {
+    sections.insert(row + i, nullptr);
+  }
+  endInsertRows();
+  return true;
+}
+
+QModelIndex SectionModel::index(int row, int column, const QModelIndex &parent) const {
+  return createIndex(row, 0);
 }

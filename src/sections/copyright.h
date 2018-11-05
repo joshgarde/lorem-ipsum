@@ -2,16 +2,17 @@
 #define COPYRIGHT_H
 
 #include "section.h"
+#include "sectionmodel.h"
 
 class Copyright : public Section {
-  QString type = "copyright";
+  Q_OBJECT
+
 public:
   QString contents;
-  Copyright(QObject *parent = nullptr);
-  Copyright(const Copyright& copy);
+  Copyright(SectionModel *parent = nullptr);
+  SectionType type();
+  int pages();
   QJsonObject serialize();
 };
-
-Q_DECLARE_METATYPE(Copyright)
 
 #endif

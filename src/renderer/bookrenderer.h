@@ -2,23 +2,29 @@
 #define BOOKRENDERER_H
 
 #include <QScrollArea>
+#include <QVBoxLayout>
+#include "pagerenderer.h"
+#include "src/sections/section.h"
+
+class PageRenderer;
 
 class BookRenderer : public QScrollArea {
-  const int MARGIN_TOP = 30;
-  const int MARGIN_BOTTOM = 30;
-  const int PAGE_WIDTH = 816;
-  const int PAGE_HEIGHT = 1224;
+  Q_OBJECT
 
+  QWidget scrollPane;
+  QVBoxLayout layout;
+  QList<PageRenderer*> renderers;
   double scale = 1;
-  QWidget* scrollPane;
+  Section* currentSection;
+  
+  void reset();
 public:
   BookRenderer(QWidget *parent = nullptr);
-  void paintEvent(QPaintEvent* event);
 
 signals:
 
 public slots:
-  void addSection(QString section);
+  void loadSection(Section* section);
 };
 
 #endif // BOOKRENDERER_H

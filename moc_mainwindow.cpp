@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'mainwindow.h'
 **
-** Created by: The Qt Meta Object Compiler version 67 (Qt 5.11.1)
+** Created by: The Qt Meta Object Compiler version 67 (Qt 5.5.1)
 **
 ** WARNING! All changes made in this file will be lost!
 *****************************************************************************/
@@ -12,17 +12,15 @@
 #if !defined(Q_MOC_OUTPUT_REVISION)
 #error "The header file 'mainwindow.h' doesn't include <QObject>."
 #elif Q_MOC_OUTPUT_REVISION != 67
-#error "This file was generated using the moc from 5.11.1. It"
+#error "This file was generated using the moc from 5.5.1. It"
 #error "cannot be used with the include files from this version of Qt."
 #error "(The moc has changed too much.)"
 #endif
 
 QT_BEGIN_MOC_NAMESPACE
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_MainWindow_t {
-    QByteArrayData data[10];
-    char stringdata0[97];
+    QByteArrayData data[12];
+    char stringdata0[115];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -40,12 +38,15 @@ QT_MOC_LITERAL(5, 45, 3), // "pos"
 QT_MOC_LITERAL(6, 49, 14), // "showAddSection"
 QT_MOC_LITERAL(7, 64, 10), // "addSection"
 QT_MOC_LITERAL(8, 75, 7), // "section"
-QT_MOC_LITERAL(9, 83, 13) // "deleteSection"
+QT_MOC_LITERAL(9, 83, 13), // "deleteSection"
+QT_MOC_LITERAL(10, 97, 11), // "loadSection"
+QT_MOC_LITERAL(11, 109, 5) // "index"
 
     },
     "MainWindow\0newBook\0\0openBook\0"
     "showSectionMenu\0pos\0showAddSection\0"
-    "addSection\0section\0deleteSection"
+    "addSection\0section\0deleteSection\0"
+    "loadSection\0index"
 };
 #undef QT_MOC_LITERAL
 
@@ -55,7 +56,7 @@ static const uint qt_meta_data_MainWindow[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-       6,   14, // methods
+       7,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -63,12 +64,13 @@ static const uint qt_meta_data_MainWindow[] = {
        0,       // signalCount
 
  // slots: name, argc, parameters, tag, flags
-       1,    0,   44,    2, 0x0a /* Public */,
-       3,    0,   45,    2, 0x0a /* Public */,
-       4,    1,   46,    2, 0x0a /* Public */,
-       6,    0,   49,    2, 0x0a /* Public */,
-       7,    1,   50,    2, 0x0a /* Public */,
-       9,    0,   53,    2, 0x0a /* Public */,
+       1,    0,   49,    2, 0x0a /* Public */,
+       3,    0,   50,    2, 0x0a /* Public */,
+       4,    1,   51,    2, 0x0a /* Public */,
+       6,    0,   54,    2, 0x0a /* Public */,
+       7,    1,   55,    2, 0x0a /* Public */,
+       9,    0,   58,    2, 0x0a /* Public */,
+      10,    1,   59,    2, 0x0a /* Public */,
 
  // slots: parameters
     QMetaType::Void,
@@ -77,6 +79,7 @@ static const uint qt_meta_data_MainWindow[] = {
     QMetaType::Void,
     QMetaType::Void, QMetaType::QString,    8,
     QMetaType::Void,
+    QMetaType::Void, QMetaType::QModelIndex,   11,
 
        0        // eod
 };
@@ -93,14 +96,15 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 3: _t->showAddSection(); break;
         case 4: _t->addSection((*reinterpret_cast< QString(*)>(_a[1]))); break;
         case 5: _t->deleteSection(); break;
+        case 6: _t->loadSection((*reinterpret_cast< const QModelIndex(*)>(_a[1]))); break;
         default: ;
         }
     }
 }
 
-QT_INIT_METAOBJECT const QMetaObject MainWindow::staticMetaObject = {
+const QMetaObject MainWindow::staticMetaObject = {
     { &QMainWindow::staticMetaObject, qt_meta_stringdata_MainWindow.data,
-      qt_meta_data_MainWindow,  qt_static_metacall, nullptr, nullptr}
+      qt_meta_data_MainWindow,  qt_static_metacall, Q_NULLPTR, Q_NULLPTR}
 };
 
 
@@ -111,9 +115,9 @@ const QMetaObject *MainWindow::metaObject() const
 
 void *MainWindow::qt_metacast(const char *_clname)
 {
-    if (!_clname) return nullptr;
+    if (!_clname) return Q_NULLPTR;
     if (!strcmp(_clname, qt_meta_stringdata_MainWindow.stringdata0))
-        return static_cast<void*>(this);
+        return static_cast<void*>(const_cast< MainWindow*>(this));
     return QMainWindow::qt_metacast(_clname);
 }
 
@@ -123,15 +127,14 @@ int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 6)
+        if (_id < 7)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 6;
+        _id -= 7;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 6)
+        if (_id < 7)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 6;
+        _id -= 7;
     }
     return _id;
 }
-QT_WARNING_POP
 QT_END_MOC_NAMESPACE

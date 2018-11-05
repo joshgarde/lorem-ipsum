@@ -2,16 +2,18 @@
 #define TABLEOFCONTENTS_H
 
 #include "section.h"
+#include "sectionmodel.h"
 
 class TableOfContents : public Section {
-  QString type = "tableofcontents";
+  Q_OBJECT
+  
   QList<Section*>* sections;
 public:
-  TableOfContents(QList<Section*>* sections);
-  TableOfContents(const TableOfContents& copy);
+  TableOfContents(SectionModel *parent = nullptr);
+  ~TableOfContents();
+  SectionType type();
+  int pages();
   QJsonObject serialize();
 };
-
-Q_DECLARE_METATYPE(TableOfContents)
 
 #endif

@@ -1,13 +1,19 @@
 #include "tableofcontents.h"
 
-TableOfContents::TableOfContents(QList<Section*>* sections) : Section() {
-  this->setObjectName("TableOfContents");
-  this->sections = sections;
+TableOfContents::TableOfContents(SectionModel *parent) : Section(parent) {
+  setObjectName("Table of Contents");
 }
 
-TableOfContents::TableOfContents(const TableOfContents& copy) :
-    Section(copy.parent()), sections(copy.sections) {
+TableOfContents::~TableOfContents() {
+  delete sections;
+}
 
+SectionType TableOfContents::type() {
+  return SectionType::TABLE_OF_CONTENTS;
+}
+
+int TableOfContents::pages() {
+  return 0;
 }
 
 QJsonObject TableOfContents::serialize() {

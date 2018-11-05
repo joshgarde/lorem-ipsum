@@ -2,14 +2,17 @@
 #define TITLE_H
 
 #include "section.h"
+#include "sectionmodel.h"
 
 class Title : public Section {
+  Q_OBJECT
+  
   QString title;
 public:
-  Title(QObject *parent = nullptr, QString* title);
+  Title(SectionModel *parent = nullptr);
+  SectionType type();
+  int pages();
   QJsonObject serialize();
 };
-
-Q_DECLARE_METATYPE(Title)
 
 #endif

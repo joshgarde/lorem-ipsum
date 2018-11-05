@@ -5,12 +5,20 @@
 #include <QMenu>
 #include <QListWidgetItem>
 #include "addsectiondialog.h"
+#include "src/sections/section.h"
+#include "src/sections/chapter.h"
+#include "src/sections/copyright.h"
+#include "src/sections/tableofcontents.h"
+#include "src/sections/title.h"
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
   this->setWindowTitle("Ipsum Lorem");
 
   base.setLayout(&layout);
-  base.setStyleSheet("");
+  base.setStyleSheet(
+    "QToolButton::hover:!pressed {background: grey;}"
+    "QToolButton::pressed {background: darkgrey;}"
+  );
 
   layout.setContentsMargins(0,0,0,0);
   layout.setSpacing(0);
@@ -43,6 +51,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
   connect(newBookAction, SIGNAL(triggered()), this, SLOT(newBook()));
   connect(openBookAction, SIGNAL(triggered()), this, SLOT(openBook()));
   connect(&tableOfContents, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(showSectionMenu(QPoint)));
+  connect(&tableOfContents, SIGNAL(activated(const QModelIndex&)), this, SLOT(loadSection(const QModelIndex&)));
 }
 
 QSize MainWindow::sizeHint() const {
@@ -51,11 +60,12 @@ QSize MainWindow::sizeHint() const {
 
 void MainWindow::newBook() {
   QString filename = QFileDialog::getSaveFileName(this, "Create a New Book", "", "JSON Book Format (*.json)");
+  if (filename == "") return;
   if (!filename.endsWith(".json")) filename.append(".json");
   qDebug() << "[DEBUG] Creating new book:" << filename.toUtf8();
   currentFile = new QFile(filename);
   currentFile->open(QIODevice::ReadWrite);
-  currentBook = new SectionModel();
+  currentBook = new SectionModel(QSize(6, 9));
   tableOfContents.setModel(currentBook);
   saveBookAction->setEnabled(true);
   previousPageAction->setEnabled(true);
@@ -82,15 +92,17 @@ void MainWindow::showAddSection() {
 
 void MainWindow::addSection(QString section) {
   qDebug() << "[DEBUG] Adding section:" << section;
+  int idx = currentBook->rowCount();
+  QModelIndex modelIdx = currentBook->index(idx, 0);
+  currentBook->insertRow(idx);
   if (section == "Title") {
-    
-
+    currentBook->setData(modelIdx, QVariant::fromValue(new Title(currentBook)), 0);
   } else if (section == "Copyright") {
-
+    currentBook->setData(modelIdx, QVariant::fromValue(new Copyright(currentBook)), 0);
   } else if (section == "Table of Contents") {
-
+    currentBook->setData(modelIdx, QVariant::fromValue(new TableOfContents(currentBook)), 0);
   } else if (section == "Chapter") {
-
+    currentBook->setData(modelIdx, QVariant::fromValue(new Chapter(currentBook)), 0);
   } else {
     throw std::runtime_error("Unimplemented section selection");
   }
@@ -98,4 +110,9 @@ void MainWindow::addSection(QString section) {
 
 void MainWindow::deleteSection() {
 
+}
+
+void MainWindow::loadSection(const QModelIndex &index) {
+  Section* section = currentBook->data(index, Qt::UserRole).value<Section*>();
+  QMetaObject::invokeMethod(&viewer, "loadSection", Q_ARG(Section*, section));
 }

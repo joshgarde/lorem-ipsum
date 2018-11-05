@@ -13,6 +13,8 @@
 #include "src/sections/sectionmodel.h"
 
 class MainWindow : public QMainWindow {
+  Q_OBJECT
+  
   QFile* currentFile;
   SectionModel* currentBook;
 
@@ -43,6 +45,7 @@ public slots:
   void showAddSection();
   void addSection(QString section);
   void deleteSection();
+  void loadSection(const QModelIndex &index);
 };
 
 #endif // MAINWINDOW_H

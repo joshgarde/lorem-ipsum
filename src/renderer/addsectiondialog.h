@@ -9,6 +9,7 @@
 
 class AddSectionDialog : public QDialog {
   Q_OBJECT
+  
   QVBoxLayout layout;
   QListWidget list;
   QPushButton button;
