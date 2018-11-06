@@ -20,7 +20,8 @@ PageRenderer::PageRenderer(Section* section, int page, BookRenderer* renderer) :
       
       QTextEdit* titleField = new QTextEdit(this);
       titleField->setAlignment(Qt::AlignCenter);
-      fields.append(titleField);
+      titleField->setPlaceholderText("Title");
+      fields.insert("title", titleField);
       layout.addWidget(titleField);
       
       layout.addStretch(3);

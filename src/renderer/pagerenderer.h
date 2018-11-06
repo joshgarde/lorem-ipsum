@@ -16,7 +16,7 @@ class PageRenderer : public QWidget {
   SectionModel* model;
   Section* section;
   QVBoxLayout layout;
-  QList<QTextEdit*> fields;
+  QMap<QString, QTextEdit*> fields;
   int page;
 public:  
   PageRenderer(Section* section, int page, BookRenderer* renderer);

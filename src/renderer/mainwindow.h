@@ -6,6 +6,8 @@
 #include <QSplitter>
 #include <QListView>
 #include <QToolBar>
+#include <QComboBox>
+#include <QFontComboBox>
 #include <QStatusBar>
 #include <QAction>
 #include <QFile>
@@ -21,6 +23,8 @@ class MainWindow : public QMainWindow {
   QWidget base;
   QVBoxLayout layout;
   QToolBar toolbar;
+  QFontComboBox fontSelector;
+  QComboBox sizeSelector;
   QStatusBar statusbar;
   QSplitter splitter;
   QListView tableOfContents;
@@ -29,8 +33,6 @@ class MainWindow : public QMainWindow {
   QAction* newBookAction;
   QAction* openBookAction;
   QAction* saveBookAction;
-  QAction* nextPageAction;
-  QAction* previousPageAction;
 
 public:
     explicit MainWindow(QWidget *parent = nullptr);

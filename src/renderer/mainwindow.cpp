@@ -25,19 +25,25 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
   layout.addWidget(&toolbar);
   layout.addWidget(&splitter);
   layout.addWidget(&statusbar);
+  
+  fontSelector.setCurrentFont(QFont("Times New Roman"));
+  
+  for (int i = 1; i <= 120; i++) {
+    sizeSelector.addItem(QString::number(i));
+  }
+  sizeSelector.setCurrentIndex(11); // Sets default font size to 12
+  sizeSelector.setEditable(true);
 
   toolbar.setMaximumHeight(32);
   newBookAction = toolbar.addAction(QIcon("assets/new.png"), "New Book");
   openBookAction = toolbar.addAction(QIcon("assets/open.png"), "Open Book");
   saveBookAction = toolbar.addAction(QIcon("assets/save.png"), "Save Book");
   toolbar.addSeparator();
-  previousPageAction = toolbar.addAction(QIcon("assets/previous.png"), "Previous Page");
-  nextPageAction = toolbar.addAction(QIcon("assets/next.png"), "Next Page");
+  toolbar.addWidget(&fontSelector);
+  toolbar.addWidget(&sizeSelector);
   statusbar.setMaximumHeight(statusbar.minimumHeight());
 
   saveBookAction->setEnabled(false);
-  previousPageAction->setEnabled(false);
-  nextPageAction->setEnabled(false);
 
   tableOfContents.setContextMenuPolicy(Qt::CustomContextMenu);
 
@@ -68,8 +74,6 @@ void MainWindow::newBook() {
   currentBook = new SectionModel(QSize(6, 9));
   tableOfContents.setModel(currentBook);
   saveBookAction->setEnabled(true);
-  previousPageAction->setEnabled(true);
-  nextPageAction->setEnabled(true);
   this->setWindowTitle("Ipsum Lorem - " + filename.toUtf8());
 }
 
