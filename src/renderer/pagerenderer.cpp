@@ -13,17 +13,18 @@ PageRenderer::PageRenderer(Section* section, int page, BookRenderer* renderer) :
 
   setLayout(&layout);
   setContentsMargins(0, 30, 0, 30);
-  
+
   switch (section->type()) {
     case SectionType::TITLE: {
       layout.addStretch(2);
-      
+
       QTextEdit* titleField = new QTextEdit(this);
       titleField->setAlignment(Qt::AlignCenter);
       titleField->setPlaceholderText("Title");
+      titleField->setFont(section->fontMap["title"]);
       fields.insert("title", titleField);
       layout.addWidget(titleField);
-      
+
       layout.addStretch(3);
       break;
     }

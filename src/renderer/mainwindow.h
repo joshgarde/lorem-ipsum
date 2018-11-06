@@ -16,7 +16,7 @@
 
 class MainWindow : public QMainWindow {
   Q_OBJECT
-  
+
   QFile* currentFile;
   SectionModel* currentBook;
 

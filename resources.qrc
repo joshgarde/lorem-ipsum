@@ -2,5 +2,8 @@
 <qresource>
     <file>assets/add.png</file>
     <file>assets/delete.png</file>
+    <file>assets/new.png</file>
+    <file>assets/open.png</file>
+    <file>assets/save.png</file>
 </qresource>
 </RCC>

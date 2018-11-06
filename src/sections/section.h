@@ -3,8 +3,10 @@
 
 #include <QObject>
 #include <QJsonObject>
+#include <QMap>
+#include <QString>
+#include <QFont>
 #include "sectionmodel.h"
-
 class SectionModel;
 
 enum SectionType {
@@ -16,9 +18,18 @@ class Section : public QObject {
 
 public:
   Section(SectionModel *parent = nullptr) : QObject((QObject*) parent) { }
+
+  inline static QFont DefaultFont() {
+    QFont tmp("Times New Roman");
+    tmp.setPixelSize(12);
+    return tmp;
+  }
+
   inline SectionModel* parent() {
     return (SectionModel*)QObject::parent();
   }
+  
+  QMap<QString, QFont> fontMap;
   virtual SectionType type() = 0;
   virtual int pages() = 0;
   virtual QJsonObject serialize() = 0;

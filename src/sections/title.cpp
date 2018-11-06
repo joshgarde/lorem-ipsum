@@ -2,6 +2,7 @@
 
 Title::Title(SectionModel *parent) : Section(parent) {
   setObjectName("Title");
+  fontMap.insert("title", DefaultFont());
 }
 
 SectionType Title::type() {
