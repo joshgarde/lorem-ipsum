@@ -18,9 +18,12 @@ class PageRenderer : public QWidget {
   QVBoxLayout layout;
   QMap<QString, QTextEdit*> fields;
   int page;
-public:  
+public:
   PageRenderer(Section* section, int page, BookRenderer* renderer);
   QSize sizeHint() const;
+
+signals:
+  QTextEdit* textBoxSelected();
 };
 
 #endif

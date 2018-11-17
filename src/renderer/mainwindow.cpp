@@ -25,9 +25,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
   layout.addWidget(&toolbar);
   layout.addWidget(&splitter);
   layout.addWidget(&statusbar);
-  
+
   fontSelector.setCurrentFont(QFont("Times New Roman"));
-  
+
   for (int i = 1; i <= 120; i++) {
     sizeSelector.addItem(QString::number(i));
   }
@@ -35,9 +35,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
   sizeSelector.setEditable(true);
 
   toolbar.setMaximumHeight(32);
-  newBookAction = toolbar.addAction(QIcon("assets/new.png"), "New Book");
-  openBookAction = toolbar.addAction(QIcon("assets/open.png"), "Open Book");
-  saveBookAction = toolbar.addAction(QIcon("assets/save.png"), "Save Book");
+  newBookAction = toolbar.addAction(QIcon(":/assets/new.png"), "New Book");
+  openBookAction = toolbar.addAction(QIcon(":/assets/open.png"), "Open Book");
+  saveBookAction = toolbar.addAction(QIcon(":/assets/save.png"), "Save Book");
   toolbar.addSeparator();
   toolbar.addWidget(&fontSelector);
   toolbar.addWidget(&sizeSelector);
@@ -84,8 +84,8 @@ void MainWindow::openBook() {
 void MainWindow::showSectionMenu(QPoint pos) {
   if (currentFile == nullptr) return;
   QMenu menu(this);
-  menu.addAction(QIcon("assets/add.png"), "Add Section", this, SLOT(showAddSection()));
-  menu.addAction(QIcon("assets/delete.png"), "Delete Section", this, SLOT(deleteSection()));
+  menu.addAction(QIcon(":/assets/add.png"), "Add Section", this, SLOT(showAddSection()));
+  menu.addAction(QIcon(":/assets/delete.png"), "Delete Section", this, SLOT(deleteSection()));
   menu.exec(mapToGlobal(pos));
 }
 

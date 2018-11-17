@@ -15,7 +15,7 @@ CXX           = /Library/Developer/CommandLineTools/usr/bin/clang++
 DEFINES       = -DQT_DEPRECATED_WARNINGS -DQT_NO_DEBUG -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB
 CFLAGS        = -pipe -O2 $(EXPORT_ARCH_ARGS) -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk -mmacosx-version-min=10.11 -Wall -W -fPIC $(DEFINES)
 CXXFLAGS      = -pipe -stdlib=libc++ -O2 -std=gnu++11 $(EXPORT_ARCH_ARGS) -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk -mmacosx-version-min=10.11 -Wall -W -fPIC $(DEFINES)
-INCPATH       = -I. -I. -I/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers -I/usr/local/Cellar/qt/5.11.1/lib/QtGui.framework/Headers -I/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers -I. -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/OpenGL.framework/Headers -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/AGL.framework/Headers -I/usr/local/Cellar/qt/5.11.1/mkspecs/macx-clang -F/usr/local/Cellar/qt/5.11.1/lib
+INCPATH       = -I. -I. -I/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers -I/usr/local/Cellar/qt/5.11.1/lib/QtGui.framework/Headers -I/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers -Imoc -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/OpenGL.framework/Headers -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/AGL.framework/Headers -I/usr/local/Cellar/qt/5.11.1/mkspecs/macx-clang -F/usr/local/Cellar/qt/5.11.1/lib
 QMAKE         = /usr/local/opt/qt/bin/qmake
 DEL_FILE      = rm -f
 CHK_DIR_EXISTS= test -d
@@ -60,15 +60,15 @@ SOURCES       = src/main.cpp \
 		src/renderer/mainwindow.cpp \
 		src/renderer/pagerenderer.cpp \
 		src/renderer/addsectiondialog.cpp qrc_resources.cpp \
-		moc_section.cpp \
-		moc_sectionmodel.cpp \
-		moc_chapter.cpp \
-		moc_copyright.cpp \
-		moc_tableofcontents.cpp \
-		moc_title.cpp \
-		moc_bookrenderer.cpp \
-		moc_mainwindow.cpp \
-		moc_addsectiondialog.cpp
+		moc/moc_section.cpp \
+		moc/moc_sectionmodel.cpp \
+		moc/moc_chapter.cpp \
+		moc/moc_copyright.cpp \
+		moc/moc_tableofcontents.cpp \
+		moc/moc_title.cpp \
+		moc/moc_bookrenderer.cpp \
+		moc/moc_mainwindow.cpp \
+		moc/moc_addsectiondialog.cpp
 OBJECTS       = out/main.o \
 		out/sectionmodel.o \
 		out/chapter.o \
@@ -765,16 +765,16 @@ qrc_resources.cpp: resources.qrc \
 		assets/new.png
 	/usr/local/Cellar/qt/5.11.1/bin/rcc -name resources resources.qrc -o qrc_resources.cpp
 
-compiler_moc_predefs_make_all: moc_predefs.h
+compiler_moc_predefs_make_all: moc/moc_predefs.h
 compiler_moc_predefs_clean:
-	-$(DEL_FILE) moc_predefs.h
-moc_predefs.h: /usr/local/Cellar/qt/5.11.1/mkspecs/features/data/dummy.cpp
-	/Library/Developer/CommandLineTools/usr/bin/clang++ -pipe -stdlib=libc++ -O2 -std=gnu++11 $(EXPORT_ARCH_ARGS) -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk -mmacosx-version-min=10.11 -Wall -W -dM -E -o moc_predefs.h /usr/local/Cellar/qt/5.11.1/mkspecs/features/data/dummy.cpp
+	-$(DEL_FILE) moc/moc_predefs.h
+moc/moc_predefs.h: /usr/local/Cellar/qt/5.11.1/mkspecs/features/data/dummy.cpp
+	/Library/Developer/CommandLineTools/usr/bin/clang++ -pipe -stdlib=libc++ -O2 -std=gnu++11 $(EXPORT_ARCH_ARGS) -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk -mmacosx-version-min=10.11 -Wall -W -dM -E -o moc/moc_predefs.h /usr/local/Cellar/qt/5.11.1/mkspecs/features/data/dummy.cpp
 
-compiler_moc_header_make_all: moc_section.cpp moc_sectionmodel.cpp moc_chapter.cpp moc_copyright.cpp moc_tableofcontents.cpp moc_title.cpp moc_bookrenderer.cpp moc_mainwindow.cpp moc_addsectiondialog.cpp
+compiler_moc_header_make_all: moc/moc_section.cpp moc/moc_sectionmodel.cpp moc/moc_chapter.cpp moc/moc_copyright.cpp moc/moc_tableofcontents.cpp moc/moc_title.cpp moc/moc_bookrenderer.cpp moc/moc_mainwindow.cpp moc/moc_addsectiondialog.cpp
 compiler_moc_header_clean:
-	-$(DEL_FILE) moc_section.cpp moc_sectionmodel.cpp moc_chapter.cpp moc_copyright.cpp moc_tableofcontents.cpp moc_title.cpp moc_bookrenderer.cpp moc_mainwindow.cpp moc_addsectiondialog.cpp
-moc_section.cpp: /usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/QObject \
+	-$(DEL_FILE) moc/moc_section.cpp moc/moc_sectionmodel.cpp moc/moc_chapter.cpp moc/moc_copyright.cpp moc/moc_tableofcontents.cpp moc/moc_title.cpp moc/moc_bookrenderer.cpp moc/moc_mainwindow.cpp moc/moc_addsectiondialog.cpp
+moc/moc_section.cpp: /usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/QObject \
 		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/qobject.h \
 		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/QJsonObject \
 		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/qjsonobject.h \
@@ -791,11 +791,11 @@ moc_section.cpp: /usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/QObjec
 		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/qsize.h \
 		src/sections/section.h \
 		src/sections/section.h \
-		moc_predefs.h \
+		moc/moc_predefs.h \
 		/usr/local/Cellar/qt/5.11.1/bin/moc
-	/usr/local/Cellar/qt/5.11.1/bin/moc $(DEFINES) --include ./moc_predefs.h -I/usr/local/Cellar/qt/5.11.1/mkspecs/macx-clang -I/Users/joshgarde/Development/lorem-ipsum -I/Users/joshgarde/Development/lorem-ipsum -I/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers -I/usr/local/Cellar/qt/5.11.1/lib/QtGui.framework/Headers -I/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers -I/Library/Developer/CommandLineTools/usr/include/c++/v1 -I/Library/Developer/CommandLineTools/usr/lib/clang/9.0.0/include -I/Library/Developer/CommandLineTools/usr/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include -F/usr/local/Cellar/qt/5.11.1/lib src/sections/section.h -o moc_section.cpp
+	/usr/local/Cellar/qt/5.11.1/bin/moc $(DEFINES) --include moc/moc_predefs.h -I/usr/local/Cellar/qt/5.11.1/mkspecs/macx-clang -I/Users/joshgarde/Development/lorem-ipsum -I/Users/joshgarde/Development/lorem-ipsum -I/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers -I/usr/local/Cellar/qt/5.11.1/lib/QtGui.framework/Headers -I/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers -I/Library/Developer/CommandLineTools/usr/include/c++/v1 -I/Library/Developer/CommandLineTools/usr/lib/clang/9.0.0/include -I/Library/Developer/CommandLineTools/usr/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include -F/usr/local/Cellar/qt/5.11.1/lib src/sections/section.h -o moc/moc_section.cpp
 
-moc_sectionmodel.cpp: /usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/QAbstractListModel \
+moc/moc_sectionmodel.cpp: /usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/QAbstractListModel \
 		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/qabstractitemmodel.h \
 		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/QSize \
 		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/qsize.h \
@@ -812,11 +812,11 @@ moc_sectionmodel.cpp: /usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/Q
 		/usr/local/Cellar/qt/5.11.1/lib/QtGui.framework/Headers/qfont.h \
 		src/sections/sectionmodel.h \
 		src/sections/sectionmodel.h \
-		moc_predefs.h \
+		moc/moc_predefs.h \
 		/usr/local/Cellar/qt/5.11.1/bin/moc
-	/usr/local/Cellar/qt/5.11.1/bin/moc $(DEFINES) --include ./moc_predefs.h -I/usr/local/Cellar/qt/5.11.1/mkspecs/macx-clang -I/Users/joshgarde/Development/lorem-ipsum -I/Users/joshgarde/Development/lorem-ipsum -I/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers -I/usr/local/Cellar/qt/5.11.1/lib/QtGui.framework/Headers -I/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers -I/Library/Developer/CommandLineTools/usr/include/c++/v1 -I/Library/Developer/CommandLineTools/usr/lib/clang/9.0.0/include -I/Library/Developer/CommandLineTools/usr/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include -F/usr/local/Cellar/qt/5.11.1/lib src/sections/sectionmodel.h -o moc_sectionmodel.cpp
+	/usr/local/Cellar/qt/5.11.1/bin/moc $(DEFINES) --include moc/moc_predefs.h -I/usr/local/Cellar/qt/5.11.1/mkspecs/macx-clang -I/Users/joshgarde/Development/lorem-ipsum -I/Users/joshgarde/Development/lorem-ipsum -I/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers -I/usr/local/Cellar/qt/5.11.1/lib/QtGui.framework/Headers -I/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers -I/Library/Developer/CommandLineTools/usr/include/c++/v1 -I/Library/Developer/CommandLineTools/usr/lib/clang/9.0.0/include -I/Library/Developer/CommandLineTools/usr/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include -F/usr/local/Cellar/qt/5.11.1/lib src/sections/sectionmodel.h -o moc/moc_sectionmodel.cpp
 
-moc_chapter.cpp: src/sections/section.h \
+moc/moc_chapter.cpp: src/sections/section.h \
 		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/QObject \
 		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/qobject.h \
 		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/QJsonObject \
@@ -833,11 +833,11 @@ moc_chapter.cpp: src/sections/section.h \
 		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/QSize \
 		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/qsize.h \
 		src/sections/chapter.h \
-		moc_predefs.h \
+		moc/moc_predefs.h \
 		/usr/local/Cellar/qt/5.11.1/bin/moc
-	/usr/local/Cellar/qt/5.11.1/bin/moc $(DEFINES) --include ./moc_predefs.h -I/usr/local/Cellar/qt/5.11.1/mkspecs/macx-clang -I/Users/joshgarde/Development/lorem-ipsum -I/Users/joshgarde/Development/lorem-ipsum -I/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers -I/usr/local/Cellar/qt/5.11.1/lib/QtGui.framework/Headers -I/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers -I/Library/Developer/CommandLineTools/usr/include/c++/v1 -I/Library/Developer/CommandLineTools/usr/lib/clang/9.0.0/include -I/Library/Developer/CommandLineTools/usr/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include -F/usr/local/Cellar/qt/5.11.1/lib src/sections/chapter.h -o moc_chapter.cpp
+	/usr/local/Cellar/qt/5.11.1/bin/moc $(DEFINES) --include moc/moc_predefs.h -I/usr/local/Cellar/qt/5.11.1/mkspecs/macx-clang -I/Users/joshgarde/Development/lorem-ipsum -I/Users/joshgarde/Development/lorem-ipsum -I/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers -I/usr/local/Cellar/qt/5.11.1/lib/QtGui.framework/Headers -I/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers -I/Library/Developer/CommandLineTools/usr/include/c++/v1 -I/Library/Developer/CommandLineTools/usr/lib/clang/9.0.0/include -I/Library/Developer/CommandLineTools/usr/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include -F/usr/local/Cellar/qt/5.11.1/lib src/sections/chapter.h -o moc/moc_chapter.cpp
 
-moc_copyright.cpp: src/sections/section.h \
+moc/moc_copyright.cpp: src/sections/section.h \
 		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/QObject \
 		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/qobject.h \
 		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/QJsonObject \
@@ -854,11 +854,11 @@ moc_copyright.cpp: src/sections/section.h \
 		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/QSize \
 		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/qsize.h \
 		src/sections/copyright.h \
-		moc_predefs.h \
+		moc/moc_predefs.h \
 		/usr/local/Cellar/qt/5.11.1/bin/moc
-	/usr/local/Cellar/qt/5.11.1/bin/moc $(DEFINES) --include ./moc_predefs.h -I/usr/local/Cellar/qt/5.11.1/mkspecs/macx-clang -I/Users/joshgarde/Development/lorem-ipsum -I/Users/joshgarde/Development/lorem-ipsum -I/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers -I/usr/local/Cellar/qt/5.11.1/lib/QtGui.framework/Headers -I/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers -I/Library/Developer/CommandLineTools/usr/include/c++/v1 -I/Library/Developer/CommandLineTools/usr/lib/clang/9.0.0/include -I/Library/Developer/CommandLineTools/usr/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include -F/usr/local/Cellar/qt/5.11.1/lib src/sections/copyright.h -o moc_copyright.cpp
+	/usr/local/Cellar/qt/5.11.1/bin/moc $(DEFINES) --include moc/moc_predefs.h -I/usr/local/Cellar/qt/5.11.1/mkspecs/macx-clang -I/Users/joshgarde/Development/lorem-ipsum -I/Users/joshgarde/Development/lorem-ipsum -I/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers -I/usr/local/Cellar/qt/5.11.1/lib/QtGui.framework/Headers -I/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers -I/Library/Developer/CommandLineTools/usr/include/c++/v1 -I/Library/Developer/CommandLineTools/usr/lib/clang/9.0.0/include -I/Library/Developer/CommandLineTools/usr/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include -F/usr/local/Cellar/qt/5.11.1/lib src/sections/copyright.h -o moc/moc_copyright.cpp
 
-moc_tableofcontents.cpp: src/sections/section.h \
+moc/moc_tableofcontents.cpp: src/sections/section.h \
 		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/QObject \
 		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/qobject.h \
 		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/QJsonObject \
@@ -875,11 +875,11 @@ moc_tableofcontents.cpp: src/sections/section.h \
 		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/QSize \
 		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/qsize.h \
 		src/sections/tableofcontents.h \
-		moc_predefs.h \
+		moc/moc_predefs.h \
 		/usr/local/Cellar/qt/5.11.1/bin/moc
-	/usr/local/Cellar/qt/5.11.1/bin/moc $(DEFINES) --include ./moc_predefs.h -I/usr/local/Cellar/qt/5.11.1/mkspecs/macx-clang -I/Users/joshgarde/Development/lorem-ipsum -I/Users/joshgarde/Development/lorem-ipsum -I/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers -I/usr/local/Cellar/qt/5.11.1/lib/QtGui.framework/Headers -I/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers -I/Library/Developer/CommandLineTools/usr/include/c++/v1 -I/Library/Developer/CommandLineTools/usr/lib/clang/9.0.0/include -I/Library/Developer/CommandLineTools/usr/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include -F/usr/local/Cellar/qt/5.11.1/lib src/sections/tableofcontents.h -o moc_tableofcontents.cpp
+	/usr/local/Cellar/qt/5.11.1/bin/moc $(DEFINES) --include moc/moc_predefs.h -I/usr/local/Cellar/qt/5.11.1/mkspecs/macx-clang -I/Users/joshgarde/Development/lorem-ipsum -I/Users/joshgarde/Development/lorem-ipsum -I/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers -I/usr/local/Cellar/qt/5.11.1/lib/QtGui.framework/Headers -I/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers -I/Library/Developer/CommandLineTools/usr/include/c++/v1 -I/Library/Developer/CommandLineTools/usr/lib/clang/9.0.0/include -I/Library/Developer/CommandLineTools/usr/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include -F/usr/local/Cellar/qt/5.11.1/lib src/sections/tableofcontents.h -o moc/moc_tableofcontents.cpp
 
-moc_title.cpp: src/sections/section.h \
+moc/moc_title.cpp: src/sections/section.h \
 		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/QObject \
 		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/qobject.h \
 		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/QJsonObject \
@@ -896,11 +896,11 @@ moc_title.cpp: src/sections/section.h \
 		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/QSize \
 		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/qsize.h \
 		src/sections/title.h \
-		moc_predefs.h \
+		moc/moc_predefs.h \
 		/usr/local/Cellar/qt/5.11.1/bin/moc
-	/usr/local/Cellar/qt/5.11.1/bin/moc $(DEFINES) --include ./moc_predefs.h -I/usr/local/Cellar/qt/5.11.1/mkspecs/macx-clang -I/Users/joshgarde/Development/lorem-ipsum -I/Users/joshgarde/Development/lorem-ipsum -I/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers -I/usr/local/Cellar/qt/5.11.1/lib/QtGui.framework/Headers -I/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers -I/Library/Developer/CommandLineTools/usr/include/c++/v1 -I/Library/Developer/CommandLineTools/usr/lib/clang/9.0.0/include -I/Library/Developer/CommandLineTools/usr/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include -F/usr/local/Cellar/qt/5.11.1/lib src/sections/title.h -o moc_title.cpp
+	/usr/local/Cellar/qt/5.11.1/bin/moc $(DEFINES) --include moc/moc_predefs.h -I/usr/local/Cellar/qt/5.11.1/mkspecs/macx-clang -I/Users/joshgarde/Development/lorem-ipsum -I/Users/joshgarde/Development/lorem-ipsum -I/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers -I/usr/local/Cellar/qt/5.11.1/lib/QtGui.framework/Headers -I/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers -I/Library/Developer/CommandLineTools/usr/include/c++/v1 -I/Library/Developer/CommandLineTools/usr/lib/clang/9.0.0/include -I/Library/Developer/CommandLineTools/usr/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include -F/usr/local/Cellar/qt/5.11.1/lib src/sections/title.h -o moc/moc_title.cpp
 
-moc_bookrenderer.cpp: /usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/QScrollArea \
+moc/moc_bookrenderer.cpp: /usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/QScrollArea \
 		/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/qscrollarea.h \
 		/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/QVBoxLayout \
 		/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/qboxlayout.h \
@@ -927,11 +927,11 @@ moc_bookrenderer.cpp: /usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Header
 		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/QAbstractListModel \
 		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/qabstractitemmodel.h \
 		src/renderer/bookrenderer.h \
-		moc_predefs.h \
+		moc/moc_predefs.h \
 		/usr/local/Cellar/qt/5.11.1/bin/moc
-	/usr/local/Cellar/qt/5.11.1/bin/moc $(DEFINES) --include ./moc_predefs.h -I/usr/local/Cellar/qt/5.11.1/mkspecs/macx-clang -I/Users/joshgarde/Development/lorem-ipsum -I/Users/joshgarde/Development/lorem-ipsum -I/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers -I/usr/local/Cellar/qt/5.11.1/lib/QtGui.framework/Headers -I/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers -I/Library/Developer/CommandLineTools/usr/include/c++/v1 -I/Library/Developer/CommandLineTools/usr/lib/clang/9.0.0/include -I/Library/Developer/CommandLineTools/usr/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include -F/usr/local/Cellar/qt/5.11.1/lib src/renderer/bookrenderer.h -o moc_bookrenderer.cpp
+	/usr/local/Cellar/qt/5.11.1/bin/moc $(DEFINES) --include moc/moc_predefs.h -I/usr/local/Cellar/qt/5.11.1/mkspecs/macx-clang -I/Users/joshgarde/Development/lorem-ipsum -I/Users/joshgarde/Development/lorem-ipsum -I/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers -I/usr/local/Cellar/qt/5.11.1/lib/QtGui.framework/Headers -I/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers -I/Library/Developer/CommandLineTools/usr/include/c++/v1 -I/Library/Developer/CommandLineTools/usr/lib/clang/9.0.0/include -I/Library/Developer/CommandLineTools/usr/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include -F/usr/local/Cellar/qt/5.11.1/lib src/renderer/bookrenderer.h -o moc/moc_bookrenderer.cpp
 
-moc_mainwindow.cpp: /usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/QMainWindow \
+moc/moc_mainwindow.cpp: /usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/QMainWindow \
 		/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/qmainwindow.h \
 		/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/QHBoxLayout \
 		/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/qboxlayout.h \
@@ -977,11 +977,11 @@ moc_mainwindow.cpp: /usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/
 		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/QAbstractListModel \
 		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/qabstractitemmodel.h \
 		src/renderer/mainwindow.h \
-		moc_predefs.h \
+		moc/moc_predefs.h \
 		/usr/local/Cellar/qt/5.11.1/bin/moc
-	/usr/local/Cellar/qt/5.11.1/bin/moc $(DEFINES) --include ./moc_predefs.h -I/usr/local/Cellar/qt/5.11.1/mkspecs/macx-clang -I/Users/joshgarde/Development/lorem-ipsum -I/Users/joshgarde/Development/lorem-ipsum -I/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers -I/usr/local/Cellar/qt/5.11.1/lib/QtGui.framework/Headers -I/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers -I/Library/Developer/CommandLineTools/usr/include/c++/v1 -I/Library/Developer/CommandLineTools/usr/lib/clang/9.0.0/include -I/Library/Developer/CommandLineTools/usr/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include -F/usr/local/Cellar/qt/5.11.1/lib src/renderer/mainwindow.h -o moc_mainwindow.cpp
+	/usr/local/Cellar/qt/5.11.1/bin/moc $(DEFINES) --include moc/moc_predefs.h -I/usr/local/Cellar/qt/5.11.1/mkspecs/macx-clang -I/Users/joshgarde/Development/lorem-ipsum -I/Users/joshgarde/Development/lorem-ipsum -I/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers -I/usr/local/Cellar/qt/5.11.1/lib/QtGui.framework/Headers -I/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers -I/Library/Developer/CommandLineTools/usr/include/c++/v1 -I/Library/Developer/CommandLineTools/usr/lib/clang/9.0.0/include -I/Library/Developer/CommandLineTools/usr/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include -F/usr/local/Cellar/qt/5.11.1/lib src/renderer/mainwindow.h -o moc/moc_mainwindow.cpp
 
-moc_addsectiondialog.cpp: /usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/QDialog \
+moc/moc_addsectiondialog.cpp: /usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/QDialog \
 		/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/qdialog.h \
 		/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/QVBoxLayout \
 		/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/qboxlayout.h \
@@ -992,9 +992,9 @@ moc_addsectiondialog.cpp: /usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/He
 		/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/QPushButton \
 		/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/qpushbutton.h \
 		src/renderer/addsectiondialog.h \
-		moc_predefs.h \
+		moc/moc_predefs.h \
 		/usr/local/Cellar/qt/5.11.1/bin/moc
-	/usr/local/Cellar/qt/5.11.1/bin/moc $(DEFINES) --include ./moc_predefs.h -I/usr/local/Cellar/qt/5.11.1/mkspecs/macx-clang -I/Users/joshgarde/Development/lorem-ipsum -I/Users/joshgarde/Development/lorem-ipsum -I/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers -I/usr/local/Cellar/qt/5.11.1/lib/QtGui.framework/Headers -I/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers -I/Library/Developer/CommandLineTools/usr/include/c++/v1 -I/Library/Developer/CommandLineTools/usr/lib/clang/9.0.0/include -I/Library/Developer/CommandLineTools/usr/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include -F/usr/local/Cellar/qt/5.11.1/lib src/renderer/addsectiondialog.h -o moc_addsectiondialog.cpp
+	/usr/local/Cellar/qt/5.11.1/bin/moc $(DEFINES) --include moc/moc_predefs.h -I/usr/local/Cellar/qt/5.11.1/mkspecs/macx-clang -I/Users/joshgarde/Development/lorem-ipsum -I/Users/joshgarde/Development/lorem-ipsum -I/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers -I/usr/local/Cellar/qt/5.11.1/lib/QtGui.framework/Headers -I/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers -I/Library/Developer/CommandLineTools/usr/include/c++/v1 -I/Library/Developer/CommandLineTools/usr/lib/clang/9.0.0/include -I/Library/Developer/CommandLineTools/usr/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include -F/usr/local/Cellar/qt/5.11.1/lib src/renderer/addsectiondialog.h -o moc/moc_addsectiondialog.cpp
 
 compiler_moc_objc_header_make_all:
 compiler_moc_objc_header_clean:
@@ -1313,32 +1313,32 @@ out/addsectiondialog.o: src/renderer/addsectiondialog.cpp src/renderer/addsectio
 out/qrc_resources.o: qrc_resources.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o out/qrc_resources.o qrc_resources.cpp
 
-out/moc_section.o: moc_section.cpp 
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o out/moc_section.o moc_section.cpp
+out/moc_section.o: moc/moc_section.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o out/moc_section.o moc/moc_section.cpp
 
-out/moc_sectionmodel.o: moc_sectionmodel.cpp 
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o out/moc_sectionmodel.o moc_sectionmodel.cpp
+out/moc_sectionmodel.o: moc/moc_sectionmodel.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o out/moc_sectionmodel.o moc/moc_sectionmodel.cpp
 
-out/moc_chapter.o: moc_chapter.cpp 
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o out/moc_chapter.o moc_chapter.cpp
+out/moc_chapter.o: moc/moc_chapter.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o out/moc_chapter.o moc/moc_chapter.cpp
 
-out/moc_copyright.o: moc_copyright.cpp 
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o out/moc_copyright.o moc_copyright.cpp
+out/moc_copyright.o: moc/moc_copyright.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o out/moc_copyright.o moc/moc_copyright.cpp
 
-out/moc_tableofcontents.o: moc_tableofcontents.cpp 
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o out/moc_tableofcontents.o moc_tableofcontents.cpp
+out/moc_tableofcontents.o: moc/moc_tableofcontents.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o out/moc_tableofcontents.o moc/moc_tableofcontents.cpp
 
-out/moc_title.o: moc_title.cpp 
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o out/moc_title.o moc_title.cpp
+out/moc_title.o: moc/moc_title.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o out/moc_title.o moc/moc_title.cpp
 
-out/moc_bookrenderer.o: moc_bookrenderer.cpp 
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o out/moc_bookrenderer.o moc_bookrenderer.cpp
+out/moc_bookrenderer.o: moc/moc_bookrenderer.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o out/moc_bookrenderer.o moc/moc_bookrenderer.cpp
 
-out/moc_mainwindow.o: moc_mainwindow.cpp 
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o out/moc_mainwindow.o moc_mainwindow.cpp
+out/moc_mainwindow.o: moc/moc_mainwindow.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o out/moc_mainwindow.o moc/moc_mainwindow.cpp
 
-out/moc_addsectiondialog.o: moc_addsectiondialog.cpp 
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o out/moc_addsectiondialog.o moc_addsectiondialog.cpp
+out/moc_addsectiondialog.o: moc/moc_addsectiondialog.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o out/moc_addsectiondialog.o moc/moc_addsectiondialog.cpp
 
 ####### Install
 

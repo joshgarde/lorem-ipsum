@@ -46,3 +46,4 @@ SOURCES += src/main.cpp \
 
 DESTDIR = build
 OBJECTS_DIR = out
+MOC_DIR = moc

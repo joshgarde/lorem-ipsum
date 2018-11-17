@@ -2,7 +2,9 @@
 
 Title::Title(SectionModel *parent) : Section(parent) {
   setObjectName("Title");
-  fontMap.insert("title", DefaultFont());
+  QFont font("Times New Roman");
+  font.setPixelSize(36);
+  fontMap.insert("title", font);
 }
 
 SectionType Title::type() {
