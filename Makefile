@@ -1228,7 +1228,9 @@ out/bookrenderer.o: src/renderer/bookrenderer.cpp src/renderer/bookrenderer.h \
 		/usr/local/Cellar/qt/5.11.1/lib/QtGui.framework/Headers/QPainter \
 		/usr/local/Cellar/qt/5.11.1/lib/QtGui.framework/Headers/qpainter.h \
 		/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/QLabel \
-		/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/qlabel.h
+		/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/qlabel.h \
+		/usr/local/Cellar/qt/5.11.1/lib/QtGui.framework/Headers/QPagedPaintDevice \
+		/usr/local/Cellar/qt/5.11.1/lib/QtGui.framework/Headers/qpagedpaintdevice.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o out/bookrenderer.o src/renderer/bookrenderer.cpp
 
 out/mainwindow.o: src/renderer/mainwindow.cpp src/renderer/mainwindow.h \
@@ -1291,6 +1293,8 @@ out/mainwindow.o: src/renderer/mainwindow.cpp src/renderer/mainwindow.h \
 		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/qjsonarray.h \
 		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/QJsonDocument \
 		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/qjsondocument.h \
+		/usr/local/Cellar/qt/5.11.1/lib/QtGui.framework/Headers/QPdfWriter \
+		/usr/local/Cellar/qt/5.11.1/lib/QtGui.framework/Headers/qpdfwriter.h \
 		src/renderer/addsectiondialog.h \
 		/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/QDialog \
 		/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/qdialog.h \

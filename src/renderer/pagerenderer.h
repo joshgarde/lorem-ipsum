@@ -23,7 +23,6 @@ class PageRenderer : public QWidget {
   int page;
 public:
   PageRenderer(Section* section, int page, BookRenderer* renderer);
-  QSize sizeHint() const;
 
 signals:
   void textBoxSelected();

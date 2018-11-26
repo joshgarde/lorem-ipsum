@@ -20,7 +20,7 @@ class BookRenderer : public QScrollArea {
   void reset();
 public:
   BookRenderer(QWidget *parent = nullptr);
-  void renderSection(QPagedPaintDevice* paintDevice, Section* section);
+  void renderSection(QPagedPaintDevice* paintDevice, QPainter* painter, Section* section);
 
 signals:
 

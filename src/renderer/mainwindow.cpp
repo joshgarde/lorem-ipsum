@@ -7,6 +7,7 @@
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QPdfWriter>
+#include <QPainter>
 #include "addsectiondialog.h"
 #include "src/sections/section.h"
 #include "src/sections/chapter.h"
@@ -15,7 +16,7 @@
 #include "src/sections/title.h"
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
-  this->setWindowTitle("Ipsum Lorem");
+  this->setWindowTitle("Lorem Ipsum");
 
   base.setLayout(&layout);
   base.setStyleSheet(
@@ -218,11 +219,15 @@ void MainWindow::renderBook() {
 
   qDebug() << "[DEBUG] Rendering book: " << filename;
   QPdfWriter pdfWriter(filename);
+  pdfWriter.setPageSize(QPageSize(currentBook->size, QPageSize::Inch));
+  pdfWriter.setPageMargins(QMarginsF(0, 0, 0, 0));
+  pdfWriter.setResolution(96);
+  QPainter painter(&pdfWriter);
 
   for (int i = 0; i < currentBook->rowCount(); i++) {
     QModelIndex modelIdx = currentBook->index(i, 0);
-    viewer.renderSection(&pdfWriter, currentBook->data(modelIdx, Qt::UserRole).value<Section*>());
-    pdfWriter.newPage();
+    viewer.renderSection(&pdfWriter, &painter, currentBook->data(modelIdx, Qt::UserRole).value<Section*>());
+    if (i != currentBook->rowCount() - 1) pdfWriter.newPage();
   }
 
 }

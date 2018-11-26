@@ -27,11 +27,10 @@ void BookRenderer::reset() {
   }
 }
 
-void BookRenderer::renderSection(QPagedPaintDevice* paintDevice, Section* section) {
+void BookRenderer::renderSection(QPagedPaintDevice* paintDevice, QPainter* painter, Section* section) {
   qDebug() << "[DEBUG] Rendering section: " << section->objectName();
-  PageRenderer* renderer = new PageRenderer(section, 0, this);
-  renderer->render(paintDevice);
-  delete renderer;
+  PageRenderer renderer(section, 0, this);
+  renderer.render(painter);
 }
 
 void BookRenderer::loadSection(Section* section) {

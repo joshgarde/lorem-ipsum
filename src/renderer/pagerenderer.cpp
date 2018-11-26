@@ -21,6 +21,7 @@ PageRenderer::PageRenderer(Section* section, int page, BookRenderer* renderer) :
 
   setLayout(&layout);
   setContentsMargins(0, 0, 0, 0);
+  setFixedSize(QSize(model->size.width() * PPI, model->size.height() * PPI));
 
   switch (section->type()) {
     case SectionType::TITLE: {
@@ -29,6 +30,7 @@ PageRenderer::PageRenderer(Section* section, int page, BookRenderer* renderer) :
       QTextEdit* titleField = new QTextEdit(this);
       titleField->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
       titleField->setFont(section->fontMap["title"]);
+      titleField->setFrameStyle(0);
       connect(titleField, SIGNAL(textChanged()), this, SLOT(fieldResize()));
       titleField->setPlainText(((Title*)section)->title);
       titleField->setAlignment(Qt::AlignCenter);
@@ -45,6 +47,7 @@ PageRenderer::PageRenderer(Section* section, int page, BookRenderer* renderer) :
       QTextEdit* copyrightField = new QTextEdit(this);
       copyrightField->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
       copyrightField->setFont(section->fontMap["copyright"]);
+      copyrightField->setFrameStyle(0);
       copyrightField->setPlainText(((Copyright*)section)->contents);
       fields.insert("copyright", copyrightField);
       layout.addWidget(copyrightField);
@@ -63,6 +66,7 @@ PageRenderer::PageRenderer(Section* section, int page, BookRenderer* renderer) :
         QTextEdit* chapterNumberField = new QTextEdit(this);
         chapterNumberField->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         chapterNumberField->setFont(section->fontMap["chapterNumber"]);
+        chapterNumberField->setFrameStyle(0);
         chapterNumberField->setTextInteractionFlags(Qt::NoTextInteraction);
         connect(chapterNumberField, SIGNAL(textChanged()), this, SLOT(fieldResize()));
         chapterNumberField->setPlainText("Chapter Null");
@@ -71,6 +75,7 @@ PageRenderer::PageRenderer(Section* section, int page, BookRenderer* renderer) :
         QTextEdit* chapterNameField = new QTextEdit(this);
         chapterNameField->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         chapterNameField->setFont(section->fontMap["chapterName"]);
+        chapterNameField->setFrameStyle(0);
         connect(chapterNameField, SIGNAL(textChanged()), this, SLOT(fieldResize()));
         chapterNameField->setPlainText(((Chapter*)section)->name);
         chapterNameField->setAlignment(Qt::AlignCenter);
@@ -86,6 +91,7 @@ PageRenderer::PageRenderer(Section* section, int page, BookRenderer* renderer) :
       QTextEdit* chapterContentsField = new QTextEdit(this);
       chapterContentsField->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
       chapterContentsField->setFont(section->fontMap["chapterContents"]);
+      chapterContentsField->setFrameStyle(0);
       chapterContentsField->setPlainText(((Chapter*)section)->contents);
       fields.insert("chapterContents", chapterContentsField);
       layout.addWidget(chapterContentsField, 2);
@@ -107,8 +113,4 @@ void PageRenderer::fieldResize() {
 
 void PageRenderer::rerenderCheck() {
 
-}
-
-QSize PageRenderer::sizeHint() const {
-  return QSize(model->size.width() * PPI, model->size.height() * PPI);
 }
