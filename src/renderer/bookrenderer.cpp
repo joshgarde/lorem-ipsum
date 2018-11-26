@@ -2,6 +2,7 @@
 #include <QDebug>
 #include <QPainter>
 #include <QLabel>
+#include <QPagedPaintDevice>
 #include "pagerenderer.h"
 
 BookRenderer::BookRenderer(QWidget *parent) : QScrollArea(parent) {
@@ -26,12 +27,18 @@ void BookRenderer::reset() {
   }
 }
 
+void BookRenderer::renderSection(QPagedPaintDevice* paintDevice, Section* section) {
+  qDebug() << "[DEBUG] Rendering section: " << section->objectName();
+  PageRenderer* renderer = new PageRenderer(section, 0, this);
+  renderer->render(paintDevice);
+  delete renderer;
+}
+
 void BookRenderer::loadSection(Section* section) {
   reset();
-  qDebug() << "[DEBUG] Rendering section:" << section->objectName();
+  qDebug() << "[DEBUG] Loading section:" << section->objectName();
   currentSection = section;
   PageRenderer* renderer = new PageRenderer(section, 0, this);
-  renderer->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
   renderers.append(renderer);
   layout.addWidget(renderer);
 }

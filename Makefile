@@ -68,6 +68,7 @@ SOURCES       = src/main.cpp \
 		moc/moc_title.cpp \
 		moc/moc_bookrenderer.cpp \
 		moc/moc_mainwindow.cpp \
+		moc/moc_pagerenderer.cpp \
 		moc/moc_addsectiondialog.cpp
 OBJECTS       = out/main.o \
 		out/sectionmodel.o \
@@ -88,6 +89,7 @@ OBJECTS       = out/main.o \
 		out/moc_title.o \
 		out/moc_bookrenderer.o \
 		out/moc_mainwindow.o \
+		out/moc_pagerenderer.o \
 		out/moc_addsectiondialog.o
 DIST          = /usr/local/Cellar/qt/5.11.1/mkspecs/features/spec_pre.prf \
 		/usr/local/Cellar/qt/5.11.1/mkspecs/qdevice.pri \
@@ -758,6 +760,7 @@ compiler_rcc_clean:
 	-$(DEL_FILE) qrc_resources.cpp
 qrc_resources.cpp: resources.qrc \
 		/usr/local/Cellar/qt/5.11.1/bin/rcc \
+		assets/render.png \
 		assets/save.png \
 		assets/open.png \
 		assets/add.png \
@@ -771,9 +774,9 @@ compiler_moc_predefs_clean:
 moc/moc_predefs.h: /usr/local/Cellar/qt/5.11.1/mkspecs/features/data/dummy.cpp
 	/Library/Developer/CommandLineTools/usr/bin/clang++ -pipe -stdlib=libc++ -O2 -std=gnu++11 $(EXPORT_ARCH_ARGS) -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk -mmacosx-version-min=10.11 -Wall -W -dM -E -o moc/moc_predefs.h /usr/local/Cellar/qt/5.11.1/mkspecs/features/data/dummy.cpp
 
-compiler_moc_header_make_all: moc/moc_section.cpp moc/moc_sectionmodel.cpp moc/moc_chapter.cpp moc/moc_copyright.cpp moc/moc_tableofcontents.cpp moc/moc_title.cpp moc/moc_bookrenderer.cpp moc/moc_mainwindow.cpp moc/moc_addsectiondialog.cpp
+compiler_moc_header_make_all: moc/moc_section.cpp moc/moc_sectionmodel.cpp moc/moc_chapter.cpp moc/moc_copyright.cpp moc/moc_tableofcontents.cpp moc/moc_title.cpp moc/moc_bookrenderer.cpp moc/moc_mainwindow.cpp moc/moc_pagerenderer.cpp moc/moc_addsectiondialog.cpp
 compiler_moc_header_clean:
-	-$(DEL_FILE) moc/moc_section.cpp moc/moc_sectionmodel.cpp moc/moc_chapter.cpp moc/moc_copyright.cpp moc/moc_tableofcontents.cpp moc/moc_title.cpp moc/moc_bookrenderer.cpp moc/moc_mainwindow.cpp moc/moc_addsectiondialog.cpp
+	-$(DEL_FILE) moc/moc_section.cpp moc/moc_sectionmodel.cpp moc/moc_chapter.cpp moc/moc_copyright.cpp moc/moc_tableofcontents.cpp moc/moc_title.cpp moc/moc_bookrenderer.cpp moc/moc_mainwindow.cpp moc/moc_pagerenderer.cpp moc/moc_addsectiondialog.cpp
 moc/moc_section.cpp: /usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/QObject \
 		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/qobject.h \
 		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/QJsonObject \
@@ -980,6 +983,37 @@ moc/moc_mainwindow.cpp: /usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Head
 		moc/moc_predefs.h \
 		/usr/local/Cellar/qt/5.11.1/bin/moc
 	/usr/local/Cellar/qt/5.11.1/bin/moc $(DEFINES) --include moc/moc_predefs.h -I/usr/local/Cellar/qt/5.11.1/mkspecs/macx-clang -I/Users/joshgarde/Development/lorem-ipsum -I/Users/joshgarde/Development/lorem-ipsum -I/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers -I/usr/local/Cellar/qt/5.11.1/lib/QtGui.framework/Headers -I/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers -I/Library/Developer/CommandLineTools/usr/include/c++/v1 -I/Library/Developer/CommandLineTools/usr/lib/clang/9.0.0/include -I/Library/Developer/CommandLineTools/usr/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include -F/usr/local/Cellar/qt/5.11.1/lib src/renderer/mainwindow.h -o moc/moc_mainwindow.cpp
+
+moc/moc_pagerenderer.cpp: /usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/QWidget \
+		/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/qwidget.h \
+		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/QSize \
+		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/qsize.h \
+		/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/QVBoxLayout \
+		/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/qboxlayout.h \
+		/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/QTextEdit \
+		/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/qtextedit.h \
+		src/renderer/bookrenderer.h \
+		/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/QScrollArea \
+		/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/qscrollarea.h \
+		src/renderer/pagerenderer.h \
+		src/sections/section.h \
+		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/QObject \
+		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/qobject.h \
+		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/QJsonObject \
+		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/qjsonobject.h \
+		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/QMap \
+		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/qmap.h \
+		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/QString \
+		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/qstring.h \
+		/usr/local/Cellar/qt/5.11.1/lib/QtGui.framework/Headers/QFont \
+		/usr/local/Cellar/qt/5.11.1/lib/QtGui.framework/Headers/qfont.h \
+		src/sections/sectionmodel.h \
+		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/QAbstractListModel \
+		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/qabstractitemmodel.h \
+		src/renderer/pagerenderer.h \
+		moc/moc_predefs.h \
+		/usr/local/Cellar/qt/5.11.1/bin/moc
+	/usr/local/Cellar/qt/5.11.1/bin/moc $(DEFINES) --include moc/moc_predefs.h -I/usr/local/Cellar/qt/5.11.1/mkspecs/macx-clang -I/Users/joshgarde/Development/lorem-ipsum -I/Users/joshgarde/Development/lorem-ipsum -I/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers -I/usr/local/Cellar/qt/5.11.1/lib/QtGui.framework/Headers -I/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers -I/Library/Developer/CommandLineTools/usr/include/c++/v1 -I/Library/Developer/CommandLineTools/usr/lib/clang/9.0.0/include -I/Library/Developer/CommandLineTools/usr/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include -F/usr/local/Cellar/qt/5.11.1/lib src/renderer/pagerenderer.h -o moc/moc_pagerenderer.cpp
 
 moc/moc_addsectiondialog.cpp: /usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/QDialog \
 		/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/qdialog.h \
@@ -1253,6 +1287,10 @@ out/mainwindow.o: src/renderer/mainwindow.cpp src/renderer/mainwindow.h \
 		/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/qmenu.h \
 		/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/QListWidgetItem \
 		/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/qlistwidget.h \
+		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/QJsonArray \
+		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/qjsonarray.h \
+		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/QJsonDocument \
+		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/qjsondocument.h \
 		src/renderer/addsectiondialog.h \
 		/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/QDialog \
 		/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/qdialog.h \
@@ -1292,7 +1330,15 @@ out/pagerenderer.o: src/renderer/pagerenderer.cpp src/renderer/pagerenderer.h \
 		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/QAbstractListModel \
 		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/qabstractitemmodel.h \
 		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/QDebug \
-		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/qdebug.h
+		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/qdebug.h \
+		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/QEvent \
+		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/qcoreevent.h \
+		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/QCoreApplication \
+		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/qcoreapplication.h \
+		src/sections/title.h \
+		src/sections/copyright.h \
+		src/sections/tableofcontents.h \
+		src/sections/chapter.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o out/pagerenderer.o src/renderer/pagerenderer.cpp
 
 out/addsectiondialog.o: src/renderer/addsectiondialog.cpp src/renderer/addsectiondialog.h \
@@ -1336,6 +1382,9 @@ out/moc_bookrenderer.o: moc/moc_bookrenderer.cpp
 
 out/moc_mainwindow.o: moc/moc_mainwindow.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o out/moc_mainwindow.o moc/moc_mainwindow.cpp
+
+out/moc_pagerenderer.o: moc/moc_pagerenderer.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o out/moc_pagerenderer.o moc/moc_pagerenderer.cpp
 
 out/moc_addsectiondialog.o: moc/moc_addsectiondialog.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o out/moc_addsectiondialog.o moc/moc_addsectiondialog.cpp

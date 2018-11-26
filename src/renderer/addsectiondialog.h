@@ -9,7 +9,7 @@
 
 class AddSectionDialog : public QDialog {
   Q_OBJECT
-  
+
   QVBoxLayout layout;
   QListWidget list;
   QPushButton button;
@@ -19,7 +19,7 @@ public:
 signals:
 
 public slots:
-  void addBtnPushed();
+  void addSection();
 };
 
 #endif // ADDSECTIONDIALOG_H

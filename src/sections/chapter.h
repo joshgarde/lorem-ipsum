@@ -8,8 +8,8 @@ class Chapter : public Section {
   Q_OBJECT
 
 public:
-  QString title;
   QString contents;
+  QString name;
   Chapter(SectionModel *parent = nullptr);
   SectionType type();
   int pages();

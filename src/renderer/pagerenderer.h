@@ -13,8 +13,11 @@
 class BookRenderer;
 
 class PageRenderer : public QWidget {
+  Q_OBJECT
+
   SectionModel* model;
   Section* section;
+  BookRenderer* renderer;
   QVBoxLayout layout;
   QMap<QString, QTextEdit*> fields;
   int page;
@@ -23,7 +26,12 @@ public:
   QSize sizeHint() const;
 
 signals:
-  QTextEdit* textBoxSelected();
+  void textBoxSelected();
+  void rerenderRequired();
+
+public slots:
+  void fieldResize();
+  void rerenderCheck();
 };
 
 #endif

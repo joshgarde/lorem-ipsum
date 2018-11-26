@@ -6,10 +6,10 @@
 
 class Title : public Section {
   Q_OBJECT
-  
-  QString title;
+
 public:
   Title(SectionModel *parent = nullptr);
+  QString title;
   SectionType type();
   int pages();
   QJsonObject serialize();

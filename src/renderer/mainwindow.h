@@ -33,6 +33,7 @@ class MainWindow : public QMainWindow {
   QAction* newBookAction;
   QAction* openBookAction;
   QAction* saveBookAction;
+  QAction* renderBookAction;
 
 public:
     explicit MainWindow(QWidget *parent = nullptr);
@@ -43,6 +44,8 @@ signals:
 public slots:
   void newBook();
   void openBook();
+  void saveBook();
+  void renderBook();
   void showSectionMenu(QPoint pos);
   void showAddSection();
   void addSection(QString section);

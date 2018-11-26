@@ -4,8 +4,27 @@
 #include "section.h"
 #include "title.h"
 
-SectionModel::SectionModel(QSize size, QObject *parent) : QAbstractListModel(parent), size(size) {
+SectionModel::SectionModel(QObject *parent) : QAbstractListModel(parent), size(QSize(6, 9)) {
+  QFont titleFont("Times New Roman");
+  titleFont.setPixelSize(36);
 
+  QFont copyrightFont("Times New Roman");
+  copyrightFont.setPixelSize(18);
+
+  QFont chapterNumberFont("Times New Roman");
+  chapterNumberFont.setPixelSize(20);
+
+  QFont chapterNameFont("Times New Roman");
+  chapterNameFont.setPixelSize(24);
+
+  QFont chapterContentsFont("Times New Roman");
+  chapterContentsFont.setPixelSize(18);
+
+  fontMap.insert("title", titleFont);
+  fontMap.insert("copyright", copyrightFont);
+  fontMap.insert("chapterNumber", chapterNumberFont);
+  fontMap.insert("chapterName", chapterNameFont);
+  fontMap.insert("chapterContents", chapterContentsFont);
 }
 
 int SectionModel::rowCount(const QModelIndex& parent) const {

@@ -16,10 +16,11 @@ class BookRenderer : public QScrollArea {
   QList<PageRenderer*> renderers;
   double scale = 1;
   Section* currentSection;
-  
+
   void reset();
 public:
   BookRenderer(QWidget *parent = nullptr);
+  void renderSection(QPagedPaintDevice* paintDevice, Section* section);
 
 signals:
 

@@ -9,10 +9,11 @@ class Section;
 
 class SectionModel : public QAbstractListModel {
   Q_OBJECT
-  
+
   QList<Section*> sections;
 public:
-  SectionModel(QSize size, QObject *parent = nullptr);
+  SectionModel(QObject *parent = nullptr);
+  QMap<QString, QFont> fontMap;
   QSize size;
   int rowCount(const QModelIndex& parent = QModelIndex()) const;
   QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
