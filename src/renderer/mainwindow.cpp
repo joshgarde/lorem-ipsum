@@ -270,8 +270,7 @@ void MainWindow::deleteSection() {
 
 void MainWindow::loadSection(const QModelIndex &index) {
   currentSectionIdx = index;
-  Section* section = currentBook->data(index, Qt::UserRole).value<Section*>();
-  QMetaObject::invokeMethod(&viewer, "loadSection", Q_ARG(Section*, section));
+  QMetaObject::invokeMethod(&viewer, "loadSection", Q_ARG(QModelIndex, index));
 }
 
 void MainWindow::reloadTocItem() {

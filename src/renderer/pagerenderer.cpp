@@ -14,11 +14,8 @@ const QString PageRenderer::chapterContentsHtml =
   "<html><head><meta name=\"qrichtext\" content=\"1\" /><style>p {line-height: %1; margin: 0;}</style></head>"
   "<body><p align=\"justify\">%2</p></div></html>";
 
-PageRenderer::PageRenderer(Section* section, BookRenderer* renderer, int page, int contentIdx, int cursorPosition) : QWidget(renderer) {
-  this->model = section->parent();
-  this->section = section;
-  this->renderer = renderer;
-  this->page = page;
+PageRenderer::PageRenderer(Section* section, BookRenderer* renderer, int page, int contentIdx, int cursorPosition) :
+    QWidget(renderer), section(section), renderer(renderer), page(page) {
 
   QPalette palette;
   palette.setColor(QPalette::Background, Qt::white);
@@ -120,6 +117,10 @@ PageRenderer::PageRenderer(Section* section, BookRenderer* renderer, int page, i
   }
 }
 
+int PageRenderer::pageNumber() {
+  return page;
+}
+
 int PageRenderer::truncate() {
   BackscrollTextEdit* field;
   QString contents;
@@ -150,7 +151,7 @@ int PageRenderer::truncate() {
   int endIndex = field->cursorForPosition(
     QPoint(
       field->width() - 1,
-      field->height() - (fontMetrics.height() * lineSpacing) / 1.5f
+      field->height() - (fontMetrics.height() * lineSpacing)
     )
   ).position();
   contents = contents.mid(0, endIndex);
@@ -161,6 +162,21 @@ int PageRenderer::truncate() {
   connect(field, SIGNAL(textChanged()), renderer, SLOT(updateSection()));
   connect(field->document()->documentLayout(), SIGNAL(documentSizeChanged(const QSizeF&)), this, SLOT(sendReload()));
   return endIndex;
+}
+
+int PageRenderer::restoreCursor(int position) {
+  int overflow;
+  switch (section->type()) {
+    case SectionType::TITLE:
+    case SectionType::COPYRIGHT: {
+      break;
+    }
+    
+    case SectionType::TABLE_OF_CONTENTS:
+    case SectionType::CHAPTER:{
+      break;
+    }
+  }
 }
 
 void PageRenderer::fieldResize() {

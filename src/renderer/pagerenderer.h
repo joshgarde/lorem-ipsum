@@ -27,6 +27,8 @@ public:
   QMap<QString, BackscrollTextEdit*> fields;
   PageRenderer(Section* section, BookRenderer* renderer, int page, int contentIdx = 0, int cursorPosition = 0);
   int truncate();
+  int restoreCursor(int position);
+  int pageNumber();
 
 signals:
   void textBoxSelected();
