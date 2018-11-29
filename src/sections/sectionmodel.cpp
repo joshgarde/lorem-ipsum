@@ -3,6 +3,7 @@
 #include <QBrush>
 #include "section.h"
 #include "title.h"
+#include "chapter.h"
 
 SectionModel::SectionModel(QObject *parent) : QAbstractListModel(parent), size(QSize(6, 9)) {
   QFont titleFont("Times New Roman");
@@ -25,6 +26,8 @@ SectionModel::SectionModel(QObject *parent) : QAbstractListModel(parent), size(Q
   fontMap.insert("chapterNumber", chapterNumberFont);
   fontMap.insert("chapterName", chapterNameFont);
   fontMap.insert("chapterContents", chapterContentsFont);
+
+  optionMap.insert("chapterLineSpacing", QVariant(2.0f));
 }
 
 int SectionModel::rowCount(const QModelIndex& parent) const {
@@ -33,11 +36,17 @@ int SectionModel::rowCount(const QModelIndex& parent) const {
 
 QVariant SectionModel::data(const QModelIndex &index, int role) const {
   switch (role) {
-    case Qt::DisplayRole:
-      return QVariant::fromValue(sections.at(index.row())->objectName());
-    case Qt::UserRole:
+    case Qt::DisplayRole: {
+      Section* section = sections.at(index.row());
+      QString name = sections.at(index.row())->objectName();
+      if (section->type() == SectionType::CHAPTER) name += ": " + ((Chapter*)section)->name;
+      return QVariant::fromValue(name);
+    }
+
+    case Qt::UserRole: {
       return QVariant::fromValue(sections.at(index.row()));
-      break;
+    }
+
     default:
       return QVariant();
   }
@@ -64,4 +73,8 @@ bool SectionModel::insertRows(int row, int count, const QModelIndex &parent) {
 
 QModelIndex SectionModel::index(int row, int column, const QModelIndex &parent) const {
   return createIndex(row, 0);
+}
+
+void SectionModel::markDirty(QModelIndex idx) {
+  emit dataChanged(idx, idx);
 }

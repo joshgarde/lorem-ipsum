@@ -11,7 +11,7 @@ public:
   Title(SectionModel *parent = nullptr);
   QString title;
   SectionType type();
-  int pages();
+  bool multiplePages();
   QJsonObject serialize();
 };
 

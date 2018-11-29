@@ -67,6 +67,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
   connect(renderBookAction, SIGNAL(triggered()), this, SLOT(renderBook()));
   connect(&tableOfContents, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(showSectionMenu(QPoint)));
   connect(&tableOfContents, SIGNAL(activated(const QModelIndex&)), this, SLOT(loadSection(const QModelIndex&)));
+  connect(&viewer, SIGNAL(updateToc()), this, SLOT(reloadTocItem()));
 }
 
 QSize MainWindow::sizeHint() const {
@@ -268,6 +269,11 @@ void MainWindow::deleteSection() {
 }
 
 void MainWindow::loadSection(const QModelIndex &index) {
+  currentSectionIdx = index;
   Section* section = currentBook->data(index, Qt::UserRole).value<Section*>();
   QMetaObject::invokeMethod(&viewer, "loadSection", Q_ARG(Section*, section));
+}
+
+void MainWindow::reloadTocItem() {
+  QMetaObject::invokeMethod(currentBook, "markDirty", Q_ARG(QModelIndex, currentSectionIdx));
 }

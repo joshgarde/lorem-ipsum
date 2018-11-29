@@ -10,9 +10,11 @@ class Chapter : public Section {
 public:
   QString contents;
   QString name;
+  float lineSpacing;
+
   Chapter(SectionModel *parent = nullptr);
   SectionType type();
-  int pages();
+  bool multiplePages();
   QJsonObject serialize();
 };
 

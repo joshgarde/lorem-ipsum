@@ -6,13 +6,13 @@
 
 class TableOfContents : public Section {
   Q_OBJECT
-  
+
   QList<Section*>* sections;
 public:
   TableOfContents(SectionModel *parent = nullptr);
   ~TableOfContents();
   SectionType type();
-  int pages();
+  bool multiplePages();
   QJsonObject serialize();
 };
 

@@ -25,7 +25,7 @@ public:
 
   QMap<QString, QFont> fontMap;
   virtual SectionType type() = 0;
-  virtual int pages() = 0;
+  virtual bool multiplePages() = 0;
   virtual QJsonObject serialize() = 0;
 };
 

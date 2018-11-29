@@ -19,6 +19,7 @@ class MainWindow : public QMainWindow {
 
   QFile* currentFile;
   SectionModel* currentBook;
+  QModelIndex currentSectionIdx;
 
   QWidget base;
   QVBoxLayout layout;
@@ -51,6 +52,7 @@ public slots:
   void addSection(QString section);
   void deleteSection();
   void loadSection(const QModelIndex &index);
+  void reloadTocItem();
 };
 
 #endif // MAINWINDOW_H

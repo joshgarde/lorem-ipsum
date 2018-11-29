@@ -11,7 +11,7 @@ public:
   QString contents;
   Copyright(SectionModel *parent = nullptr);
   SectionType type();
-  int pages();
+  bool multiplePages();
   QJsonObject serialize();
 };
 

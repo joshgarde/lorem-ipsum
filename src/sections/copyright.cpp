@@ -16,8 +16,8 @@ SectionType Copyright::type() {
   return SectionType::COPYRIGHT;
 }
 
-int Copyright::pages() {
-  return 1;
+bool Copyright::multiplePages() {
+  return false;
 }
 
 QJsonObject Copyright::serialize() {

@@ -12,8 +12,8 @@ SectionType Title::type() {
   return SectionType::TITLE;
 }
 
-int Title::pages() {
-  return 1;
+bool Title::multiplePages() {
+  return false;
 }
 
 QJsonObject Title::serialize() {

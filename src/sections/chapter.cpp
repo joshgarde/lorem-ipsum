@@ -7,6 +7,8 @@ Chapter::Chapter(SectionModel *parent) : Section(parent) {
   fontMap["chapterName"] = parent->fontMap["chapterName"];
   fontMap["chapterContents"] = parent->fontMap["chapterContents"];
 
+  lineSpacing = parent->optionMap["chapterLineSpacing"].value<float>();
+
   name = "Lorem Ipsum Dolor Sit Amet";
 
   contents = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do "
@@ -22,8 +24,8 @@ SectionType Chapter::type() {
   return SectionType::CHAPTER;
 }
 
-int Chapter::pages() {
-  return 0;
+bool Chapter::multiplePages() {
+  return true;
 }
 
 QJsonObject Chapter::serialize() {

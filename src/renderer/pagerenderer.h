@@ -4,7 +4,7 @@
 #include <QWidget>
 #include <QSize>
 #include <QVBoxLayout>
-#include <QTextEdit>
+#include "backscrolltextedit.h"
 #include "bookrenderer.h"
 #include "src/sections/section.h"
 
@@ -19,10 +19,14 @@ class PageRenderer : public QWidget {
   Section* section;
   BookRenderer* renderer;
   QVBoxLayout layout;
-  QMap<QString, QTextEdit*> fields;
   int page;
+  bool initialized = false;
+
+  static const QString chapterContentsHtml;
 public:
-  PageRenderer(Section* section, int page, BookRenderer* renderer);
+  QMap<QString, BackscrollTextEdit*> fields;
+  PageRenderer(Section* section, BookRenderer* renderer, int page, int contentIdx = 0, int cursorPosition = 0);
+  int truncate();
 
 signals:
   void textBoxSelected();
@@ -30,7 +34,7 @@ signals:
 
 public slots:
   void fieldResize();
-  void rerenderCheck();
+  void sendReload();
 };
 
 #endif

@@ -12,8 +12,8 @@ SectionType TableOfContents::type() {
   return SectionType::TABLE_OF_CONTENTS;
 }
 
-int TableOfContents::pages() {
-  return 0;
+bool TableOfContents::multiplePages() {
+  return true;
 }
 
 QJsonObject TableOfContents::serialize() {

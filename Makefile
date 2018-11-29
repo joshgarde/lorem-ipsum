@@ -56,6 +56,7 @@ SOURCES       = src/main.cpp \
 		src/sections/copyright.cpp \
 		src/sections/tableofcontents.cpp \
 		src/sections/title.cpp \
+		src/renderer/backscrolltextedit.cpp \
 		src/renderer/bookrenderer.cpp \
 		src/renderer/mainwindow.cpp \
 		src/renderer/pagerenderer.cpp \
@@ -76,6 +77,7 @@ OBJECTS       = out/main.o \
 		out/copyright.o \
 		out/tableofcontents.o \
 		out/title.o \
+		out/backscrolltextedit.o \
 		out/bookrenderer.o \
 		out/mainwindow.o \
 		out/pagerenderer.o \
@@ -284,6 +286,7 @@ DIST          = /usr/local/Cellar/qt/5.11.1/mkspecs/features/spec_pre.prf \
 		src/sections/copyright.h \
 		src/sections/tableofcontents.h \
 		src/sections/title.h \
+		src/renderer/backscrolltextedit.h \
 		src/renderer/bookrenderer.h \
 		src/renderer/mainwindow.h \
 		src/renderer/pagerenderer.h \
@@ -293,6 +296,7 @@ DIST          = /usr/local/Cellar/qt/5.11.1/mkspecs/features/spec_pre.prf \
 		src/sections/copyright.cpp \
 		src/sections/tableofcontents.cpp \
 		src/sections/title.cpp \
+		src/renderer/backscrolltextedit.cpp \
 		src/renderer/bookrenderer.cpp \
 		src/renderer/mainwindow.cpp \
 		src/renderer/pagerenderer.cpp \
@@ -730,8 +734,8 @@ distdir: FORCE
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents resources.qrc $(DISTDIR)/
 	$(COPY_FILE) --parents /usr/local/Cellar/qt/5.11.1/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents src/sections/section.h src/sections/sectionmodel.h src/sections/chapter.h src/sections/copyright.h src/sections/tableofcontents.h src/sections/title.h src/renderer/bookrenderer.h src/renderer/mainwindow.h src/renderer/pagerenderer.h src/renderer/addsectiondialog.h $(DISTDIR)/
-	$(COPY_FILE) --parents src/main.cpp src/sections/sectionmodel.cpp src/sections/chapter.cpp src/sections/copyright.cpp src/sections/tableofcontents.cpp src/sections/title.cpp src/renderer/bookrenderer.cpp src/renderer/mainwindow.cpp src/renderer/pagerenderer.cpp src/renderer/addsectiondialog.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents src/sections/section.h src/sections/sectionmodel.h src/sections/chapter.h src/sections/copyright.h src/sections/tableofcontents.h src/sections/title.h src/renderer/backscrolltextedit.h src/renderer/bookrenderer.h src/renderer/mainwindow.h src/renderer/pagerenderer.h src/renderer/addsectiondialog.h $(DISTDIR)/
+	$(COPY_FILE) --parents src/main.cpp src/sections/sectionmodel.cpp src/sections/chapter.cpp src/sections/copyright.cpp src/sections/tableofcontents.cpp src/sections/title.cpp src/renderer/backscrolltextedit.cpp src/renderer/bookrenderer.cpp src/renderer/mainwindow.cpp src/renderer/pagerenderer.cpp src/renderer/addsectiondialog.cpp $(DISTDIR)/
 
 
 clean: compiler_clean 
@@ -912,8 +916,11 @@ moc/moc_bookrenderer.cpp: /usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/He
 		/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/qwidget.h \
 		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/QSize \
 		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/qsize.h \
+		src/renderer/backscrolltextedit.h \
 		/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/QTextEdit \
 		/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/qtextedit.h \
+		/usr/local/Cellar/qt/5.11.1/lib/QtGui.framework/Headers/QWheelEvent \
+		/usr/local/Cellar/qt/5.11.1/lib/QtGui.framework/Headers/qevent.h \
 		src/renderer/bookrenderer.h \
 		src/sections/section.h \
 		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/QObject \
@@ -963,8 +970,11 @@ moc/moc_mainwindow.cpp: /usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Head
 		/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/qwidget.h \
 		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/QSize \
 		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/qsize.h \
+		src/renderer/backscrolltextedit.h \
 		/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/QTextEdit \
 		/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/qtextedit.h \
+		/usr/local/Cellar/qt/5.11.1/lib/QtGui.framework/Headers/QWheelEvent \
+		/usr/local/Cellar/qt/5.11.1/lib/QtGui.framework/Headers/qevent.h \
 		src/sections/section.h \
 		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/QObject \
 		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/qobject.h \
@@ -990,8 +1000,11 @@ moc/moc_pagerenderer.cpp: /usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/He
 		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/qsize.h \
 		/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/QVBoxLayout \
 		/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/qboxlayout.h \
+		src/renderer/backscrolltextedit.h \
 		/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/QTextEdit \
 		/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/qtextedit.h \
+		/usr/local/Cellar/qt/5.11.1/lib/QtGui.framework/Headers/QWheelEvent \
+		/usr/local/Cellar/qt/5.11.1/lib/QtGui.framework/Headers/qevent.h \
 		src/renderer/bookrenderer.h \
 		/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/QScrollArea \
 		/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/qscrollarea.h \
@@ -1080,8 +1093,11 @@ out/main.o: src/main.cpp /usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Hea
 		/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/qwidget.h \
 		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/QSize \
 		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/qsize.h \
+		src/renderer/backscrolltextedit.h \
 		/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/QTextEdit \
 		/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/qtextedit.h \
+		/usr/local/Cellar/qt/5.11.1/lib/QtGui.framework/Headers/QWheelEvent \
+		/usr/local/Cellar/qt/5.11.1/lib/QtGui.framework/Headers/qevent.h \
 		src/sections/section.h \
 		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/QObject \
 		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/qobject.h \
@@ -1118,7 +1134,8 @@ out/sectionmodel.o: src/sections/sectionmodel.cpp src/sections/sectionmodel.h \
 		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/qdebug.h \
 		/usr/local/Cellar/qt/5.11.1/lib/QtGui.framework/Headers/QBrush \
 		/usr/local/Cellar/qt/5.11.1/lib/QtGui.framework/Headers/qbrush.h \
-		src/sections/title.h
+		src/sections/title.h \
+		src/sections/chapter.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o out/sectionmodel.o src/sections/sectionmodel.cpp
 
 out/chapter.o: src/sections/chapter.cpp src/sections/chapter.h \
@@ -1197,6 +1214,17 @@ out/title.o: src/sections/title.cpp src/sections/title.h \
 		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/qsize.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o out/title.o src/sections/title.cpp
 
+out/backscrolltextedit.o: src/renderer/backscrolltextedit.cpp src/renderer/backscrolltextedit.h \
+		/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/QTextEdit \
+		/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/qtextedit.h \
+		/usr/local/Cellar/qt/5.11.1/lib/QtGui.framework/Headers/QWheelEvent \
+		/usr/local/Cellar/qt/5.11.1/lib/QtGui.framework/Headers/qevent.h \
+		/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/QApplication \
+		/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/qapplication.h \
+		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/QDebug \
+		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/qdebug.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o out/backscrolltextedit.o src/renderer/backscrolltextedit.cpp
+
 out/bookrenderer.o: src/renderer/bookrenderer.cpp src/renderer/bookrenderer.h \
 		/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/QScrollArea \
 		/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/qscrollarea.h \
@@ -1207,8 +1235,11 @@ out/bookrenderer.o: src/renderer/bookrenderer.cpp src/renderer/bookrenderer.h \
 		/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/qwidget.h \
 		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/QSize \
 		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/qsize.h \
+		src/renderer/backscrolltextedit.h \
 		/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/QTextEdit \
 		/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/qtextedit.h \
+		/usr/local/Cellar/qt/5.11.1/lib/QtGui.framework/Headers/QWheelEvent \
+		/usr/local/Cellar/qt/5.11.1/lib/QtGui.framework/Headers/qevent.h \
 		src/sections/section.h \
 		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/QObject \
 		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/qobject.h \
@@ -1230,7 +1261,13 @@ out/bookrenderer.o: src/renderer/bookrenderer.cpp src/renderer/bookrenderer.h \
 		/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/QLabel \
 		/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/qlabel.h \
 		/usr/local/Cellar/qt/5.11.1/lib/QtGui.framework/Headers/QPagedPaintDevice \
-		/usr/local/Cellar/qt/5.11.1/lib/QtGui.framework/Headers/qpagedpaintdevice.h
+		/usr/local/Cellar/qt/5.11.1/lib/QtGui.framework/Headers/qpagedpaintdevice.h \
+		/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/QApplication \
+		/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/qapplication.h \
+		src/sections/title.h \
+		src/sections/copyright.h \
+		src/sections/tableofcontents.h \
+		src/sections/chapter.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o out/bookrenderer.o src/renderer/bookrenderer.cpp
 
 out/mainwindow.o: src/renderer/mainwindow.cpp src/renderer/mainwindow.h \
@@ -1263,8 +1300,11 @@ out/mainwindow.o: src/renderer/mainwindow.cpp src/renderer/mainwindow.h \
 		/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/qwidget.h \
 		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/QSize \
 		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/qsize.h \
+		src/renderer/backscrolltextedit.h \
 		/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/QTextEdit \
 		/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/qtextedit.h \
+		/usr/local/Cellar/qt/5.11.1/lib/QtGui.framework/Headers/QWheelEvent \
+		/usr/local/Cellar/qt/5.11.1/lib/QtGui.framework/Headers/qevent.h \
 		src/sections/section.h \
 		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/QObject \
 		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/qobject.h \
@@ -1295,6 +1335,8 @@ out/mainwindow.o: src/renderer/mainwindow.cpp src/renderer/mainwindow.h \
 		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/qjsondocument.h \
 		/usr/local/Cellar/qt/5.11.1/lib/QtGui.framework/Headers/QPdfWriter \
 		/usr/local/Cellar/qt/5.11.1/lib/QtGui.framework/Headers/qpdfwriter.h \
+		/usr/local/Cellar/qt/5.11.1/lib/QtGui.framework/Headers/QPainter \
+		/usr/local/Cellar/qt/5.11.1/lib/QtGui.framework/Headers/qpainter.h \
 		src/renderer/addsectiondialog.h \
 		/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/QDialog \
 		/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/qdialog.h \
@@ -1314,8 +1356,11 @@ out/pagerenderer.o: src/renderer/pagerenderer.cpp src/renderer/pagerenderer.h \
 		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/qsize.h \
 		/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/QVBoxLayout \
 		/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/qboxlayout.h \
+		src/renderer/backscrolltextedit.h \
 		/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/QTextEdit \
 		/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/qtextedit.h \
+		/usr/local/Cellar/qt/5.11.1/lib/QtGui.framework/Headers/QWheelEvent \
+		/usr/local/Cellar/qt/5.11.1/lib/QtGui.framework/Headers/qevent.h \
 		src/renderer/bookrenderer.h \
 		/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/QScrollArea \
 		/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/qscrollarea.h \
@@ -1337,8 +1382,8 @@ out/pagerenderer.o: src/renderer/pagerenderer.cpp src/renderer/pagerenderer.h \
 		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/qdebug.h \
 		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/QEvent \
 		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/qcoreevent.h \
-		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/QCoreApplication \
-		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/qcoreapplication.h \
+		/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/QApplication \
+		/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/qapplication.h \
 		src/sections/title.h \
 		src/sections/copyright.h \
 		src/sections/tableofcontents.h \

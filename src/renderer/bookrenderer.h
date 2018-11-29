@@ -9,13 +9,16 @@
 class PageRenderer;
 
 class BookRenderer : public QScrollArea {
+  enum PageDirection {LEFT, RIGHT};
+
   Q_OBJECT
 
   QWidget scrollPane;
   QVBoxLayout layout;
   QList<PageRenderer*> renderers;
-  double scale = 1;
   Section* currentSection;
+  double scale = 1;
+  int basePageNumber;
 
   void reset();
 public:
@@ -23,9 +26,11 @@ public:
   void renderSection(QPagedPaintDevice* paintDevice, QPainter* painter, Section* section);
 
 signals:
+  void updateToc();
 
 public slots:
-  void loadSection(Section* section);
+  void loadSection(Section* section, int currentPage = -1);
+  void updateSection();
 };
 
 #endif // BOOKRENDERER_H
