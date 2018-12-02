@@ -3,7 +3,8 @@
 #include <QDebug>
 
 BackscrollTextEdit::BackscrollTextEdit(QWidget* parent) : QTextEdit(parent) {
-
+  setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+  setFrameStyle(0);
 }
 
 void BackscrollTextEdit::wheelEvent(QWheelEvent *e) {

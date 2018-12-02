@@ -85,6 +85,7 @@ void MainWindow::newBook() {
   currentFile->open(QIODevice::ReadWrite);
   currentBook = new SectionModel();
   tableOfContents.setModel(currentBook);
+  viewer.setSectionModel(currentBook);
   saveBookAction->setEnabled(true);
   renderBookAction->setEnabled(true);
   this->setWindowTitle("Ipsum Lorem - " + filename.toUtf8());
@@ -146,6 +147,7 @@ void MainWindow::openBook() {
   }
 
   tableOfContents.setModel(currentBook);
+  viewer.setSectionModel(currentBook);
   saveBookAction->setEnabled(true);
   renderBookAction->setEnabled(true);
   this->setWindowTitle("Ipsum Lorem - " + filename.toUtf8());

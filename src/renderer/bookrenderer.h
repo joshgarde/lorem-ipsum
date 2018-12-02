@@ -23,20 +23,21 @@ class BookRenderer : public QScrollArea {
   Section* currentSection;
   double scale = 1;
   int basePageNumber;
-  
+
   void reset();
-  void populate();
+  QMap<QString, int> generateTableOfContents();
 public:
-  BookRenderer(SectionModel* model, QWidget *parent = nullptr);
+  BookRenderer(QWidget *parent = nullptr);
+  void setSectionModel(SectionModel* model);
   void renderSection(QPagedPaintDevice* paintDevice, QPainter* painter, Section* section);
 
 signals:
   void updateToc();
 
 public slots:
-  void loadSection(QModelIndex index, int currentPage = -1);
+  void loadSection(QModelIndex index);
   void updateSection();
-  void reloadSection();
+  void reloadSection(int currentPage);
 };
 
 #endif // BOOKRENDERER_H

@@ -14,8 +14,8 @@ const QString PageRenderer::chapterContentsHtml =
   "<html><head><meta name=\"qrichtext\" content=\"1\" /><style>p {line-height: %1; margin: 0;}</style></head>"
   "<body><p align=\"justify\">%2</p></div></html>";
 
-PageRenderer::PageRenderer(Section* section, BookRenderer* renderer, int page, int contentIdx, int cursorPosition) :
-    QWidget(renderer), section(section), renderer(renderer), page(page) {
+PageRenderer::PageRenderer(BookRenderer* renderer, SectionModel* model, Section* section, int page, int contentIdx) :
+    QWidget(renderer), renderer(renderer), model(model), section(section), page(page) {
 
   QPalette palette;
   palette.setColor(QPalette::Background, Qt::white);
@@ -32,9 +32,7 @@ PageRenderer::PageRenderer(Section* section, BookRenderer* renderer, int page, i
       layout.addStretch(2);
 
       BackscrollTextEdit* titleField = new BackscrollTextEdit(this);
-      titleField->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
       titleField->setFont(section->fontMap["title"]);
-      titleField->setFrameStyle(0);
       connect(titleField, SIGNAL(textChanged()), this, SLOT(fieldResize()));
       titleField->setPlainText(((Title*)section)->title);
       titleField->setAlignment(Qt::AlignCenter);
@@ -50,9 +48,7 @@ PageRenderer::PageRenderer(Section* section, BookRenderer* renderer, int page, i
       layout.addStretch(1);
 
       BackscrollTextEdit* copyrightField = new BackscrollTextEdit(this);
-      copyrightField->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
       copyrightField->setFont(section->fontMap["copyright"]);
-      copyrightField->setFrameStyle(0);
       copyrightField->setPlainText(((Copyright*)section)->contents);
       connect(copyrightField, SIGNAL(textChanged()), renderer, SLOT(updateSection()));
       fields.insert("copyright", copyrightField);
@@ -70,18 +66,14 @@ PageRenderer::PageRenderer(Section* section, BookRenderer* renderer, int page, i
         layout.addStretch(1);
 
         BackscrollTextEdit* chapterNumberField = new BackscrollTextEdit(this);
-        chapterNumberField->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         chapterNumberField->setFont(section->fontMap["chapterNumber"]);
-        chapterNumberField->setFrameStyle(0);
         chapterNumberField->setTextInteractionFlags(Qt::NoTextInteraction);
         connect(chapterNumberField, SIGNAL(textChanged()), this, SLOT(fieldResize()));
         chapterNumberField->setPlainText("Chapter Null");
         chapterNumberField->setAlignment(Qt::AlignCenter);
 
         BackscrollTextEdit* chapterNameField = new BackscrollTextEdit(this);
-        chapterNameField->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         chapterNameField->setFont(section->fontMap["chapterName"]);
-        chapterNameField->setFrameStyle(0);
         connect(chapterNameField, SIGNAL(textChanged()), this, SLOT(fieldResize()));
         chapterNameField->setPlainText(((Chapter*)section)->name);
         chapterNameField->setAlignment(Qt::AlignCenter);
@@ -96,9 +88,7 @@ PageRenderer::PageRenderer(Section* section, BookRenderer* renderer, int page, i
       }
 
       BackscrollTextEdit* chapterContentsField = new BackscrollTextEdit(this);
-      chapterContentsField->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
       chapterContentsField->setFont(section->fontMap["chapterContents"]);
-      chapterContentsField->setFrameStyle(0);
       QString chapterContents = ((Chapter*)section)->contents.mid(
         contentIdx,
         ((Chapter*)section)->contents.size()
@@ -111,14 +101,20 @@ PageRenderer::PageRenderer(Section* section, BookRenderer* renderer, int page, i
       fields.insert("chapterContents", chapterContentsField);
       layout.addWidget(chapterContentsField, 3);
       connect(chapterContentsField, SIGNAL(textChanged()), renderer, SLOT(updateSection()));
-      connect(chapterContentsField->document()->documentLayout(), SIGNAL(documentSizeChanged(const QSizeF&)), this, SLOT(sendReload()));
+      connect(chapterContentsField, SIGNAL(textChanged()), this, SLOT(sendReload()));
+
+      BackscrollTextEdit* pageNumberField = new BackscrollTextEdit(this);
+      pageNumberField->setFont(section->fontMap["pageNumber"]);
+      pageNumberField->setTextInteractionFlags(Qt::NoTextInteraction);
+      connect(pageNumberField, SIGNAL(textChanged()), this, SLOT(fieldResize()));
+      pageNumberField->setPlainText(QString::number(page));
+      pageNumberField->setAlignment(Qt::AlignCenter);
+      fields.insert("pageNumber", pageNumberField);
+      layout.addWidget(pageNumberField);
+
       break;
     }
   }
-}
-
-int PageRenderer::pageNumber() {
-  return page;
 }
 
 int PageRenderer::truncate() {
@@ -144,7 +140,8 @@ int PageRenderer::truncate() {
   }
 
   disconnect(field, SIGNAL(textChanged()), renderer, SLOT(updateSection()));
-  disconnect(field->document()->documentLayout(), SIGNAL(documentSizeChanged(const QSizeF&)), this, SLOT(sendReload()));
+  disconnect(field, SIGNAL(textChanged()), this, SLOT(sendReload()));
+  //disconnect(field->document()->documentLayout(), SIGNAL(documentSizeChanged(const QSizeF&)), this, SLOT(sendReload()));
 
   QFontMetrics fontMetrics(field->currentFont());
 
@@ -159,24 +156,81 @@ int PageRenderer::truncate() {
     .arg(((Chapter*)section)->lineSpacing)
     .arg(contents.replace("\n", "</p><p align=\"justify\">"))
   );
+
+  QByteArray textData = field->toPlainText().toUtf8();
+  checksum = qChecksum(textData.data(), textData.size());
+
   connect(field, SIGNAL(textChanged()), renderer, SLOT(updateSection()));
-  connect(field->document()->documentLayout(), SIGNAL(documentSizeChanged(const QSizeF&)), this, SLOT(sendReload()));
+  connect(field, SIGNAL(textChanged()), this, SLOT(sendReload()));
+  //connect(field->document()->documentLayout(), SIGNAL(documentSizeChanged(const QSizeF&)), this, SLOT(sendReload()));
+
+  this->endIndex = endIndex;
   return endIndex;
 }
 
+bool PageRenderer::requiresRerender() {
+  BackscrollTextEdit* field = fields["chapterContents"];
+  QByteArray textData = field->toPlainText().toUtf8();
+  quint16 newChecksum = qChecksum(textData.data(), textData.size());
+
+  return checksum != newChecksum;
+}
+
+int PageRenderer::contentSize() {
+  return endIndex;
+}
+
+int PageRenderer::pageNumber() {
+  return page;
+}
+
 int PageRenderer::restoreCursor(int position) {
-  int overflow;
+  BackscrollTextEdit* field;
+  bool canOverflow;
+
   switch (section->type()) {
-    case SectionType::TITLE:
-    case SectionType::COPYRIGHT: {
+    case SectionType::TITLE: {
+      field = fields["title"];
+      canOverflow = false;
       break;
     }
-    
-    case SectionType::TABLE_OF_CONTENTS:
-    case SectionType::CHAPTER:{
+    case SectionType::COPYRIGHT: {
+      field = fields["copyright"];
+      canOverflow = false;
       break;
+    }
+    case SectionType::TABLE_OF_CONTENTS: {
+      field = fields["tableOfContents"];
+      canOverflow = true;
+      break;
+    }
+    case SectionType::CHAPTER: {
+      field = fields["chapterContents"];
+      canOverflow = true;
+      break;
+    }
+    default: {
+      qDebug() << "Invalid SectionType @ PageRenderer::restoreCursor:" << section->type();
+      throw new std::runtime_error("Invalid SectionType @ PageRenderer::restoreCursor");
     }
   }
+
+  int overflow = 0;
+  int textSize = field->toPlainText().size();
+  QTextCursor cursor = field->textCursor();
+
+  if (canOverflow && (textSize < position)) {
+    overflow = position - textSize;
+    cursor.movePosition(QTextCursor::End);
+    field->setTextCursor(cursor);
+    field->setFocus();
+  } else {
+    cursor.setPosition(position);
+    field->setTextCursor(cursor);
+    field->setFocus();
+  }
+
+  return overflow;
 }
 
 void PageRenderer::fieldResize() {
@@ -195,5 +249,5 @@ void PageRenderer::sendReload() {
     return;
   }
 
-  QMetaObject::invokeMethod(renderer, "loadSection", Qt::QueuedConnection, Q_ARG(Section*, section), Q_ARG(int, page));
+  QMetaObject::invokeMethod(renderer, "reloadSection", Qt::QueuedConnection, Q_ARG(int, page));
 }

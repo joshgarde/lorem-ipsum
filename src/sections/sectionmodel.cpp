@@ -21,11 +21,15 @@ SectionModel::SectionModel(QObject *parent) : QAbstractListModel(parent), size(Q
   QFont chapterContentsFont("Times New Roman");
   chapterContentsFont.setPixelSize(18);
 
+  QFont pageNumberFont("Times New Roman");
+  chapterContentsFont.setPixelSize(8);
+
   fontMap.insert("title", titleFont);
   fontMap.insert("copyright", copyrightFont);
   fontMap.insert("chapterNumber", chapterNumberFont);
   fontMap.insert("chapterName", chapterNameFont);
   fontMap.insert("chapterContents", chapterContentsFont);
+  fontMap.insert("pageNumber", pageNumberFont);
 
   optionMap.insert("chapterLineSpacing", QVariant(2.0f));
 }

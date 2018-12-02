@@ -6,6 +6,7 @@ Chapter::Chapter(SectionModel *parent) : Section(parent) {
   fontMap["chapterNumber"] = parent->fontMap["chapterNumber"];
   fontMap["chapterName"] = parent->fontMap["chapterName"];
   fontMap["chapterContents"] = parent->fontMap["chapterContents"];
+  fontMap["pageNumber"] = parent->fontMap["pageNumber"];
 
   lineSpacing = parent->optionMap["chapterLineSpacing"].value<float>();
 

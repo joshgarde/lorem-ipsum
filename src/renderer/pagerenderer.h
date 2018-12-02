@@ -15,20 +15,24 @@ class BookRenderer;
 class PageRenderer : public QWidget {
   Q_OBJECT
 
+  BookRenderer* renderer;
   SectionModel* model;
   Section* section;
-  BookRenderer* renderer;
   QVBoxLayout layout;
+  quint16 checksum;
   int page;
+  int endIndex = 0;
   bool initialized = false;
 
   static const QString chapterContentsHtml;
 public:
   QMap<QString, BackscrollTextEdit*> fields;
-  PageRenderer(Section* section, BookRenderer* renderer, int page, int contentIdx = 0, int cursorPosition = 0);
+  PageRenderer(BookRenderer* renderer, SectionModel* model, Section* section, int page = 0, int contentIdx = 0);
+  bool requiresRerender();
+  int contentSize();
+  int pageNumber();
   int truncate();
   int restoreCursor(int position);
-  int pageNumber();
 
 signals:
   void textBoxSelected();
