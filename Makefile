@@ -1230,6 +1230,10 @@ out/backscrolltextedit.o: src/renderer/backscrolltextedit.cpp src/renderer/backs
 		/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/qtextedit.h \
 		/usr/local/Cellar/qt/5.11.1/lib/QtGui.framework/Headers/QWheelEvent \
 		/usr/local/Cellar/qt/5.11.1/lib/QtGui.framework/Headers/qevent.h \
+		/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/QScrollBar \
+		/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/qscrollbar.h \
+		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/QMimeData \
+		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/qmimedata.h \
 		/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/QApplication \
 		/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/qapplication.h \
 		/usr/local/Cellar/qt/5.11.1/lib/QtCore.framework/Headers/QDebug \
@@ -1350,6 +1354,8 @@ out/mainwindow.o: src/renderer/mainwindow.cpp src/renderer/mainwindow.h \
 		/usr/local/Cellar/qt/5.11.1/lib/QtGui.framework/Headers/qpdfwriter.h \
 		/usr/local/Cellar/qt/5.11.1/lib/QtGui.framework/Headers/QPainter \
 		/usr/local/Cellar/qt/5.11.1/lib/QtGui.framework/Headers/qpainter.h \
+		/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/QMessageBox \
+		/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/qmessagebox.h \
 		src/renderer/addsectiondialog.h \
 		/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/QDialog \
 		/usr/local/Cellar/qt/5.11.1/lib/QtWidgets.framework/Headers/qdialog.h \

@@ -6,11 +6,10 @@
 
 class TableOfContents : public Section {
   Q_OBJECT
-
-  QList<Section*>* sections;
 public:
+  QString title;
+
   TableOfContents(SectionModel *parent = nullptr);
-  ~TableOfContents();
   SectionType type();
   bool multiplePages();
   QJsonObject serialize();

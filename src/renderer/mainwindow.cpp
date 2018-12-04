@@ -8,6 +8,7 @@
 #include <QJsonDocument>
 #include <QPdfWriter>
 #include <QPainter>
+#include <QMessageBox>
 #include "addsectiondialog.h"
 #include "src/sections/section.h"
 #include "src/sections/chapter.h"
@@ -227,12 +228,16 @@ void MainWindow::renderBook() {
   pdfWriter.setResolution(96);
   QPainter painter(&pdfWriter);
 
+  int page = 1;
   for (int i = 0; i < currentBook->rowCount(); i++) {
     QModelIndex modelIdx = currentBook->index(i, 0);
-    viewer.renderSection(&pdfWriter, &painter, currentBook->data(modelIdx, Qt::UserRole).value<Section*>());
+    page = viewer.renderSection(&pdfWriter, &painter, modelIdx, page);
     if (i != currentBook->rowCount() - 1) pdfWriter.newPage();
   }
 
+  QMessageBox statusMessage(this);
+  statusMessage.setText("Successfully exported to " + filename);
+  statusMessage.exec();
 }
 
 void MainWindow::showSectionMenu(QPoint pos) {
@@ -267,7 +272,17 @@ void MainWindow::addSection(QString section) {
 }
 
 void MainWindow::deleteSection() {
+  QMessageBox deleteWarningMessage;
+  deleteWarningMessage.setText("WARNING: SECTION DELETION");
+  deleteWarningMessage.setInformativeText("Are you sure you want to delete this section?");
+  deleteWarningMessage.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
+  deleteWarningMessage.setDefaultButton(QMessageBox::Cancel);
+  int ret = deleteWarningMessage.exec();
 
+  if (ret == QMessageBox::Yes) {
+    QModelIndex index = tableOfContents.selectionModel()->currentIndex();
+    currentBook->removeRows(index.row(), 1);
+  }
 }
 
 void MainWindow::loadSection(const QModelIndex &index) {

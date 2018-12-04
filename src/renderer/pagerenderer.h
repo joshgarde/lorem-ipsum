@@ -17,17 +17,24 @@ class PageRenderer : public QWidget {
 
   BookRenderer* renderer;
   SectionModel* model;
+  QModelIndex index;
   Section* section;
   QVBoxLayout layout;
   quint16 checksum;
+  QList<QPair<QString, int>> tableOfContents;
   int page;
+  int startIndex = 0;
   int endIndex = 0;
   bool initialized = false;
 
-  static const QString chapterContentsHtml;
+  static const QString fieldHtmlTemplate;
+
+  QString generateTocHtml(QList<QPair<QString, int>> tableOfContents, int start, int end = -1);
+  QString generateFormattedHtml(QString raw, Qt::Alignment alignment, int lineSpacing = 1);
 public:
   QMap<QString, BackscrollTextEdit*> fields;
-  PageRenderer(BookRenderer* renderer, SectionModel* model, Section* section, int page = 0, int contentIdx = 0);
+
+  PageRenderer(BookRenderer* renderer, SectionModel* model, QModelIndex index, int page = 0, int contentIdx = 0);
   bool requiresRerender();
   int contentSize();
   int pageNumber();

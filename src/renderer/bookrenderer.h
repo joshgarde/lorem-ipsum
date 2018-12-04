@@ -21,15 +21,22 @@ class BookRenderer : public QScrollArea {
   QList<PageRenderer*> renderers;
   SectionModel* model;
   Section* currentSection;
+  QModelIndex index;
+  QList<QPair<QString, int>> toc;
   double scale = 1;
   int basePageNumber;
 
   void reset();
-  QMap<QString, int> generateTableOfContents();
+  int calculatePages(QModelIndex index);
+  int locateStart(int max = -1);
+  void generateTableOfContents();
+  int calculateTargetIndex(Section* section);
 public:
   BookRenderer(QWidget *parent = nullptr);
   void setSectionModel(SectionModel* model);
-  void renderSection(QPagedPaintDevice* paintDevice, QPainter* painter, Section* section);
+  int renderSection(QPagedPaintDevice* paintDevice, QPainter* painter, QModelIndex index, int page);
+  QList<QPair<QString, int>> tableOfContents();
+  int calculateChapterNumber(QModelIndex index);
 
 signals:
   void updateToc();

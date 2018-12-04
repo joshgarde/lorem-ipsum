@@ -38,96 +38,143 @@ void BookRenderer::reset() {
   }
 }
 
-void BookRenderer::renderSection(QPagedPaintDevice* paintDevice, QPainter* painter, Section* section) {
+int BookRenderer::calculatePages(QModelIndex index) {
+  Section* section = model->data(index, Qt::UserRole).value<Section*>();
+
+  if (section->multiplePages()) {
+    int pages = 0;
+    int currentIndex = 0;
+    int targetIndex = calculateTargetIndex(section);
+
+    while (currentIndex < targetIndex) {
+      PageRenderer renderer(this, model, index, 0, currentIndex);
+      renderer.show();
+      currentIndex += renderer.truncate();
+      pages++;
+    }
+
+    return pages;
+  } else {
+    return 1;
+  }
+}
+
+// Locate closest table of contents or just default to first section
+int BookRenderer::locateStart(int max) {
+  if (max == -1) max = model->rowCount();
+
+  for (int i = 0; i < max; i++) {
+    if (model->data(model->index(i, 0), Qt::UserRole).value<Section*>()->type() == SectionType::TABLE_OF_CONTENTS) {
+      return i;
+    }
+  }
+  return 0;
+}
+
+void BookRenderer::generateTableOfContents() {
+  int start = locateStart(model->rowCount()) + 1;
+  int page = 1;
+  QList<QPair<QString, int>> tableOfContents;
+
+  for (int i = start; i < model->rowCount(); i++) {
+    QModelIndex index = model->index(i, 0);
+    Section* section = model->data(model->index(i, 0), Qt::UserRole).value<Section*>();
+    if (section->type() == SectionType::CHAPTER) {
+      tableOfContents.append(QPair<QString, int>(((Chapter*)section)->name, page));
+      page += calculatePages(index);
+    } else {
+      tableOfContents.append(QPair<QString, int>(section->objectName(), page));
+      page += calculatePages(index);
+    }
+  }
+
+  toc = tableOfContents;
+}
+
+int BookRenderer::calculateTargetIndex(Section* section) {
+  switch (section->type()) {
+    case SectionType::TABLE_OF_CONTENTS: {
+      generateTableOfContents();
+      return toc.size();
+    }
+
+    case SectionType::CHAPTER: {
+      return ((Chapter*)section)->contents.size();
+    }
+
+    default: {
+      return 1;
+    }
+  }
+}
+
+int BookRenderer::calculateChapterNumber(QModelIndex index) {
+  int start = locateStart();
+  if (start >= index.row()) return 0;
+
+  return index.row() - start;
+}
+
+QList<QPair<QString, int>> BookRenderer::tableOfContents() {
+  return toc;
+}
+
+int BookRenderer::renderSection(QPagedPaintDevice* paintDevice, QPainter* painter, QModelIndex index, int page) {
+  Section* section = model->data(index, Qt::UserRole).value<Section*>();
   qDebug() << "[DEBUG] Rendering section: " << section->objectName();
-  int contentIdx = 0;
-  PageRenderer renderer(this, model, section, 0, contentIdx);
-  renderer.render(painter);
+
+  int start = locateStart();
+  int contentIndex = 0;
+  int targetIndex = calculateTargetIndex(section);
+  do {
+    PageRenderer renderer(this, model, index, page, contentIndex);
+    renderer.show();
+    contentIndex += renderer.truncate();
+    renderer.render(painter);
+    page++;
+    if (contentIndex < targetIndex) paintDevice->newPage();
+  } while (contentIndex < targetIndex);
+
+  if (start == index.row()) {
+    return 1;
+  } else {
+    return page;
+  }
 }
 
 void BookRenderer::loadSection(QModelIndex index) {
+  this->index = index;
   currentSection = model->data(index, Qt::UserRole).value<Section*>();
   qDebug() << "[DEBUG] Loading section:" << currentSection->objectName();
 
-  // Locate closest table of contents or just default to page 1
-  int start = 0;
-  basePageNumber = 1;
-  for (int i = 1; i < index.row(); i++) {
-    if (model->data(model->index(i, 0), Qt::UserRole).value<Section*>()->type() == SectionType::TABLE_OF_CONTENTS) {
-      start = i;
-      break;
-    }
-  }
-  start++;
+  int start = locateStart(index.row()) + 1;
 
   // Calculate base page
+  basePageNumber = 1;
   for (int i = start; i < index.row(); i++) {
-    Section* section = model->data(model->index(i, 0), Qt::UserRole).value<Section*>();
-    if (section->multiplePages()) {
-      int currentIndex = 0;
-      int targetIndex;
-
-      switch (section->type()) {
-        case SectionType::TABLE_OF_CONTENTS: {
-          break; // Not implemented yet
-        }
-
-        case SectionType::CHAPTER: {
-          targetIndex = ((Chapter*)section)->contents.size();
-          break;
-        }
-
-        default: {
-          qDebug() << "Invalid SectionType @ BookRenderer::loadSection:" << section->type();
-          throw new std::runtime_error("Invalid SectionType @ BookRenderer::loadSection");
-        }
-      }
-
-      while (currentIndex < targetIndex) {
-        PageRenderer renderer(this, model, section);
-        renderer.show();
-        currentIndex += renderer.truncate();
-        basePageNumber++;
-      }
-    } else {
-      basePageNumber++;
-    }
+    basePageNumber += calculatePages(model->index(i, 0));
   }
 
   reset();
+  generateTableOfContents();
 
-  PageRenderer* renderer = new PageRenderer(this, model, currentSection, basePageNumber);
+  PageRenderer* renderer = new PageRenderer(this, model, index, basePageNumber);
   renderers.append(renderer);
   layout.addWidget(renderer);
 
   if (currentSection->multiplePages()) {
     int currentIndex = 0;
-    int targetIndex;
-
-    switch (currentSection->type()) {
-      case SectionType::TABLE_OF_CONTENTS: {
-        break; // Not implemented yet
-      }
-
-      case SectionType::CHAPTER: {
-        targetIndex = ((Chapter*)currentSection)->contents.size();
-        break;
-      }
-
-      default: {
-        qDebug() << "Invalid section type @ BookRenderer::populate" << currentSection->type();
-        throw new std::runtime_error("Invalid section type @ BookRenderer::populate");
-      }
-    }
+    int targetIndex = calculateTargetIndex(currentSection);
 
     int currentPage = basePageNumber + 1;
 
     while (true) {
+      renderer->repaint();
       renderer->show();
       currentIndex += renderer->truncate();
       if (currentIndex >= targetIndex) break;
 
-      renderer = new PageRenderer(this, model, currentSection, currentPage, currentIndex);
+      renderer = new PageRenderer(this, model, index, currentPage, currentIndex);
       renderers.append(renderer);
       layout.addWidget(renderer);
 
@@ -204,27 +251,42 @@ void BookRenderer::reloadSection(int currentPage) {
       it.remove();
     }
 
-    Chapter* section = qobject_cast<Chapter*>(currentSection);
-    int targetIndex = section->contents.size();
+    int targetIndex = calculateTargetIndex(currentSection);
 
-    while (targetIndex > contentIdx) {
-      renderer = new PageRenderer(this, model, currentSection, startPage, contentIdx);
+    while (targetIndex > contentIdx || startPage == basePageNumber) {
+      renderer = new PageRenderer(this, model, index, startPage, contentIdx);
+      renderer->show();
       renderers.append(renderer);
       layout.addWidget(renderer);
-      renderer->show();
       contentIdx += renderer->truncate();
       startPage++;
     }
-    setUpdatesEnabled(true);
     break;
   }
 
   // Restore cursor
   int overflow = cursorPosition;
-  if ((currentPage - basePageNumber) > renderers.size()) currentPage = renderers.size() + basePageNumber;
+  int rendererIdx;
+  if ((currentPage - basePageNumber) > renderers.size()){
+    rendererIdx = renderers.size() - 1;
+  } else {
+    rendererIdx = currentPage - basePageNumber;
+  }
 
   do {
-    overflow = renderers[currentPage - basePageNumber - 1]->restoreCursor(overflow);
-    currentPage++;
+    overflow = renderers[rendererIdx]->restoreCursor(overflow);
+    if (rendererIdx < (renderers.size() - 1)) {
+      rendererIdx++;
+    } else {
+      break;
+    }
   } while (overflow > 0);
+
+  QApplication::processEvents();
+  QApplication::processEvents();
+  QApplication::processEvents();
+  QApplication::processEvents();
+
+  verticalScrollBar()->setValue(scrollBarposition);
+  setUpdatesEnabled(true);
 }

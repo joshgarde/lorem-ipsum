@@ -5,6 +5,8 @@
         "chapterNumber": "Times New Roman,-1,20,5,50,0,0,0,0,0",
         "copyright": "Times New Roman,-1,18,5,50,0,0,0,0,0",
         "pageNumber": "Times New Roman,12,-1,5,50,0,0,0,0,0",
+        "tableOfContents": "Times New Roman,-1,18,5,50,0,0,0,0,0",
+        "tableOfContentsTitle": "Times New Roman,-1,24,5,50,0,0,0,0,0",
         "title": "Times New Roman,-1,36,5,50,0,0,0,0,0"
     },
     "sections": [
@@ -12,11 +14,11 @@
             "fontMap": {
                 "title": "Times New Roman,-1,36,5,50,0,0,0,0,0"
             },
-            "title": "Ipsum Lorem",
+            "title": "The Great Herenica:\nLegends of Rovin",
             "type": "Title"
         },
         {
-            "contents": "Copyright © 2018 [NAME]\nAll rights reserved. This book or any portion thereof may not be reproduced or used in any manner whatsoever without the express written permission of the publisher except for the use of brief quotations in a book review.",
+            "contents": "Copyright © 2018 Marc Menor\nAll rights reserved. This book or any portion thereof may not be reproduced or used in any manner whatsoever without the express written permission of the publisher except for the use of brief quotations in a book review.",
             "fontMap": {
                 "copyright": "Times New Roman,-1,18,5,50,0,0,0,0,0"
             },
@@ -24,29 +26,20 @@
         },
         {
             "fontMap": {
+                "tableOfContents": "Times New Roman,-1,18,5,50,0,0,0,0,0",
+                "tableOfContentsTitle": "Times New Roman,-1,24,5,50,0,0,0,0,0"
             },
             "type": "Table of Contents"
         },
         {
-            "contents": "\tLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\tLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+            "contents": "A subtle gust of wind moved the curtains of a massive castle spire.  Bright rays of sunlight went into the spire’s top room.  A hand moved with the wind slowly and steadily.  Its skin was tan as the fall leaves; each of its fingers lined with silver rings with green, red, and blue gemstones.  Its nails painted dark red, contrasting its skin color.\n\tThis was the gesture of a queen.  The gesture of a queen who sat atop a silver throne and had all the power of an empire in the palm of her fist.  This queen is formally known as Calina Rovin of the Night-Fliers.  She led an amassed empire that had conquered the very stars in the night sky.\n\tSeveral servants had entered the queen’s room.  Before their eyes had even glanced at her, they were glued to the floor as they knelt.\n\t“Speak,” the queen commanded.\n\t“My queen, the emperor wanted us to alert you of the ambassadorial mission happening later today…”\n\t“I am aware.  Is that all?”\n\t“My queen, the people of this world are requesting food and water after the last invasion…” a second servant explained.\n\tThe queen stood up.  A white veil fell from the back of her head and revealed a golden crown with clear blue diamonds in its center.  Her red hair fell from her shoulders and extended down her back.\n\tShe turned to her servants who felt the piercing yellow eyes break into their souls even as they stared down at the floor.\n\t“Which people is this?  Are they of any sort of royalty?” Queen Rovin asked the servants.\n\t“My queen, they are of smaller villages…those who were  scorched after the emperor’s legionnaires had purged the land,” the third  servant answered.\t \n\tThe queen raised her fist.  The first two servants had shuddered once they saw the third servant raise up into the air with a blue aura around her torso.\n\t“These villages are in no position to request from me.  You will be the message,” Queen Rovin pulled her fist behind her back and sent the servant through the open window.\n\tThe servant desperately tore off one of the window curtains before she fell off the spire and onto the gravel that made up Rovin’s castle courtyard.\n\tQueen Rovin scoffed, “You two.  Tell the guards that my curtains need replacing,” she paused to look at them and their shaking hands, “NOW!”\n\t The two servants immediately stood up and left the spire room. The queen sat back in her hair and leaned against her arm, “For once…offer me some concern.  This… This is  just sickening…” she mumbled to herself.\n\t Something caught the queen’s attention.  The sunlight that had cut into her room had abruptly faded.  She looked up and saw a bright flash pierce through the sudden darkness and directly into the  queen’s eyes.",
             "fontMap": {
                 "chapterContents": "Times New Roman,-1,18,5,50,0,0,0,0,0",
                 "chapterName": "Times New Roman,-1,24,5,50,0,0,0,0,0",
                 "chapterNumber": "Times New Roman,-1,20,5,50,0,0,0,0,0",
                 "pageNumber": "Times New Roman,12,-1,5,50,0,0,0,0,0"
             },
-            "name": "Lorem Ipsum Dolor Sit Amet",
-            "type": "Chapter"
-        },
-        {
-            "contents": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-            "fontMap": {
-                "chapterContents": "Times New Roman,-1,18,5,50,0,0,0,0,0",
-                "chapterName": "Times New Roman,-1,24,5,50,0,0,0,0,0",
-                "chapterNumber": "Times New Roman,-1,20,5,50,0,0,0,0,0",
-                "pageNumber": "Times New Roman,12,-1,5,50,0,0,0,0,0"
-            },
-            "name": "Lorem Ipsum Dolor Sit Amet",
+            "name": "Introduction, Queen Rovin",
             "type": "Chapter"
         }
     ],

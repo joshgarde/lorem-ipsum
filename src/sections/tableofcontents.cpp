@@ -2,10 +2,11 @@
 
 TableOfContents::TableOfContents(SectionModel *parent) : Section(parent) {
   setObjectName("Table of Contents");
-}
 
-TableOfContents::~TableOfContents() {
-  delete sections;
+  fontMap["tableOfContentsTitle"] = parent->fontMap["tableOfContentsTitle"];
+  fontMap["tableOfContents"] = parent->fontMap["tableOfContents"];
+
+  title = "Contents";
 }
 
 SectionType TableOfContents::type() {

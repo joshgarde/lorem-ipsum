@@ -6,8 +6,10 @@
 
 class BackscrollTextEdit : public QTextEdit {
   Q_OBJECT
+
 protected:
   void wheelEvent(QWheelEvent *e);
+  void insertFromMimeData(const QMimeData *source);
 public:
   BackscrollTextEdit(QWidget* parent);
 };

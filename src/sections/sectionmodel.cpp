@@ -12,6 +12,12 @@ SectionModel::SectionModel(QObject *parent) : QAbstractListModel(parent), size(Q
   QFont copyrightFont("Times New Roman");
   copyrightFont.setPixelSize(18);
 
+  QFont tableOfContentsTitleFont("Times New Roman");
+  tableOfContentsTitleFont.setPixelSize(24);
+
+  QFont tableOfContentsFont("Times New Roman");
+  tableOfContentsFont.setPixelSize(18);
+
   QFont chapterNumberFont("Times New Roman");
   chapterNumberFont.setPixelSize(20);
 
@@ -26,6 +32,8 @@ SectionModel::SectionModel(QObject *parent) : QAbstractListModel(parent), size(Q
 
   fontMap.insert("title", titleFont);
   fontMap.insert("copyright", copyrightFont);
+  fontMap.insert("tableOfContentsTitle", tableOfContentsTitleFont);
+  fontMap.insert("tableOfContents", tableOfContentsFont);
   fontMap.insert("chapterNumber", chapterNumberFont);
   fontMap.insert("chapterName", chapterNameFont);
   fontMap.insert("chapterContents", chapterContentsFont);
@@ -35,6 +43,7 @@ SectionModel::SectionModel(QObject *parent) : QAbstractListModel(parent), size(Q
 }
 
 int SectionModel::rowCount(const QModelIndex& parent) const {
+  Q_UNUSED(parent);
   return sections.size();
 }
 
@@ -57,6 +66,7 @@ QVariant SectionModel::data(const QModelIndex &index, int role) const {
 }
 
 bool SectionModel::setData(const QModelIndex &index, const QVariant &value, int role) {
+  Q_UNUSED(role);
   if (value.canConvert<Section*>()) {
     Section* section = value.value<Section*>();
     sections[index.row()] = section;
@@ -75,7 +85,25 @@ bool SectionModel::insertRows(int row, int count, const QModelIndex &parent) {
   return true;
 }
 
+bool SectionModel::removeRows(int row, int count, const QModelIndex &parent) {
+  beginRemoveRows(parent, row, row + count - 1);
+  QMutableListIterator<Section*> it(sections);
+  for (int i = 0; i < row; i++) {
+    it.next();
+  }
+
+  for (int i = row; i < (count + row); i++) {
+    Section* section = it.next();
+    delete section;
+    it.remove();
+  }
+  endRemoveRows();
+  return true;
+}
+
 QModelIndex SectionModel::index(int row, int column, const QModelIndex &parent) const {
+  Q_UNUSED(column);
+  Q_UNUSED(parent);
   return createIndex(row, 0);
 }
 
