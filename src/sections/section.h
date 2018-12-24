@@ -10,7 +10,7 @@
 class SectionModel;
 
 enum SectionType {
-  CHAPTER, COPYRIGHT, TABLE_OF_CONTENTS, TITLE
+  CHAPTER, COPYRIGHT, TABLE_OF_CONTENTS, TITLE, HALFTITLE
 };
 
 class Section : public QObject {
@@ -27,6 +27,7 @@ public:
   virtual SectionType type() = 0;
   virtual bool multiplePages() = 0;
   virtual QJsonObject serialize() = 0;
+  virtual void deserialize(QJsonObject json) = 0;
 };
 
 #endif

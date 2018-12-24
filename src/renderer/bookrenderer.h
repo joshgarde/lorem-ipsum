@@ -31,12 +31,16 @@ class BookRenderer : public QScrollArea {
   int locateStart(int max = -1);
   void generateTableOfContents();
   int calculateTargetIndex(Section* section);
+
 public:
   BookRenderer(QWidget *parent = nullptr);
   void setSectionModel(SectionModel* model);
   int renderSection(QPagedPaintDevice* paintDevice, QPainter* painter, QModelIndex index, int page);
   QList<QPair<QString, int>> tableOfContents();
   int calculateChapterNumber(QModelIndex index);
+
+protected:
+  void mousePressEvent(QMouseEvent *event);
 
 signals:
   void updateToc();

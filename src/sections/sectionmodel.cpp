@@ -1,8 +1,9 @@
 #include "sectionmodel.h"
+#include <QJsonDocument>
+#include <QJsonArray>
 #include <QDebug>
 #include <QBrush>
 #include "section.h"
-#include "title.h"
 #include "chapter.h"
 
 SectionModel::SectionModel(QObject *parent) : QAbstractListModel(parent), size(QSize(6, 9)) {
@@ -105,6 +106,40 @@ QModelIndex SectionModel::index(int row, int column, const QModelIndex &parent) 
   Q_UNUSED(column);
   Q_UNUSED(parent);
   return createIndex(row, 0);
+}
+
+QJsonDocument SectionModel::serialize() {
+  QJsonObject jsonBook;
+
+  QJsonObject jsonSize;
+  jsonSize["width"] = size.width();
+  jsonSize["height"] = size.height();
+  jsonBook["size"] = jsonSize;
+
+  QJsonObject jsonFontMap;
+  for (auto it = fontMap.begin(); it != fontMap.end(); it++) {
+    jsonFontMap[it.key()] = it->toString();
+  }
+  jsonBook["fontMap"] = jsonFontMap;
+
+  QJsonArray jsonSections;
+  for (int i = 0; i < rowCount(); i++) {
+    QModelIndex modelIdx = index(i, 0);
+    Section* section = data(modelIdx, Qt::UserRole).value<Section*>();
+    QJsonObject jsonSection = section->serialize();
+    jsonSection["type"] = section->objectName();
+
+    QJsonObject sectionFontMap;
+    for (auto it = section->fontMap.begin(); it != section->fontMap.end(); it++) {
+      sectionFontMap[it.key()] = it->toString();
+    }
+    jsonSection["fontMap"] = sectionFontMap;
+
+    jsonSections.append(jsonSection);
+  }
+  jsonBook["sections"] = jsonSections;
+  QJsonDocument document(jsonBook);
+  return document;
 }
 
 void SectionModel::markDirty(QModelIndex idx) {

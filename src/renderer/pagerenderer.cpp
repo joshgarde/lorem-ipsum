@@ -4,6 +4,7 @@
 #include <QApplication>
 #include <QScrollBar>
 #include <QAbstractTextDocumentLayout>
+#include "src/sections/halftitle.h"
 #include "src/sections/title.h"
 #include "src/sections/copyright.h"
 #include "src/sections/tableofcontents.h"
@@ -52,8 +53,8 @@ QString PageRenderer::generateFormattedHtml(QString raw, Qt::Alignment alignment
   return formatted;
 }
 
-PageRenderer::PageRenderer(BookRenderer* renderer, SectionModel* model, QModelIndex index, int page, int contentIdx) :
-    QWidget(renderer), renderer(renderer), model(model), index(index), page(page) {
+PageRenderer::PageRenderer(BookRenderer* renderer, SectionModel* model, QModelIndex index, int page, int contentIdx, PageDirection direction) :
+    QWidget(renderer), renderer(renderer), model(model), index(index), page(page), direction(direction) {
 
   section = model->data(index, Qt::UserRole).value<Section*>();
 
@@ -64,20 +65,52 @@ PageRenderer::PageRenderer(BookRenderer* renderer, SectionModel* model, QModelIn
   setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 
   setLayout(&layout);
-  setContentsMargins(0, 0, 0, 0);
   setFixedSize(QSize(model->size.width() * PPI, model->size.height() * PPI));
+  
+  if (direction == RIGHT) {
+    setContentsMargins(84, 96, 60, 0);
+  } else {
+    setContentsMargins(60, 96, 84, 0);
+  }
 
   switch (section->type()) {
+    case SectionType::HALFTITLE: {
+      layout.addStretch(2);
+
+      SwissTextEdit* titleField = new SwissTextEdit(this);
+      titleField->setFont(section->fontMap["title"]);
+      connect(titleField, SIGNAL(textChanged()), this, SLOT(fieldResize()));
+      titleField->setHtml(generateFormattedHtml(((HalfTitle*)section)->title, Qt::AlignCenter, 1));
+      connect(titleField, SIGNAL(textChanged()), renderer, SLOT(updateSection()));
+      fields.insert("title", titleField);
+      
+      QFrame* line = new QFrame();
+      line->setFrameShape(QFrame::HLine);
+      line->setFrameShadow(QFrame::Plain);
+      
+      layout.addWidget(titleField);
+      layout.addWidget(line);
+
+      layout.addStretch(3);
+      break;
+    }
+
     case SectionType::TITLE: {
       layout.addStretch(2);
 
-      BackscrollTextEdit* titleField = new BackscrollTextEdit(this);
+      SwissTextEdit* titleField = new SwissTextEdit(this);
       titleField->setFont(section->fontMap["title"]);
       connect(titleField, SIGNAL(textChanged()), this, SLOT(fieldResize()));
       titleField->setHtml(generateFormattedHtml(((Title*)section)->title, Qt::AlignCenter, 1));
       connect(titleField, SIGNAL(textChanged()), renderer, SLOT(updateSection()));
       fields.insert("title", titleField);
+      
+      QFrame* line = new QFrame();
+      line->setFrameShape(QFrame::HLine);
+      line->setFrameShadow(QFrame::Plain);
+      
       layout.addWidget(titleField);
+      layout.addWidget(line);
 
       layout.addStretch(3);
       break;
@@ -86,7 +119,7 @@ PageRenderer::PageRenderer(BookRenderer* renderer, SectionModel* model, QModelIn
     case SectionType::COPYRIGHT: {
       layout.addStretch(2);
 
-      BackscrollTextEdit* copyrightField = new BackscrollTextEdit(this);
+      SwissTextEdit* copyrightField = new SwissTextEdit(this);
       copyrightField->setFont(section->fontMap["copyright"]);
       copyrightField->setPlainText(((Copyright*)section)->contents);
       connect(copyrightField, SIGNAL(textChanged()), renderer, SLOT(updateSection()));
@@ -105,17 +138,23 @@ PageRenderer::PageRenderer(BookRenderer* renderer, SectionModel* model, QModelIn
       if (contentIdx == 0) {
         layout.addStretch(1);
 
-        BackscrollTextEdit* tableOfContentsTitleField = new BackscrollTextEdit(this);
+        SwissTextEdit* tableOfContentsTitleField = new SwissTextEdit(this);
         tableOfContentsTitleField->setFont(section->fontMap["tableOfContentsTitle"]);
         connect(tableOfContentsTitleField, SIGNAL(textChanged()), this, SLOT(fieldResize()));
         tableOfContentsTitleField->setHtml(generateFormattedHtml(((TableOfContents*)section)->title, Qt::AlignCenter));
         fields.insert("tableOfContentsTitle", tableOfContentsTitleField);
+        
+        QFrame* line = new QFrame();
+        line->setFrameShape(QFrame::HLine);
+        line->setFrameShadow(QFrame::Plain);
+        
         layout.addWidget(tableOfContentsTitleField);
+        layout.addWidget(line);
 
         layout.addStretch(1);
       }
 
-      BackscrollTextEdit* tableOfContentsField = new BackscrollTextEdit(this);
+      SwissTextEdit* tableOfContentsField = new SwissTextEdit(this);
       tableOfContentsField->setFont(section->fontMap["tableOfContents"]);
       tableOfContentsField->setHtml(htmlTable);
       tableOfContentsField->setTextInteractionFlags(Qt::NoTextInteraction);
@@ -129,7 +168,7 @@ PageRenderer::PageRenderer(BookRenderer* renderer, SectionModel* model, QModelIn
       if (contentIdx == 0) {
         layout.addStretch(1);
 
-        BackscrollTextEdit* chapterNumberField = new BackscrollTextEdit(this);
+        SwissTextEdit* chapterNumberField = new SwissTextEdit(this);
         chapterNumberField->setFont(section->fontMap["chapterNumber"]);
         chapterNumberField->setTextInteractionFlags(Qt::NoTextInteraction);
         connect(chapterNumberField, SIGNAL(textChanged()), this, SLOT(fieldResize()));
@@ -137,7 +176,7 @@ PageRenderer::PageRenderer(BookRenderer* renderer, SectionModel* model, QModelIn
         chapterNumberField->setPlainText(QString("Chapter ") + QString::number(chapterNumber));
         chapterNumberField->setAlignment(Qt::AlignCenter);
 
-        BackscrollTextEdit* chapterNameField = new BackscrollTextEdit(this);
+        SwissTextEdit* chapterNameField = new SwissTextEdit(this);
         chapterNameField->setFont(section->fontMap["chapterName"]);
         connect(chapterNameField, SIGNAL(textChanged()), this, SLOT(fieldResize()));
         chapterNameField->setPlainText(((Chapter*)section)->name);
@@ -146,13 +185,19 @@ PageRenderer::PageRenderer(BookRenderer* renderer, SectionModel* model, QModelIn
 
         fields.insert("chapterNumber", chapterNumberField);
         fields.insert("chapterName", chapterNameField);
+        
+        QFrame* line = new QFrame();
+        line->setFrameShape(QFrame::HLine);
+        line->setFrameShadow(QFrame::Plain);
+        
         layout.addWidget(chapterNumberField);
         layout.addWidget(chapterNameField);
+        layout.addWidget(line);
 
         layout.addStretch(1);
       }
 
-      BackscrollTextEdit* chapterContentsField = new BackscrollTextEdit(this);
+      SwissTextEdit* chapterContentsField = new SwissTextEdit(this);
       chapterContentsField->setFont(section->fontMap["chapterContents"]);
       QString chapterContents = ((Chapter*)section)->contents.mid(
         contentIdx,
@@ -165,12 +210,18 @@ PageRenderer::PageRenderer(BookRenderer* renderer, SectionModel* model, QModelIn
       connect(chapterContentsField, SIGNAL(textChanged()), renderer, SLOT(updateSection()));
       connect(chapterContentsField, SIGNAL(textChanged()), this, SLOT(sendReload()));
 
-      BackscrollTextEdit* pageNumberField = new BackscrollTextEdit(this);
+      SwissTextEdit* pageNumberField = new SwissTextEdit(this);
       pageNumberField->setFont(section->fontMap["pageNumber"]);
       pageNumberField->setTextInteractionFlags(Qt::NoTextInteraction);
       connect(pageNumberField, SIGNAL(textChanged()), this, SLOT(fieldResize()));
       pageNumberField->setPlainText(QString::number(page));
-      pageNumberField->setAlignment(Qt::AlignCenter);
+      
+      if (direction == LEFT) {
+        pageNumberField->setAlignment(Qt::AlignLeft);
+      } else {
+        pageNumberField->setAlignment(Qt::AlignRight);
+      }
+      
       fields.insert("pageNumber", pageNumberField);
       layout.addWidget(pageNumberField);
 
@@ -180,7 +231,7 @@ PageRenderer::PageRenderer(BookRenderer* renderer, SectionModel* model, QModelIn
 }
 
 int PageRenderer::truncate() {
-  BackscrollTextEdit* field;
+  SwissTextEdit* field;
   QString contents;
   int lineSpacing = 1;
 
@@ -214,17 +265,26 @@ int PageRenderer::truncate() {
 
   disconnect(field, SIGNAL(textChanged()), renderer, SLOT(updateSection()));
   disconnect(field, SIGNAL(textChanged()), this, SLOT(sendReload()));
+  
+  field->verticalScrollBar()->setValue(0);
 
   QFontMetrics fontMetrics(field->currentFont());
+  QTextCursor cursor = field->textCursor();
+  int endIndex;
 
-  int endIndex = field->cursorForPosition(
-    QPoint(
-      field->viewport()->width() - 1,
-      field->viewport()->height() - (fontMetrics.height() * lineSpacing)
-    )
-  ).position();
+  if (field->viewport()->size().height() < field->document()->documentLayout()->documentSize().height()) {
+    cursor.movePosition(QTextCursor::Start);
+    field->setTextCursor(cursor);
+    QKeyEvent keyEvent(QEvent::KeyPress, Qt::Key_PageDown, Qt::NoModifier);
+    QCoreApplication::sendEvent(field, &keyEvent);
+    cursor = field->textCursor();
+  } else {
+    cursor.movePosition(QTextCursor::End);
+  }
 
-  if (contents.at(endIndex).isSpace()) {
+  endIndex = cursor.position();
+
+  if (contents.at(endIndex) == '\n') {
     endIndex++;
   }
 
@@ -242,7 +302,7 @@ int PageRenderer::truncate() {
 }
 
 bool PageRenderer::requiresRerender() {
-  BackscrollTextEdit* field = fields["chapterContents"];
+  SwissTextEdit* field = fields["chapterContents"];
   QByteArray textData = field->toPlainText().toUtf8();
   quint16 newChecksum = qChecksum(textData.data(), textData.size());
 
@@ -258,10 +318,15 @@ int PageRenderer::pageNumber() {
 }
 
 int PageRenderer::restoreCursor(int position) {
-  BackscrollTextEdit* field;
+  SwissTextEdit* field;
   bool canOverflow;
 
   switch (section->type()) {
+    case SectionType::HALFTITLE: {
+      field = fields["title"];
+      canOverflow = false;
+      break;
+    }
     case SectionType::TITLE: {
       field = fields["title"];
       canOverflow = false;
@@ -303,11 +368,13 @@ int PageRenderer::restoreCursor(int position) {
     field->setFocus();
   }
 
+  field->verticalScrollBar()->setValue(0);
+
   return overflow;
 }
 
 void PageRenderer::fieldResize() {
-  BackscrollTextEdit* field = (BackscrollTextEdit*)sender();
+  SwissTextEdit* field = (SwissTextEdit*)sender();
   QFontMetrics metrics(field->currentFont());
   int width = model->size.width() * PPI - 20;
   int height = model->size.height() * PPI - 20;

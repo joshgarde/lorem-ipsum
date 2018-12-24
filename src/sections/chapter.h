@@ -16,6 +16,7 @@ public:
   SectionType type();
   bool multiplePages();
   QJsonObject serialize();
+  void deserialize(QJsonObject json);
 };
 
 #endif

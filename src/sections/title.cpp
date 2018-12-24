@@ -17,5 +17,11 @@ bool Title::multiplePages() {
 }
 
 QJsonObject Title::serialize() {
+  QJsonObject json;
+  json["title"] = title;
+  return json;
+}
 
+void Title::deserialize(QJsonObject json) {
+  
 }

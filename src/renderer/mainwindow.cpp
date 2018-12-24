@@ -9,15 +9,27 @@
 #include <QPdfWriter>
 #include <QPainter>
 #include <QMessageBox>
+#include <QMenuBar>
 #include "addsectiondialog.h"
 #include "src/sections/section.h"
 #include "src/sections/chapter.h"
 #include "src/sections/copyright.h"
 #include "src/sections/tableofcontents.h"
 #include "src/sections/title.h"
+#include "src/sections/halftitle.h"
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
   this->setWindowTitle("Lorem Ipsum");
+  
+  QMenu* fileMenu = menuBar()->addMenu("File");
+  fileMenu->addAction("Open");
+  fileMenu->addAction("Save");
+  fileMenu->addAction("Render PDF");
+  QMenu* editMenu = menuBar()->addMenu("Edit");
+  QMenu* optionsMenu = menuBar()->addMenu("Options");
+  QMenu* aboutMenu = menuBar()->addMenu("Help");
+  aboutMenu->addAction("Update");
+  aboutMenu->addAction("About");
 
   base.setLayout(&layout);
   base.setStyleSheet(
@@ -123,7 +135,10 @@ void MainWindow::openBook() {
     Section* section;
     QString type = jsonSection["type"].toString();
     currentBook->insertRow(idx);
-    if (type == "Title") {
+    if (type == "Half Title") {
+      section = new HalfTitle(currentBook);
+      ((HalfTitle*)section)->title = jsonSection["title"].toString();
+    } else if (type == "Title") {
       section = new Title(currentBook);
       ((Title*)section)->title = jsonSection["title"].toString();
     } else if (type == "Copyright") {
@@ -157,58 +172,8 @@ void MainWindow::openBook() {
 void MainWindow::saveBook() {
   statusbar.showMessage("Saving book...");
 
-  QJsonObject jsonBook;
-
-  QJsonObject jsonSize;
-  jsonSize["width"] = currentBook->size.width();
-  jsonSize["height"] = currentBook->size.height();
-  jsonBook["size"] = jsonSize;
-
-  QJsonObject jsonFontMap;
-  for (auto it = currentBook->fontMap.begin(); it != currentBook->fontMap.end(); it++) {
-    jsonFontMap[it.key()] = it->toString();
-  }
-  jsonBook["fontMap"] = jsonFontMap;
-
-  QJsonArray jsonSections;
-  for (int i = 0; i < currentBook->rowCount(); i++) {
-    QModelIndex modelIdx = currentBook->index(i, 0);
-    Section* section = currentBook->data(modelIdx, Qt::UserRole).value<Section*>();
-    QJsonObject jsonSection;
-
-    jsonSection["type"] = section->objectName();
-
-    QJsonObject sectionFontMap;
-    for (auto it = section->fontMap.begin(); it != section->fontMap.end(); it++) {
-      sectionFontMap[it.key()] = it->toString();
-    }
-    jsonSection["fontMap"] = sectionFontMap;
-
-    switch (section->type()) {
-      case SectionType::TITLE: {
-        jsonSection["title"] = ((Title*)section)->title;
-        break;
-      }
-
-      case SectionType::COPYRIGHT: {
-        jsonSection["contents"] = ((Copyright*)section)->contents;
-        break;
-      }
-
-      case SectionType::TABLE_OF_CONTENTS: {
-        break;
-      }
-
-      case SectionType::CHAPTER: {
-        jsonSection["name"] = ((Chapter*)section)->name;
-        jsonSection["contents"] = ((Chapter*)section)->contents;
-        break;
-      }
-    }
-    jsonSections.append(jsonSection);
-  }
-  jsonBook["sections"] = jsonSections;
-  QJsonDocument document(jsonBook);
+  QJsonDocument document = currentBook->serialize();
+  
   QTextStream fileStream(currentFile);
   currentFile->resize(0);
   fileStream << document.toJson();
@@ -258,7 +223,9 @@ void MainWindow::addSection(QString section) {
   int idx = currentBook->rowCount();
   QModelIndex modelIdx = currentBook->index(idx, 0);
   currentBook->insertRow(idx);
-  if (section == "Title") {
+  if (section == "Half Title") {
+    currentBook->setData(modelIdx, QVariant::fromValue(new HalfTitle(currentBook)), 0);
+  } else if (section == "Title") {
     currentBook->setData(modelIdx, QVariant::fromValue(new Title(currentBook)), 0);
   } else if (section == "Copyright") {
     currentBook->setData(modelIdx, QVariant::fromValue(new Copyright(currentBook)), 0);

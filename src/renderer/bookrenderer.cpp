@@ -6,7 +6,8 @@
 #include <QApplication>
 #include <QScrollBar>
 #include "pagerenderer.h"
-#include "backscrolltextedit.h"
+#include "swisstextedit.h"
+#include "src/sections/halftitle.h"
 #include "src/sections/title.h"
 #include "src/sections/copyright.h"
 #include "src/sections/tableofcontents.h"
@@ -142,6 +143,15 @@ int BookRenderer::renderSection(QPagedPaintDevice* paintDevice, QPainter* painte
   }
 }
 
+void BookRenderer::mousePressEvent(QMouseEvent *event) {
+  QWidget* scrollArea = childAt(mapFromGlobal(event->globalPos()));
+  if (scrollArea == nullptr) return;
+  SwissTextEdit* textEdit = qobject_cast<SwissTextEdit*>(scrollArea->parent());
+  if (textEdit == nullptr) return;
+  
+  
+}
+
 void BookRenderer::loadSection(QModelIndex index) {
   this->index = index;
   currentSection = model->data(index, Qt::UserRole).value<Section*>();
@@ -157,15 +167,16 @@ void BookRenderer::loadSection(QModelIndex index) {
 
   reset();
   generateTableOfContents();
+  
+  PageRenderer::PageDirection direction = PageRenderer::PageDirection::RIGHT;
 
-  PageRenderer* renderer = new PageRenderer(this, model, index, basePageNumber);
+  PageRenderer* renderer = new PageRenderer(this, model, index, basePageNumber, direction);
   renderers.append(renderer);
   layout.addWidget(renderer);
 
   if (currentSection->multiplePages()) {
     int currentIndex = 0;
     int targetIndex = calculateTargetIndex(currentSection);
-
     int currentPage = basePageNumber + 1;
 
     while (true) {
@@ -174,7 +185,9 @@ void BookRenderer::loadSection(QModelIndex index) {
       currentIndex += renderer->truncate();
       if (currentIndex >= targetIndex) break;
 
-      renderer = new PageRenderer(this, model, index, currentPage, currentIndex);
+      direction = (PageRenderer::PageDirection)((direction + 1) % 2);
+
+      renderer = new PageRenderer(this, model, index, currentPage, currentIndex, direction);
       renderers.append(renderer);
       layout.addWidget(renderer);
 
@@ -197,6 +210,11 @@ void BookRenderer::updateSection() {
   }
 
   switch (currentSection->type()) {
+    case SectionType::HALFTITLE: {
+      ((HalfTitle*)currentSection)->title = fields["title"];
+      break;
+    }
+    
     case SectionType::TITLE: {
       ((Title*)currentSection)->title = fields["title"];
       break;
@@ -222,43 +240,57 @@ void BookRenderer::updateSection() {
 }
 
 void BookRenderer::reloadSection(int currentPage) {
-  BackscrollTextEdit* field = qobject_cast<BackscrollTextEdit*>(focusWidget());
+  SwissTextEdit* field = qobject_cast<SwissTextEdit*>(focusWidget());
   if (field == nullptr) return;
   int cursorPosition = field->textCursor().position();
   int scrollBarposition = verticalScrollBar()->value();
 
   int contentIdx = 0;
   QMutableListIterator<PageRenderer*> it(renderers);
+  int lastIdx = 0;
   while (it.hasNext()) {
     PageRenderer* renderer = it.next();
     if (!renderer->requiresRerender()) {
-      contentIdx += renderer->contentSize();
+      lastIdx = renderer->contentSize();
+      contentIdx += lastIdx;
       continue;
+    }
+
+    it.previous();
+    if (it.hasPrevious()) {
+      renderer = it.previous();
+      cursorPosition += renderer->contentSize();
+      contentIdx -= lastIdx;
     }
 
     int startPage = renderer->pageNumber();
 
     setUpdatesEnabled(false);
 
-    layout.removeWidget(renderer);
-    delete renderer;
-    it.remove();
-
-    while (it.hasNext()) {
+    do {
       renderer = it.next();
       layout.removeWidget(renderer);
       delete renderer;
       it.remove();
-    }
+    } while (it.hasNext());
 
     int targetIndex = calculateTargetIndex(currentSection);
 
     while (targetIndex > contentIdx || startPage == basePageNumber) {
       renderer = new PageRenderer(this, model, index, startPage, contentIdx);
-      renderer->show();
       renderers.append(renderer);
       layout.addWidget(renderer);
-      contentIdx += renderer->truncate();
+      renderer->show();
+      int latestIdx = renderer->truncate();
+      
+      if (latestIdx == 0 && renderers.size() > 1) {
+        layout.removeWidget(renderer);
+        renderers.removeAt(renderers.size() - 1);
+        delete renderer;
+        break;
+      }
+      
+      contentIdx += latestIdx;
       startPage++;
     }
     break;
@@ -266,25 +298,16 @@ void BookRenderer::reloadSection(int currentPage) {
 
   // Restore cursor
   int overflow = cursorPosition;
-  int rendererIdx;
-  if ((currentPage - basePageNumber) > renderers.size()){
+  int rendererIdx = currentPage - basePageNumber - 1;
+  if (rendererIdx > renderers.size() || rendererIdx < 0) {
     rendererIdx = renderers.size() - 1;
-  } else {
-    rendererIdx = currentPage - basePageNumber;
   }
 
   do {
     overflow = renderers[rendererIdx]->restoreCursor(overflow);
-    if (rendererIdx < (renderers.size() - 1)) {
-      rendererIdx++;
-    } else {
-      break;
-    }
-  } while (overflow > 0);
+    rendererIdx++;
+  } while (overflow > 0 && rendererIdx < renderers.size());
 
-  QApplication::processEvents();
-  QApplication::processEvents();
-  QApplication::processEvents();
   QApplication::processEvents();
 
   verticalScrollBar()->setValue(scrollBarposition);

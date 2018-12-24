@@ -22,6 +22,7 @@ public:
   bool insertRows(int row, int count, const QModelIndex &parent = QModelIndex());
   bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex());
   QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const;
+  QJsonDocument serialize();
 
 signals:
 

@@ -4,6 +4,7 @@
 AddSectionDialog::AddSectionDialog(QWidget *parent) : QDialog(parent), button("Add") {
   QDialog::setWindowTitle("Add Section");
 
+  list.addItem("Half Title");
   list.addItem("Title");
   list.addItem("Copyright");
   list.addItem("Table of Contents");

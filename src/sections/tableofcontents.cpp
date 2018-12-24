@@ -18,5 +18,10 @@ bool TableOfContents::multiplePages() {
 }
 
 QJsonObject TableOfContents::serialize() {
+  QJsonObject json;
+  return json;
+}
 
+void TableOfContents::deserialize(QJsonObject json) {
+  
 }

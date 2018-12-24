@@ -4,7 +4,7 @@
 #include <QWidget>
 #include <QSize>
 #include <QVBoxLayout>
-#include "backscrolltextedit.h"
+#include "swisstextedit.h"
 #include "bookrenderer.h"
 #include "src/sections/section.h"
 
@@ -15,6 +15,12 @@ class BookRenderer;
 class PageRenderer : public QWidget {
   Q_OBJECT
 
+public:
+  enum PageDirection {
+    RIGHT = 0,
+    LEFT = 1
+  };
+
   BookRenderer* renderer;
   SectionModel* model;
   QModelIndex index;
@@ -22,6 +28,7 @@ class PageRenderer : public QWidget {
   QVBoxLayout layout;
   quint16 checksum;
   QList<QPair<QString, int>> tableOfContents;
+  PageDirection direction;
   int page;
   int startIndex = 0;
   int endIndex = 0;
@@ -32,9 +39,9 @@ class PageRenderer : public QWidget {
   QString generateTocHtml(QList<QPair<QString, int>> tableOfContents, int start, int end = -1);
   QString generateFormattedHtml(QString raw, Qt::Alignment alignment, int lineSpacing = 1);
 public:
-  QMap<QString, BackscrollTextEdit*> fields;
+  QMap<QString, SwissTextEdit*> fields;
 
-  PageRenderer(BookRenderer* renderer, SectionModel* model, QModelIndex index, int page = 0, int contentIdx = 0);
+  PageRenderer(BookRenderer* renderer, SectionModel* model, QModelIndex index, int page = 0, int contentIdx = 0, PageDirection direction = RIGHT);
   bool requiresRerender();
   int contentSize();
   int pageNumber();

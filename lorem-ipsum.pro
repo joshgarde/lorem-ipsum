@@ -28,8 +28,9 @@ HEADERS += src/sections/section.h \
            src/sections/chapter.h \
            src/sections/copyright.h \
            src/sections/tableofcontents.h \
+           src/sections/halftitle.h \
            src/sections/title.h \
-           src/renderer/backscrolltextedit.h \
+           src/renderer/swisstextedit.h \
            src/renderer/bookrenderer.h \
            src/renderer/mainwindow.h \
            src/renderer/pagerenderer.h \
@@ -39,8 +40,9 @@ SOURCES += src/main.cpp \
            src/sections/chapter.cpp \
            src/sections/copyright.cpp \
            src/sections/tableofcontents.cpp \
+           src/sections/halftitle.cpp \
            src/sections/title.cpp \
-           src/renderer/backscrolltextedit.cpp \
+           src/renderer/swisstextedit.cpp \
            src/renderer/bookrenderer.cpp \
            src/renderer/mainwindow.cpp \
            src/renderer/pagerenderer.cpp \

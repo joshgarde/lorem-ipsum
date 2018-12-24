@@ -30,5 +30,12 @@ bool Chapter::multiplePages() {
 }
 
 QJsonObject Chapter::serialize() {
+  QJsonObject json;
+  json["name"] = name;
+  json["contents"] = contents;
+  return json;
+}
 
+void Chapter::deserialize(QJsonObject json) {
+  
 }
