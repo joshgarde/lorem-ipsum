@@ -37,5 +37,6 @@ QJsonObject Chapter::serialize() {
 }
 
 void Chapter::deserialize(QJsonObject json) {
-  
+  name = json["name"].toString();
+  contents = json["contents"].toString();
 }

@@ -7,13 +7,9 @@
 #include "src/sections/section.h"
 
 class PageRenderer;
+enum PageDirection : uint8_t;
 
 class BookRenderer : public QScrollArea {
-  enum PageDirection {
-    LEFT = 0,
-    RIGHT = 1
-  };
-
   Q_OBJECT
 
   QWidget scrollPane;
@@ -35,7 +31,7 @@ class BookRenderer : public QScrollArea {
 public:
   BookRenderer(QWidget *parent = nullptr);
   void setSectionModel(SectionModel* model);
-  int renderSection(QPagedPaintDevice* paintDevice, QPainter* painter, QModelIndex index, int page);
+  int renderSection(QPagedPaintDevice* paintDevice, QPainter* painter, QModelIndex index, int page, PageDirection& direction);
   QList<QPair<QString, int>> tableOfContents();
   int calculateChapterNumber(QModelIndex index);
 
@@ -44,11 +40,13 @@ protected:
 
 signals:
   void updateToc();
+  void notifyFont(const QFont& font);
 
 public slots:
   void loadSection(QModelIndex index);
   void updateSection();
   void reloadSection(int currentPage);
+  void changeFont(QFont font);
 };
 
 #endif // BOOKRENDERER_H

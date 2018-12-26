@@ -30,11 +30,13 @@ HEADERS += src/sections/section.h \
            src/sections/tableofcontents.h \
            src/sections/halftitle.h \
            src/sections/title.h \
+           src/sections/sectionmime.h \
            src/renderer/swisstextedit.h \
            src/renderer/bookrenderer.h \
            src/renderer/mainwindow.h \
            src/renderer/pagerenderer.h \
-           src/renderer/addsectiondialog.h
+           src/renderer/addsectiondialog.h \
+           src/renderer/bookoptions.h
 SOURCES += src/main.cpp \
            src/sections/sectionmodel.cpp \
            src/sections/chapter.cpp \
@@ -42,11 +44,15 @@ SOURCES += src/main.cpp \
            src/sections/tableofcontents.cpp \
            src/sections/halftitle.cpp \
            src/sections/title.cpp \
+           src/sections/sectionmime.cpp \
            src/renderer/swisstextedit.cpp \
            src/renderer/bookrenderer.cpp \
            src/renderer/mainwindow.cpp \
            src/renderer/pagerenderer.cpp \
-           src/renderer/addsectiondialog.cpp
+           src/renderer/addsectiondialog.cpp \
+           src/renderer/bookoptions.cpp
+        
+QMAKE_CXXFLAGS += -g # Debug
 
 DESTDIR = build
 OBJECTS_DIR = out

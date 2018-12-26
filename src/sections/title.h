@@ -10,6 +10,7 @@ class Title : public Section {
 public:
   Title(SectionModel *parent = nullptr);
   QString title;
+  QString author;
   SectionType type();
   bool multiplePages();
   QJsonObject serialize();

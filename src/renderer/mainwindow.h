@@ -41,6 +41,7 @@ public:
     QSize sizeHint() const;
 
 signals:
+  void fontChanged(QFont font);
 
 public slots:
   void newBook();
@@ -48,11 +49,14 @@ public slots:
   void saveBook();
   void renderBook();
   void showSectionMenu(QPoint pos);
+  void showBookOptions();
   void showAddSection();
   void addSection(QString section);
   void deleteSection();
   void loadSection(const QModelIndex &index);
   void reloadTocItem();
+  void updateFontSelectors(const QFont& font);
+  void fontSelectorsChanged();
 };
 
 #endif // MAINWINDOW_H

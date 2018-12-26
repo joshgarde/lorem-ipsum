@@ -29,5 +29,5 @@ QJsonObject Copyright::serialize() {
 }
 
 void Copyright::deserialize(QJsonObject json) {
-  
+  contents = json["contents"].toString();
 }

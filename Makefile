@@ -14,7 +14,7 @@ CC            = gcc
 CXX           = g++
 DEFINES       = -DQT_DEPRECATED_WARNINGS -DQT_NO_DEBUG -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB
 CFLAGS        = -pipe -O2 -Wall -W -D_REENTRANT -fPIC $(DEFINES)
-CXXFLAGS      = -pipe -O2 -std=gnu++11 -Wall -W -D_REENTRANT -fPIC $(DEFINES)
+CXXFLAGS      = -pipe -g -O2 -std=gnu++11 -Wall -W -D_REENTRANT -fPIC $(DEFINES)
 INCPATH       = -I. -I. -I/opt/Qt/5.11.2/gcc_64/include -I/opt/Qt/5.11.2/gcc_64/include/QtWidgets -I/opt/Qt/5.11.2/gcc_64/include/QtGui -I/opt/Qt/5.11.2/gcc_64/include/QtCore -Imoc -I/usr/include/libdrm -I/opt/Qt/5.11.2/gcc_64/mkspecs/linux-g++
 QMAKE         = /opt/Qt/5.11.2/gcc_64/bin/qmake
 DEL_FILE      = rm -f
@@ -57,11 +57,13 @@ SOURCES       = src/main.cpp \
 		src/sections/tableofcontents.cpp \
 		src/sections/halftitle.cpp \
 		src/sections/title.cpp \
+		src/sections/sectionmime.cpp \
 		src/renderer/swisstextedit.cpp \
 		src/renderer/bookrenderer.cpp \
 		src/renderer/mainwindow.cpp \
 		src/renderer/pagerenderer.cpp \
-		src/renderer/addsectiondialog.cpp qrc_resources.cpp \
+		src/renderer/addsectiondialog.cpp \
+		src/renderer/bookoptions.cpp qrc_resources.cpp \
 		moc/moc_section.cpp \
 		moc/moc_sectionmodel.cpp \
 		moc/moc_chapter.cpp \
@@ -69,11 +71,13 @@ SOURCES       = src/main.cpp \
 		moc/moc_tableofcontents.cpp \
 		moc/moc_halftitle.cpp \
 		moc/moc_title.cpp \
+		moc/moc_sectionmime.cpp \
 		moc/moc_swisstextedit.cpp \
 		moc/moc_bookrenderer.cpp \
 		moc/moc_mainwindow.cpp \
 		moc/moc_pagerenderer.cpp \
-		moc/moc_addsectiondialog.cpp
+		moc/moc_addsectiondialog.cpp \
+		moc/moc_bookoptions.cpp
 OBJECTS       = out/main.o \
 		out/sectionmodel.o \
 		out/chapter.o \
@@ -81,11 +85,13 @@ OBJECTS       = out/main.o \
 		out/tableofcontents.o \
 		out/halftitle.o \
 		out/title.o \
+		out/sectionmime.o \
 		out/swisstextedit.o \
 		out/bookrenderer.o \
 		out/mainwindow.o \
 		out/pagerenderer.o \
 		out/addsectiondialog.o \
+		out/bookoptions.o \
 		out/qrc_resources.o \
 		out/moc_section.o \
 		out/moc_sectionmodel.o \
@@ -94,11 +100,13 @@ OBJECTS       = out/main.o \
 		out/moc_tableofcontents.o \
 		out/moc_halftitle.o \
 		out/moc_title.o \
+		out/moc_sectionmime.o \
 		out/moc_swisstextedit.o \
 		out/moc_bookrenderer.o \
 		out/moc_mainwindow.o \
 		out/moc_pagerenderer.o \
-		out/moc_addsectiondialog.o
+		out/moc_addsectiondialog.o \
+		out/moc_bookoptions.o
 DIST          = /opt/Qt/5.11.2/gcc_64/mkspecs/features/spec_pre.prf \
 		/opt/Qt/5.11.2/gcc_64/mkspecs/common/unix.conf \
 		/opt/Qt/5.11.2/gcc_64/mkspecs/common/linux.conf \
@@ -271,22 +279,26 @@ DIST          = /opt/Qt/5.11.2/gcc_64/mkspecs/features/spec_pre.prf \
 		src/sections/tableofcontents.h \
 		src/sections/halftitle.h \
 		src/sections/title.h \
+		src/sections/sectionmime.h \
 		src/renderer/swisstextedit.h \
 		src/renderer/bookrenderer.h \
 		src/renderer/mainwindow.h \
 		src/renderer/pagerenderer.h \
-		src/renderer/addsectiondialog.h src/main.cpp \
+		src/renderer/addsectiondialog.h \
+		src/renderer/bookoptions.h src/main.cpp \
 		src/sections/sectionmodel.cpp \
 		src/sections/chapter.cpp \
 		src/sections/copyright.cpp \
 		src/sections/tableofcontents.cpp \
 		src/sections/halftitle.cpp \
 		src/sections/title.cpp \
+		src/sections/sectionmime.cpp \
 		src/renderer/swisstextedit.cpp \
 		src/renderer/bookrenderer.cpp \
 		src/renderer/mainwindow.cpp \
 		src/renderer/pagerenderer.cpp \
-		src/renderer/addsectiondialog.cpp
+		src/renderer/addsectiondialog.cpp \
+		src/renderer/bookoptions.cpp
 QMAKE_TARGET  = lorem-ipsum
 DESTDIR       = build/
 TARGET        = build/lorem-ipsum
@@ -656,8 +668,8 @@ distdir: FORCE
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents resources.qrc $(DISTDIR)/
 	$(COPY_FILE) --parents /opt/Qt/5.11.2/gcc_64/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents src/sections/section.h src/sections/sectionmodel.h src/sections/chapter.h src/sections/copyright.h src/sections/tableofcontents.h src/sections/halftitle.h src/sections/title.h src/renderer/swisstextedit.h src/renderer/bookrenderer.h src/renderer/mainwindow.h src/renderer/pagerenderer.h src/renderer/addsectiondialog.h $(DISTDIR)/
-	$(COPY_FILE) --parents src/main.cpp src/sections/sectionmodel.cpp src/sections/chapter.cpp src/sections/copyright.cpp src/sections/tableofcontents.cpp src/sections/halftitle.cpp src/sections/title.cpp src/renderer/swisstextedit.cpp src/renderer/bookrenderer.cpp src/renderer/mainwindow.cpp src/renderer/pagerenderer.cpp src/renderer/addsectiondialog.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents src/sections/section.h src/sections/sectionmodel.h src/sections/chapter.h src/sections/copyright.h src/sections/tableofcontents.h src/sections/halftitle.h src/sections/title.h src/sections/sectionmime.h src/renderer/swisstextedit.h src/renderer/bookrenderer.h src/renderer/mainwindow.h src/renderer/pagerenderer.h src/renderer/addsectiondialog.h src/renderer/bookoptions.h $(DISTDIR)/
+	$(COPY_FILE) --parents src/main.cpp src/sections/sectionmodel.cpp src/sections/chapter.cpp src/sections/copyright.cpp src/sections/tableofcontents.cpp src/sections/halftitle.cpp src/sections/title.cpp src/sections/sectionmime.cpp src/renderer/swisstextedit.cpp src/renderer/bookrenderer.cpp src/renderer/mainwindow.cpp src/renderer/pagerenderer.cpp src/renderer/addsectiondialog.cpp src/renderer/bookoptions.cpp $(DISTDIR)/
 
 
 clean: compiler_clean 
@@ -698,11 +710,11 @@ compiler_moc_predefs_make_all: moc/moc_predefs.h
 compiler_moc_predefs_clean:
 	-$(DEL_FILE) moc/moc_predefs.h
 moc/moc_predefs.h: /opt/Qt/5.11.2/gcc_64/mkspecs/features/data/dummy.cpp
-	g++ -pipe -O2 -std=gnu++11 -Wall -W -dM -E -o moc/moc_predefs.h /opt/Qt/5.11.2/gcc_64/mkspecs/features/data/dummy.cpp
+	g++ -pipe -g -O2 -std=gnu++11 -Wall -W -dM -E -o moc/moc_predefs.h /opt/Qt/5.11.2/gcc_64/mkspecs/features/data/dummy.cpp
 
-compiler_moc_header_make_all: moc/moc_section.cpp moc/moc_sectionmodel.cpp moc/moc_chapter.cpp moc/moc_copyright.cpp moc/moc_tableofcontents.cpp moc/moc_halftitle.cpp moc/moc_title.cpp moc/moc_swisstextedit.cpp moc/moc_bookrenderer.cpp moc/moc_mainwindow.cpp moc/moc_pagerenderer.cpp moc/moc_addsectiondialog.cpp
+compiler_moc_header_make_all: moc/moc_section.cpp moc/moc_sectionmodel.cpp moc/moc_chapter.cpp moc/moc_copyright.cpp moc/moc_tableofcontents.cpp moc/moc_halftitle.cpp moc/moc_title.cpp moc/moc_sectionmime.cpp moc/moc_swisstextedit.cpp moc/moc_bookrenderer.cpp moc/moc_mainwindow.cpp moc/moc_pagerenderer.cpp moc/moc_addsectiondialog.cpp moc/moc_bookoptions.cpp
 compiler_moc_header_clean:
-	-$(DEL_FILE) moc/moc_section.cpp moc/moc_sectionmodel.cpp moc/moc_chapter.cpp moc/moc_copyright.cpp moc/moc_tableofcontents.cpp moc/moc_halftitle.cpp moc/moc_title.cpp moc/moc_swisstextedit.cpp moc/moc_bookrenderer.cpp moc/moc_mainwindow.cpp moc/moc_pagerenderer.cpp moc/moc_addsectiondialog.cpp
+	-$(DEL_FILE) moc/moc_section.cpp moc/moc_sectionmodel.cpp moc/moc_chapter.cpp moc/moc_copyright.cpp moc/moc_tableofcontents.cpp moc/moc_halftitle.cpp moc/moc_title.cpp moc/moc_sectionmime.cpp moc/moc_swisstextedit.cpp moc/moc_bookrenderer.cpp moc/moc_mainwindow.cpp moc/moc_pagerenderer.cpp moc/moc_addsectiondialog.cpp moc/moc_bookoptions.cpp
 moc/moc_section.cpp: /opt/Qt/5.11.2/gcc_64/include/QtCore/QObject \
 		/opt/Qt/5.11.2/gcc_64/include/QtCore/qobject.h \
 		/opt/Qt/5.11.2/gcc_64/include/QtCore/qobjectdefs.h \
@@ -1304,6 +1316,94 @@ moc/moc_title.cpp: src/sections/section.h \
 		moc/moc_predefs.h \
 		/opt/Qt/5.11.2/gcc_64/bin/moc
 	/opt/Qt/5.11.2/gcc_64/bin/moc $(DEFINES) --include /home/jgarde/Development/lorem-ipsum/moc/moc_predefs.h -I/opt/Qt/5.11.2/gcc_64/mkspecs/linux-g++ -I/home/jgarde/Development/lorem-ipsum -I/home/jgarde/Development/lorem-ipsum -I/opt/Qt/5.11.2/gcc_64/include -I/opt/Qt/5.11.2/gcc_64/include/QtWidgets -I/opt/Qt/5.11.2/gcc_64/include/QtGui -I/opt/Qt/5.11.2/gcc_64/include/QtCore -I/Library/Developer/CommandLineTools/usr/include/c++/v1 -I/Library/Developer/CommandLineTools/usr/lib/clang/9.0.0/include -I/Library/Developer/CommandLineTools/usr/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include src/sections/title.h -o moc/moc_title.cpp
+
+moc/moc_sectionmime.cpp: /opt/Qt/5.11.2/gcc_64/include/QtCore/QMimeData \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qmimedata.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qvariant.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qatomic.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qglobal.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qconfig-bootstrapped.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qconfig.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qtcore-config.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qsystemdetection.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qprocessordetection.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qcompilerdetection.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qtypeinfo.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qsysinfo.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qlogging.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qflags.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qglobalstatic.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qmutex.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qnumeric.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qversiontagging.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qbasicatomic.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qatomic_bootstrap.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qgenericatomic.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qatomic_cxx11.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qatomic_msvc.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qbytearray.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qrefcount.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qnamespace.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qarraydata.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qlist.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qalgorithms.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qiterator.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qhashfunctions.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qstring.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qchar.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qstringliteral.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qstringalgorithms.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qstringview.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qstringbuilder.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qpair.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qbytearraylist.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qstringlist.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qregexp.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qstringmatcher.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qmetatype.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qvarlengtharray.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qcontainerfwd.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qobjectdefs.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qobjectdefs_impl.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qmap.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qdebug.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qhash.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qtextstream.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qiodevice.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qobject.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qcoreevent.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qscopedpointer.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qobject_impl.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qlocale.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qshareddata.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qvector.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qpoint.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qset.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qcontiguouscache.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qsharedpointer.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qsharedpointer_impl.h \
+		src/sections/section.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/QObject \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/QJsonObject \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qjsonobject.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qjsonvalue.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/QMap \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/QString \
+		/opt/Qt/5.11.2/gcc_64/include/QtGui/QFont \
+		/opt/Qt/5.11.2/gcc_64/include/QtGui/qfont.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtGui/qtguiglobal.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtGui/qtgui-config.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtGui/qwindowdefs.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtGui/qwindowdefs_win.h \
+		src/sections/sectionmodel.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/QAbstractListModel \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qabstractitemmodel.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/QSize \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qsize.h \
+		src/sections/sectionmime.h \
+		moc/moc_predefs.h \
+		/opt/Qt/5.11.2/gcc_64/bin/moc
+	/opt/Qt/5.11.2/gcc_64/bin/moc $(DEFINES) --include /home/jgarde/Development/lorem-ipsum/moc/moc_predefs.h -I/opt/Qt/5.11.2/gcc_64/mkspecs/linux-g++ -I/home/jgarde/Development/lorem-ipsum -I/home/jgarde/Development/lorem-ipsum -I/opt/Qt/5.11.2/gcc_64/include -I/opt/Qt/5.11.2/gcc_64/include/QtWidgets -I/opt/Qt/5.11.2/gcc_64/include/QtGui -I/opt/Qt/5.11.2/gcc_64/include/QtCore -I/Library/Developer/CommandLineTools/usr/include/c++/v1 -I/Library/Developer/CommandLineTools/usr/lib/clang/9.0.0/include -I/Library/Developer/CommandLineTools/usr/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include src/sections/sectionmime.h -o moc/moc_sectionmime.cpp
 
 moc/moc_swisstextedit.cpp: /opt/Qt/5.11.2/gcc_64/include/QtWidgets/QTextEdit \
 		/opt/Qt/5.11.2/gcc_64/include/QtWidgets/qtextedit.h \
@@ -2014,6 +2114,158 @@ moc/moc_addsectiondialog.cpp: /opt/Qt/5.11.2/gcc_64/include/QtWidgets/QDialog \
 		/opt/Qt/5.11.2/gcc_64/bin/moc
 	/opt/Qt/5.11.2/gcc_64/bin/moc $(DEFINES) --include /home/jgarde/Development/lorem-ipsum/moc/moc_predefs.h -I/opt/Qt/5.11.2/gcc_64/mkspecs/linux-g++ -I/home/jgarde/Development/lorem-ipsum -I/home/jgarde/Development/lorem-ipsum -I/opt/Qt/5.11.2/gcc_64/include -I/opt/Qt/5.11.2/gcc_64/include/QtWidgets -I/opt/Qt/5.11.2/gcc_64/include/QtGui -I/opt/Qt/5.11.2/gcc_64/include/QtCore -I/Library/Developer/CommandLineTools/usr/include/c++/v1 -I/Library/Developer/CommandLineTools/usr/lib/clang/9.0.0/include -I/Library/Developer/CommandLineTools/usr/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include src/renderer/addsectiondialog.h -o moc/moc_addsectiondialog.cpp
 
+moc/moc_bookoptions.cpp: /opt/Qt/5.11.2/gcc_64/include/QtWidgets/QDialog \
+		/opt/Qt/5.11.2/gcc_64/include/QtWidgets/qdialog.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtWidgets/qtwidgetsglobal.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtGui/qtguiglobal.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qglobal.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qconfig-bootstrapped.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qconfig.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qtcore-config.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qsystemdetection.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qprocessordetection.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qcompilerdetection.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qtypeinfo.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qsysinfo.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qlogging.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qflags.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qatomic.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qbasicatomic.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qatomic_bootstrap.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qgenericatomic.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qatomic_cxx11.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qatomic_msvc.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qglobalstatic.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qmutex.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qnumeric.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qversiontagging.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtGui/qtgui-config.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtWidgets/qtwidgets-config.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtWidgets/qwidget.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtGui/qwindowdefs.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qobjectdefs.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qnamespace.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qobjectdefs_impl.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtGui/qwindowdefs_win.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qobject.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qstring.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qchar.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qbytearray.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qrefcount.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qarraydata.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qstringliteral.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qstringalgorithms.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qstringview.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qstringbuilder.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qlist.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qalgorithms.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qiterator.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qhashfunctions.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qpair.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qbytearraylist.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qstringlist.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qregexp.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qstringmatcher.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qcoreevent.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qscopedpointer.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qmetatype.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qvarlengtharray.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qcontainerfwd.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qobject_impl.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qmargins.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtGui/qpaintdevice.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qrect.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qsize.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qpoint.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtGui/qpalette.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtGui/qcolor.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtGui/qrgb.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtGui/qrgba64.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtGui/qbrush.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qvector.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtGui/qmatrix.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtGui/qpolygon.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtGui/qregion.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qdatastream.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qiodevice.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qline.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtGui/qtransform.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtGui/qpainterpath.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtGui/qimage.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtGui/qpixelformat.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtGui/qpixmap.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qsharedpointer.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qshareddata.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qhash.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qsharedpointer_impl.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtGui/qfont.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtGui/qfontmetrics.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtGui/qfontinfo.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtWidgets/qsizepolicy.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtGui/qcursor.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtGui/qkeysequence.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtGui/qevent.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qvariant.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qmap.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qdebug.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qtextstream.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qlocale.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qset.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qcontiguouscache.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qurl.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qurlquery.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qfile.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qfiledevice.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtGui/qvector2d.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtGui/qtouchdevice.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtWidgets/QFormLayout \
+		/opt/Qt/5.11.2/gcc_64/include/QtWidgets/qformlayout.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtWidgets/QLayout \
+		/opt/Qt/5.11.2/gcc_64/include/QtWidgets/qlayout.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtWidgets/qlayoutitem.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtWidgets/qboxlayout.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtWidgets/qgridlayout.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtWidgets/QFontComboBox \
+		/opt/Qt/5.11.2/gcc_64/include/QtWidgets/qfontcombobox.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtWidgets/qcombobox.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtWidgets/qabstractitemdelegate.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtWidgets/qstyleoption.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtWidgets/qabstractspinbox.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtGui/qvalidator.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qregularexpression.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtGui/qicon.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtWidgets/qslider.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtWidgets/qabstractslider.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtWidgets/qstyle.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtWidgets/qtabbar.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtWidgets/qtabwidget.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtWidgets/qrubberband.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtWidgets/qframe.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qabstractitemmodel.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtGui/qfontdatabase.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtWidgets/QGroupBox \
+		/opt/Qt/5.11.2/gcc_64/include/QtWidgets/qgroupbox.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtWidgets/QSpinBox \
+		/opt/Qt/5.11.2/gcc_64/include/QtWidgets/qspinbox.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/QStringList \
+		/opt/Qt/5.11.2/gcc_64/include/QtWidgets/QDialogButtonBox \
+		/opt/Qt/5.11.2/gcc_64/include/QtWidgets/qdialogbuttonbox.h \
+		src/sections/sectionmodel.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/QAbstractListModel \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/QSize \
+		src/sections/section.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/QObject \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/QJsonObject \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qjsonobject.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qjsonvalue.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/QMap \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/QString \
+		/opt/Qt/5.11.2/gcc_64/include/QtGui/QFont \
+		src/renderer/bookoptions.h \
+		moc/moc_predefs.h \
+		/opt/Qt/5.11.2/gcc_64/bin/moc
+	/opt/Qt/5.11.2/gcc_64/bin/moc $(DEFINES) --include /home/jgarde/Development/lorem-ipsum/moc/moc_predefs.h -I/opt/Qt/5.11.2/gcc_64/mkspecs/linux-g++ -I/home/jgarde/Development/lorem-ipsum -I/home/jgarde/Development/lorem-ipsum -I/opt/Qt/5.11.2/gcc_64/include -I/opt/Qt/5.11.2/gcc_64/include/QtWidgets -I/opt/Qt/5.11.2/gcc_64/include/QtGui -I/opt/Qt/5.11.2/gcc_64/include/QtCore -I/Library/Developer/CommandLineTools/usr/include/c++/v1 -I/Library/Developer/CommandLineTools/usr/lib/clang/9.0.0/include -I/Library/Developer/CommandLineTools/usr/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include src/renderer/bookoptions.h -o moc/moc_bookoptions.cpp
+
 compiler_moc_objc_header_make_all:
 compiler_moc_objc_header_clean:
 compiler_moc_source_make_all:
@@ -2290,6 +2542,10 @@ out/sectionmodel.o: src/sections/sectionmodel.cpp src/sections/sectionmodel.h \
 		/opt/Qt/5.11.2/gcc_64/include/QtGui/qtgui-config.h \
 		/opt/Qt/5.11.2/gcc_64/include/QtGui/qwindowdefs.h \
 		/opt/Qt/5.11.2/gcc_64/include/QtGui/qwindowdefs_win.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/QJsonDocument \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qjsondocument.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/QJsonArray \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qjsonarray.h \
 		/opt/Qt/5.11.2/gcc_64/include/QtCore/QDebug \
 		/opt/Qt/5.11.2/gcc_64/include/QtGui/QBrush \
 		/opt/Qt/5.11.2/gcc_64/include/QtGui/qbrush.h \
@@ -2309,6 +2565,13 @@ out/sectionmodel.o: src/sections/sectionmodel.cpp src/sections/sectionmodel.h \
 		/opt/Qt/5.11.2/gcc_64/include/QtGui/qpaintdevice.h \
 		/opt/Qt/5.11.2/gcc_64/include/QtGui/qpixelformat.h \
 		/opt/Qt/5.11.2/gcc_64/include/QtGui/qpixmap.h \
+		src/sections/sectionmime.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/QMimeData \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qmimedata.h \
+		src/sections/halftitle.h \
+		src/sections/title.h \
+		src/sections/copyright.h \
+		src/sections/tableofcontents.h \
 		src/sections/chapter.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o out/sectionmodel.o src/sections/sectionmodel.cpp
 
@@ -2731,6 +2994,93 @@ out/title.o: src/sections/title.cpp src/sections/title.h \
 		/opt/Qt/5.11.2/gcc_64/include/QtCore/QSize \
 		/opt/Qt/5.11.2/gcc_64/include/QtCore/qsize.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o out/title.o src/sections/title.cpp
+
+out/sectionmime.o: src/sections/sectionmime.cpp /opt/Qt/5.11.2/gcc_64/include/QtCore/QDebug \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qdebug.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qalgorithms.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qglobal.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qconfig-bootstrapped.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qconfig.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qtcore-config.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qsystemdetection.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qprocessordetection.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qcompilerdetection.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qtypeinfo.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qsysinfo.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qlogging.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qflags.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qatomic.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qbasicatomic.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qatomic_bootstrap.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qgenericatomic.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qatomic_cxx11.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qatomic_msvc.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qglobalstatic.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qmutex.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qnumeric.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qversiontagging.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qhash.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qchar.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qiterator.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qlist.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qrefcount.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qarraydata.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qhashfunctions.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qstring.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qbytearray.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qnamespace.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qstringliteral.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qstringalgorithms.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qstringview.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qstringbuilder.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qpair.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qbytearraylist.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qstringlist.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qregexp.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qstringmatcher.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qmap.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qtextstream.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qiodevice.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qobject.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qobjectdefs.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qobjectdefs_impl.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qcoreevent.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qscopedpointer.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qmetatype.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qvarlengtharray.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qcontainerfwd.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qobject_impl.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qlocale.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qvariant.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qshareddata.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qvector.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qpoint.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qset.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qcontiguouscache.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qsharedpointer.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qsharedpointer_impl.h \
+		src/sections/sectionmime.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/QMimeData \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qmimedata.h \
+		src/sections/section.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/QObject \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/QJsonObject \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qjsonobject.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qjsonvalue.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/QMap \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/QString \
+		/opt/Qt/5.11.2/gcc_64/include/QtGui/QFont \
+		/opt/Qt/5.11.2/gcc_64/include/QtGui/qfont.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtGui/qtguiglobal.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtGui/qtgui-config.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtGui/qwindowdefs.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtGui/qwindowdefs_win.h \
+		src/sections/sectionmodel.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/QAbstractListModel \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qabstractitemmodel.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/QSize \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qsize.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o out/sectionmime.o src/sections/sectionmime.cpp
 
 out/swisstextedit.o: src/renderer/swisstextedit.cpp src/renderer/swisstextedit.h \
 		/opt/Qt/5.11.2/gcc_64/include/QtWidgets/QTextEdit \
@@ -3223,9 +3573,21 @@ out/mainwindow.o: src/renderer/mainwindow.cpp src/renderer/mainwindow.h \
 		/opt/Qt/5.11.2/gcc_64/include/QtWidgets/QPushButton \
 		/opt/Qt/5.11.2/gcc_64/include/QtWidgets/qpushbutton.h \
 		/opt/Qt/5.11.2/gcc_64/include/QtWidgets/qabstractbutton.h \
+		src/renderer/bookoptions.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtWidgets/QFormLayout \
+		/opt/Qt/5.11.2/gcc_64/include/QtWidgets/qformlayout.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtWidgets/QLayout \
+		/opt/Qt/5.11.2/gcc_64/include/QtWidgets/QGroupBox \
+		/opt/Qt/5.11.2/gcc_64/include/QtWidgets/qgroupbox.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtWidgets/QSpinBox \
+		/opt/Qt/5.11.2/gcc_64/include/QtWidgets/qspinbox.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/QStringList \
+		/opt/Qt/5.11.2/gcc_64/include/QtWidgets/QDialogButtonBox \
+		/opt/Qt/5.11.2/gcc_64/include/QtWidgets/qdialogbuttonbox.h \
 		src/sections/chapter.h \
 		src/sections/copyright.h \
 		src/sections/tableofcontents.h \
+		src/sections/title.h \
 		src/sections/halftitle.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o out/mainwindow.o src/renderer/mainwindow.cpp
 
@@ -3382,6 +3744,7 @@ out/pagerenderer.o: src/renderer/pagerenderer.cpp src/renderer/pagerenderer.h \
 		/opt/Qt/5.11.2/gcc_64/include/QtGui/qglyphrun.h \
 		/opt/Qt/5.11.2/gcc_64/include/QtGui/qrawfont.h \
 		/opt/Qt/5.11.2/gcc_64/include/QtGui/qfontdatabase.h \
+		src/sections/halftitle.h \
 		src/sections/title.h \
 		src/sections/copyright.h \
 		src/sections/tableofcontents.h \
@@ -3525,6 +3888,157 @@ out/addsectiondialog.o: src/renderer/addsectiondialog.cpp src/renderer/addsectio
 		/opt/Qt/5.11.2/gcc_64/include/QtCore/QMetaObject
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o out/addsectiondialog.o src/renderer/addsectiondialog.cpp
 
+out/bookoptions.o: src/renderer/bookoptions.cpp src/renderer/bookoptions.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtWidgets/QDialog \
+		/opt/Qt/5.11.2/gcc_64/include/QtWidgets/qdialog.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtWidgets/qtwidgetsglobal.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtGui/qtguiglobal.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qglobal.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qconfig-bootstrapped.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qconfig.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qtcore-config.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qsystemdetection.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qprocessordetection.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qcompilerdetection.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qtypeinfo.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qsysinfo.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qlogging.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qflags.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qatomic.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qbasicatomic.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qatomic_bootstrap.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qgenericatomic.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qatomic_cxx11.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qatomic_msvc.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qglobalstatic.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qmutex.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qnumeric.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qversiontagging.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtGui/qtgui-config.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtWidgets/qtwidgets-config.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtWidgets/qwidget.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtGui/qwindowdefs.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qobjectdefs.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qnamespace.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qobjectdefs_impl.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtGui/qwindowdefs_win.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qobject.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qstring.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qchar.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qbytearray.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qrefcount.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qarraydata.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qstringliteral.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qstringalgorithms.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qstringview.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qstringbuilder.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qlist.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qalgorithms.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qiterator.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qhashfunctions.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qpair.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qbytearraylist.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qstringlist.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qregexp.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qstringmatcher.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qcoreevent.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qscopedpointer.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qmetatype.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qvarlengtharray.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qcontainerfwd.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qobject_impl.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qmargins.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtGui/qpaintdevice.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qrect.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qsize.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qpoint.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtGui/qpalette.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtGui/qcolor.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtGui/qrgb.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtGui/qrgba64.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtGui/qbrush.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qvector.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtGui/qmatrix.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtGui/qpolygon.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtGui/qregion.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qdatastream.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qiodevice.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qline.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtGui/qtransform.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtGui/qpainterpath.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtGui/qimage.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtGui/qpixelformat.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtGui/qpixmap.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qsharedpointer.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qshareddata.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qhash.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qsharedpointer_impl.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtGui/qfont.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtGui/qfontmetrics.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtGui/qfontinfo.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtWidgets/qsizepolicy.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtGui/qcursor.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtGui/qkeysequence.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtGui/qevent.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qvariant.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qmap.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qdebug.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qtextstream.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qlocale.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qset.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qcontiguouscache.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qurl.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qurlquery.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qfile.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qfiledevice.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtGui/qvector2d.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtGui/qtouchdevice.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtWidgets/QFormLayout \
+		/opt/Qt/5.11.2/gcc_64/include/QtWidgets/qformlayout.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtWidgets/QLayout \
+		/opt/Qt/5.11.2/gcc_64/include/QtWidgets/qlayout.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtWidgets/qlayoutitem.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtWidgets/qboxlayout.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtWidgets/qgridlayout.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtWidgets/QFontComboBox \
+		/opt/Qt/5.11.2/gcc_64/include/QtWidgets/qfontcombobox.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtWidgets/qcombobox.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtWidgets/qabstractitemdelegate.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtWidgets/qstyleoption.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtWidgets/qabstractspinbox.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtGui/qvalidator.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qregularexpression.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtGui/qicon.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtWidgets/qslider.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtWidgets/qabstractslider.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtWidgets/qstyle.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtWidgets/qtabbar.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtWidgets/qtabwidget.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtWidgets/qrubberband.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtWidgets/qframe.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qabstractitemmodel.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtGui/qfontdatabase.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtWidgets/QGroupBox \
+		/opt/Qt/5.11.2/gcc_64/include/QtWidgets/qgroupbox.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtWidgets/QSpinBox \
+		/opt/Qt/5.11.2/gcc_64/include/QtWidgets/qspinbox.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/QStringList \
+		/opt/Qt/5.11.2/gcc_64/include/QtWidgets/QDialogButtonBox \
+		/opt/Qt/5.11.2/gcc_64/include/QtWidgets/qdialogbuttonbox.h \
+		src/sections/sectionmodel.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/QAbstractListModel \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/QSize \
+		src/sections/section.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/QObject \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/QJsonObject \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qjsonobject.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/qjsonvalue.h \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/QMap \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/QString \
+		/opt/Qt/5.11.2/gcc_64/include/QtGui/QFont \
+		/opt/Qt/5.11.2/gcc_64/include/QtCore/QDebug
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o out/bookoptions.o src/renderer/bookoptions.cpp
+
 out/qrc_resources.o: qrc_resources.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o out/qrc_resources.o qrc_resources.cpp
 
@@ -3549,6 +4063,9 @@ out/moc_halftitle.o: moc/moc_halftitle.cpp
 out/moc_title.o: moc/moc_title.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o out/moc_title.o moc/moc_title.cpp
 
+out/moc_sectionmime.o: moc/moc_sectionmime.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o out/moc_sectionmime.o moc/moc_sectionmime.cpp
+
 out/moc_swisstextedit.o: moc/moc_swisstextedit.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o out/moc_swisstextedit.o moc/moc_swisstextedit.cpp
 
@@ -3563,6 +4080,9 @@ out/moc_pagerenderer.o: moc/moc_pagerenderer.cpp
 
 out/moc_addsectiondialog.o: moc/moc_addsectiondialog.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o out/moc_addsectiondialog.o moc/moc_addsectiondialog.cpp
+
+out/moc_bookoptions.o: moc/moc_bookoptions.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o out/moc_bookoptions.o moc/moc_bookoptions.cpp
 
 ####### Install
 

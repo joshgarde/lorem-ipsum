@@ -15,44 +15,6 @@ const QString PageRenderer::fieldHtmlTemplate =
   "<html><head><meta name=\"qrichtext\" content=\"1\" /><style>p {line-height: %1; margin: 0;}</style></head>"
   "<body><p align=\"%2\">%3</p></div></html>";
 
-QString PageRenderer::generateTocHtml(QList<QPair<QString, int>> tableOfContents, int start, int end) {
-  QString formattedTable = "<table width=\"100%\">";
-  QString rowTemplate = "<tr><td>%1</td><td align=\"right\">%2</td></tr>";
-  if (end == -1) end = tableOfContents.size();
-  for (int i = start; i < end; i++) {
-    formattedTable += rowTemplate.arg(tableOfContents[i].first).arg(tableOfContents[i].second);
-  }
-  formattedTable += "</table>";
-  return formattedTable;
-}
-
-QString PageRenderer::generateFormattedHtml(QString raw, Qt::Alignment alignment, int lineSpacing) {
-  QString align = "left";
-  switch (alignment) {
-    case Qt::AlignRight: {
-      align = "right";
-      break;
-    }
-
-    case Qt::AlignCenter: {
-      align = "center";
-      break;
-    }
-
-    case Qt::AlignJustify: {
-      align = "justify";
-      break;
-    }
-  }
-
-  QString formatted = fieldHtmlTemplate
-    .arg(lineSpacing)
-    .arg(align)
-    .arg(raw.replace("\n", QString("</p><p align=\"%1\">").arg(align)));
-
-  return formatted;
-}
-
 PageRenderer::PageRenderer(BookRenderer* renderer, SectionModel* model, QModelIndex index, int page, int contentIdx, PageDirection direction) :
     QWidget(renderer), renderer(renderer), model(model), index(index), page(page), direction(direction) {
 
@@ -66,12 +28,18 @@ PageRenderer::PageRenderer(BookRenderer* renderer, SectionModel* model, QModelIn
 
   setLayout(&layout);
   setFixedSize(QSize(model->size.width() * PPI, model->size.height() * PPI));
+  setStyleSheet("SwissTextEdit:focus { background-color: rgba(230, 230, 230, 100%); }");
   
+  int left, top, right, bottom;
   if (direction == RIGHT) {
-    setContentsMargins(84, 96, 60, 0);
+    left = (model->size.width() * PPI * .25f * .6f);
+    right = model->size.width() * PPI * .25f * .4f;
   } else {
-    setContentsMargins(60, 96, 84, 0);
+    left = model->size.width() * PPI * .25f * .4f;
+    right = model->size.width() * PPI * .25f * .6f;
   }
+  top = (model->size.height() * PPI * .15f * .55f);
+  bottom = (model->size.height() * PPI * .15f * .45f);
 
   switch (section->type()) {
     case SectionType::HALFTITLE: {
@@ -109,8 +77,16 @@ PageRenderer::PageRenderer(BookRenderer* renderer, SectionModel* model, QModelIn
       line->setFrameShape(QFrame::HLine);
       line->setFrameShadow(QFrame::Plain);
       
+      SwissTextEdit* authorField = new SwissTextEdit(this);
+      authorField->setFont(section->fontMap["author"]);
+      connect(authorField, SIGNAL(textChanged()), this, SLOT(fieldResize()));
+      authorField->setHtml(generateFormattedHtml(((Title*)section)->author, Qt::AlignCenter, 1));
+      connect(authorField, SIGNAL(textChanged()), renderer, SLOT(updateSection()));
+      fields.insert("author", authorField);
+      
       layout.addWidget(titleField);
       layout.addWidget(line);
+      layout.addWidget(authorField);
 
       layout.addStretch(3);
       break;
@@ -138,17 +114,18 @@ PageRenderer::PageRenderer(BookRenderer* renderer, SectionModel* model, QModelIn
       if (contentIdx == 0) {
         layout.addStretch(1);
 
-        SwissTextEdit* tableOfContentsTitleField = new SwissTextEdit(this);
-        tableOfContentsTitleField->setFont(section->fontMap["tableOfContentsTitle"]);
-        connect(tableOfContentsTitleField, SIGNAL(textChanged()), this, SLOT(fieldResize()));
-        tableOfContentsTitleField->setHtml(generateFormattedHtml(((TableOfContents*)section)->title, Qt::AlignCenter));
-        fields.insert("tableOfContentsTitle", tableOfContentsTitleField);
+        SwissTextEdit* title = new SwissTextEdit(this);
+        title->setFont(section->fontMap["tableOfContentsTitle"]);
+        connect(title, SIGNAL(textChanged()), this, SLOT(fieldResize()));
+        title->setHtml(generateFormattedHtml(((TableOfContents*)section)->title, Qt::AlignCenter));
+        connect(title, SIGNAL(textChanged()), renderer, SLOT(updateSection()));
+        fields.insert("title", title);
         
         QFrame* line = new QFrame();
         line->setFrameShape(QFrame::HLine);
         line->setFrameShadow(QFrame::Plain);
         
-        layout.addWidget(tableOfContentsTitleField);
+        layout.addWidget(title);
         layout.addWidget(line);
 
         layout.addStretch(1);
@@ -193,7 +170,7 @@ PageRenderer::PageRenderer(BookRenderer* renderer, SectionModel* model, QModelIn
         layout.addWidget(chapterNumberField);
         layout.addWidget(chapterNameField);
         layout.addWidget(line);
-
+        
         layout.addStretch(1);
       }
 
@@ -215,6 +192,7 @@ PageRenderer::PageRenderer(BookRenderer* renderer, SectionModel* model, QModelIn
       pageNumberField->setTextInteractionFlags(Qt::NoTextInteraction);
       connect(pageNumberField, SIGNAL(textChanged()), this, SLOT(fieldResize()));
       pageNumberField->setPlainText(QString::number(page));
+      pageNumberField->show();
       
       if (direction == LEFT) {
         pageNumberField->setAlignment(Qt::AlignLeft);
@@ -224,10 +202,53 @@ PageRenderer::PageRenderer(BookRenderer* renderer, SectionModel* model, QModelIn
       
       fields.insert("pageNumber", pageNumberField);
       layout.addWidget(pageNumberField);
+      
+      bottom -= fields["pageNumber"]->height();
 
       break;
     }
   }
+
+  setContentsMargins(left, top, right, bottom);
+}
+
+QString PageRenderer::generateTocHtml(QList<QPair<QString, int>> tableOfContents, int start, int end) {
+  QString formattedTable = "<table width=\"100%\">";
+  QString rowTemplate = "<tr><td>%1</td><td align=\"right\">%2</td></tr>";
+  if (end == -1) end = tableOfContents.size();
+  for (int i = start; i < end; i++) {
+    formattedTable += rowTemplate.arg(tableOfContents[i].first).arg(tableOfContents[i].second);
+  }
+  formattedTable += "</table>";
+  return formattedTable;
+}
+
+QString PageRenderer::generateFormattedHtml(QString raw, Qt::Alignment alignment, float lineSpacing) {
+  QString align = "left";
+  switch (alignment) {
+    case Qt::AlignRight: {
+      align = "right";
+      break;
+    }
+
+    case Qt::AlignCenter: {
+      align = "center";
+      break;
+    }
+
+    case Qt::AlignJustify: {
+      align = "justify";
+      break;
+    }
+  }
+  
+
+  QString formatted = fieldHtmlTemplate
+    .arg(lineSpacing)
+    .arg(align)
+    .arg(raw.replace("\n", QString("</p><p align=\"%1\">").arg(align)));
+    
+  return formatted;
 }
 
 int PageRenderer::truncate() {
@@ -278,6 +299,8 @@ int PageRenderer::truncate() {
     QKeyEvent keyEvent(QEvent::KeyPress, Qt::Key_PageDown, Qt::NoModifier);
     QCoreApplication::sendEvent(field, &keyEvent);
     cursor = field->textCursor();
+    field->verticalScrollBar()->setValue(0);
+    if (field->cursorRect().bottom() > field->viewport()->size().height()) cursor.movePosition(QTextCursor::Up);
   } else {
     cursor.movePosition(QTextCursor::End);
   }

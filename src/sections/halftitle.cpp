@@ -5,7 +5,7 @@ HalfTitle::HalfTitle(SectionModel *parent) : Section(parent) {
 
   fontMap["title"] = parent->fontMap["title"];
 
-  title = "Ultricies Mi Eget";
+  title = "Lorem Ipsum";
 }
 
 SectionType HalfTitle::type() {
@@ -23,5 +23,5 @@ QJsonObject HalfTitle::serialize() {
 }
 
 void HalfTitle::deserialize(QJsonObject json) {
-  
+  title = json["title"].toString();
 }

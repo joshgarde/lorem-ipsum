@@ -11,6 +11,7 @@
 #include <QMessageBox>
 #include <QMenuBar>
 #include "addsectiondialog.h"
+#include "bookoptions.h"
 #include "src/sections/section.h"
 #include "src/sections/chapter.h"
 #include "src/sections/copyright.h"
@@ -22,11 +23,19 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
   this->setWindowTitle("Lorem Ipsum");
   
   QMenu* fileMenu = menuBar()->addMenu("File");
-  fileMenu->addAction("Open");
-  fileMenu->addAction("Save");
-  fileMenu->addAction("Render PDF");
+  QAction* fileNewAction = fileMenu->addAction("New");
+  QAction* fileOpenAction = fileMenu->addAction("Open");
+  fileOpenAction->setShortcut(QKeySequence("Ctrl+O"));
+  QAction* fileSaveAction = fileMenu->addAction("Save");
+  fileSaveAction->setShortcut(QKeySequence("Ctrl+S"));
+  fileMenu->addSeparator();
+  QAction* fileRenderAction = fileMenu->addAction("Render PDF");
+  
   QMenu* editMenu = menuBar()->addMenu("Edit");
+
   QMenu* optionsMenu = menuBar()->addMenu("Options");
+  QAction* optionBookOptionsMenu = optionsMenu->addAction("Book Options");
+  
   QMenu* aboutMenu = menuBar()->addMenu("Help");
   aboutMenu->addAction("Update");
   aboutMenu->addAction("About");
@@ -66,6 +75,11 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
   renderBookAction->setEnabled(false);
 
   tableOfContents.setContextMenuPolicy(Qt::CustomContextMenu);
+  tableOfContents.setSelectionMode(QAbstractItemView::SingleSelection);
+  tableOfContents.setDragDropMode(QAbstractItemView::InternalMove);
+  tableOfContents.setDragEnabled(true);
+  tableOfContents.setAcceptDrops(true);
+  tableOfContents.setDropIndicatorShown(true);
 
   splitter.addWidget(&tableOfContents);
   splitter.addWidget(&viewer);
@@ -74,13 +88,24 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 
   this->setCentralWidget(&base);
 
+  connect(fileNewAction, SIGNAL(triggered()), this, SLOT(newBook()));
+  connect(fileOpenAction, SIGNAL(triggered()), this, SLOT(openBook()));
+  connect(fileSaveAction, SIGNAL(triggered()), this, SLOT(saveBook()));
+  connect(fileRenderAction, SIGNAL(triggered()), this, SLOT(renderBook()));
+  
+  connect(optionBookOptionsMenu, SIGNAL(triggered()), this, SLOT(showBookOptions()));
+  
   connect(newBookAction, SIGNAL(triggered()), this, SLOT(newBook()));
   connect(openBookAction, SIGNAL(triggered()), this, SLOT(openBook()));
   connect(saveBookAction, SIGNAL(triggered()), this, SLOT(saveBook()));
   connect(renderBookAction, SIGNAL(triggered()), this, SLOT(renderBook()));
   connect(&tableOfContents, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(showSectionMenu(QPoint)));
   connect(&tableOfContents, SIGNAL(activated(const QModelIndex&)), this, SLOT(loadSection(const QModelIndex&)));
+  connect(&fontSelector, SIGNAL(currentFontChanged(const QFont&)), this, SLOT(fontSelectorsChanged()));
+  connect(&sizeSelector, SIGNAL(currentIndexChanged(int)), this, SLOT(fontSelectorsChanged()));
   connect(&viewer, SIGNAL(updateToc()), this, SLOT(reloadTocItem()));
+  connect(&viewer, SIGNAL(notifyFont(const QFont&)), this, SLOT(updateFontSelectors(const QFont&)));
+  connect(this, SIGNAL(fontChanged(QFont)), &viewer, SLOT(changeFont(QFont)));
 }
 
 QSize MainWindow::sizeHint() const {
@@ -115,52 +140,7 @@ void MainWindow::openBook() {
   currentBook = new SectionModel();
 
   QJsonDocument document = QJsonDocument::fromJson(currentFile->readAll());
-  QJsonObject jsonBook = document.object();
-
-  QJsonObject jsonSize = jsonBook["size"].toObject();
-  currentBook->size = QSize(jsonSize["width"].toInt(), jsonSize["height"].toInt());
-
-  QJsonObject jsonFontMap = jsonBook["fontMap"].toObject();
-  for (auto it = jsonFontMap.begin(); it != jsonFontMap.end(); it++) {
-    QFont font;
-    font.fromString(it->toString());
-    currentBook->fontMap[it.key()] = font;
-  }
-
-  QJsonArray jsonSections = jsonBook["sections"].toArray();
-  for (auto it = jsonSections.begin(); it != jsonSections.end(); it++) {
-    QJsonObject jsonSection = it->toObject();
-    int idx = currentBook->rowCount();
-    QModelIndex modelIdx = currentBook->index(idx, 0);
-    Section* section;
-    QString type = jsonSection["type"].toString();
-    currentBook->insertRow(idx);
-    if (type == "Half Title") {
-      section = new HalfTitle(currentBook);
-      ((HalfTitle*)section)->title = jsonSection["title"].toString();
-    } else if (type == "Title") {
-      section = new Title(currentBook);
-      ((Title*)section)->title = jsonSection["title"].toString();
-    } else if (type == "Copyright") {
-      section = new Copyright(currentBook);
-      ((Copyright*)section)->contents = jsonSection["contents"].toString();
-    } else if (type == "Table of Contents") {
-      section = new TableOfContents(currentBook);
-    } else if (type == "Chapter") {
-      section = new Chapter(currentBook);
-      ((Chapter*)section)->name = jsonSection["name"].toString();
-      ((Chapter*)section)->contents = jsonSection["contents"].toString();
-    } else {
-      throw std::runtime_error("Unimplemented section selection");
-    }
-    currentBook->setData(modelIdx, QVariant::fromValue(section), 0);
-    QJsonObject jsonSectionFontMap = jsonSection["fontMap"].toObject();
-    for (auto jt = jsonSectionFontMap.begin(); jt != jsonSectionFontMap.end(); jt++) {
-      QFont font;
-      font.fromString(jt->toString());
-      section->fontMap[jt.key()] = font;
-    }
-  }
+  currentBook->deserialize(document);
 
   tableOfContents.setModel(currentBook);
   viewer.setSectionModel(currentBook);
@@ -194,9 +174,10 @@ void MainWindow::renderBook() {
   QPainter painter(&pdfWriter);
 
   int page = 1;
+  PageDirection direction = PageDirection::RIGHT;
   for (int i = 0; i < currentBook->rowCount(); i++) {
     QModelIndex modelIdx = currentBook->index(i, 0);
-    page = viewer.renderSection(&pdfWriter, &painter, modelIdx, page);
+    page = viewer.renderSection(&pdfWriter, &painter, modelIdx, page, direction);
     if (i != currentBook->rowCount() - 1) pdfWriter.newPage();
   }
 
@@ -211,6 +192,11 @@ void MainWindow::showSectionMenu(QPoint pos) {
   menu.addAction(QIcon(":/assets/add.png"), "Add Section", this, SLOT(showAddSection()));
   menu.addAction(QIcon(":/assets/delete.png"), "Delete Section", this, SLOT(deleteSection()));
   menu.exec(mapToGlobal(pos));
+}
+
+void MainWindow::showBookOptions() {
+  BookOptions dialog(currentBook, this);
+  dialog.exec();
 }
 
 void MainWindow::showAddSection() {
@@ -248,7 +234,9 @@ void MainWindow::deleteSection() {
 
   if (ret == QMessageBox::Yes) {
     QModelIndex index = tableOfContents.selectionModel()->currentIndex();
+    Section* section = currentBook->data(index, Qt::UserRole).value<Section*>();
     currentBook->removeRows(index.row(), 1);
+    delete section;
   }
 }
 
@@ -259,4 +247,25 @@ void MainWindow::loadSection(const QModelIndex &index) {
 
 void MainWindow::reloadTocItem() {
   QMetaObject::invokeMethod(currentBook, "markDirty", Q_ARG(QModelIndex, currentSectionIdx));
+}
+
+void MainWindow::updateFontSelectors(const QFont& font) {
+  disconnect(&fontSelector, SIGNAL(currentFontChanged(const QFont&)), this, SLOT(fontSelectorsChanged()));
+  disconnect(&sizeSelector, SIGNAL(currentIndexChanged(int)), this, SLOT(fontSelectorsChanged()));
+  
+  // A workaround for a bug in QFontComboBox TODO: Open a issue about this
+  // fontSelector.setCurrentFont(font); -> accessibility bug
+  int fontIndex = fontSelector.findText(font.family());
+  fontSelector.setCurrentIndex(fontIndex);
+  sizeSelector.setCurrentIndex(font.pixelSize() - 1);
+  
+  connect(&fontSelector, SIGNAL(currentFontChanged(const QFont&)), this, SLOT(fontSelectorsChanged()));
+  connect(&sizeSelector, SIGNAL(currentIndexChanged(int)), this, SLOT(fontSelectorsChanged()));
+}
+
+void MainWindow::fontSelectorsChanged() {
+  if (fontSelector.currentIndex() == -1 || sizeSelector.currentIndex() == -1) return;
+  QFont font = fontSelector.currentFont();
+  font.setPixelSize(sizeSelector.currentIndex() + 1);
+  emit fontChanged(font);
 }

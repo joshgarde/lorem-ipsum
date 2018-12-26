@@ -4,8 +4,10 @@ Title::Title(SectionModel *parent) : Section(parent) {
   setObjectName("Title");
 
   fontMap["title"] = parent->fontMap["title"];
+  fontMap["author"] = parent->fontMap["author"];
 
-  title = "Ultricies Mi Eget";
+  title = "Lorem Ipsum";
+  author = "The Open Source Software Foundation";
 }
 
 SectionType Title::type() {
@@ -19,9 +21,11 @@ bool Title::multiplePages() {
 QJsonObject Title::serialize() {
   QJsonObject json;
   json["title"] = title;
+  json["author"] = author;
   return json;
 }
 
 void Title::deserialize(QJsonObject json) {
-  
+  title = json["title"].toString();
+  author = json["author"].toString();
 }

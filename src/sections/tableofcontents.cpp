@@ -19,9 +19,10 @@ bool TableOfContents::multiplePages() {
 
 QJsonObject TableOfContents::serialize() {
   QJsonObject json;
+  json["title"] = title;
   return json;
 }
 
 void TableOfContents::deserialize(QJsonObject json) {
-  
+  title = json["title"].toString();
 }

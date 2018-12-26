@@ -120,7 +120,7 @@ QList<QPair<QString, int>> BookRenderer::tableOfContents() {
   return toc;
 }
 
-int BookRenderer::renderSection(QPagedPaintDevice* paintDevice, QPainter* painter, QModelIndex index, int page) {
+int BookRenderer::renderSection(QPagedPaintDevice* paintDevice, QPainter* painter, QModelIndex index, int page, PageDirection& direction) {
   Section* section = model->data(index, Qt::UserRole).value<Section*>();
   qDebug() << "[DEBUG] Rendering section: " << section->objectName();
 
@@ -128,13 +128,21 @@ int BookRenderer::renderSection(QPagedPaintDevice* paintDevice, QPainter* painte
   int contentIndex = 0;
   int targetIndex = calculateTargetIndex(section);
   do {
-    PageRenderer renderer(this, model, index, page, contentIndex);
+    PageRenderer renderer(this, model, index, page, contentIndex, direction);
     renderer.show();
     contentIndex += renderer.truncate();
     renderer.render(painter);
     page++;
+    direction = (PageDirection)((direction + 1) % 2);
     if (contentIndex < targetIndex) paintDevice->newPage();
   } while (contentIndex < targetIndex);
+  
+  // Ensures pages before start always begin at the right hand side
+  if (index.row() <= start && (page - 1) % 2 == 1) {
+    page++;
+    paintDevice->newPage();
+    direction = (PageDirection)((direction + 1) % 2);
+  }
 
   if (start == index.row()) {
     return 1;
@@ -148,8 +156,7 @@ void BookRenderer::mousePressEvent(QMouseEvent *event) {
   if (scrollArea == nullptr) return;
   SwissTextEdit* textEdit = qobject_cast<SwissTextEdit*>(scrollArea->parent());
   if (textEdit == nullptr) return;
-  
-  
+  emit notifyFont(textEdit->currentFont()); // Notify MainWindow about current font
 }
 
 void BookRenderer::loadSection(QModelIndex index) {
@@ -168,9 +175,9 @@ void BookRenderer::loadSection(QModelIndex index) {
   reset();
   generateTableOfContents();
   
-  PageRenderer::PageDirection direction = PageRenderer::PageDirection::RIGHT;
+  PageDirection direction = (PageDirection)((basePageNumber - 1) % 2);
 
-  PageRenderer* renderer = new PageRenderer(this, model, index, basePageNumber, direction);
+  PageRenderer* renderer = new PageRenderer(this, model, index, basePageNumber, 0, direction);
   renderers.append(renderer);
   layout.addWidget(renderer);
 
@@ -185,7 +192,7 @@ void BookRenderer::loadSection(QModelIndex index) {
       currentIndex += renderer->truncate();
       if (currentIndex >= targetIndex) break;
 
-      direction = (PageRenderer::PageDirection)((direction + 1) % 2);
+      direction = (PageDirection)((direction + 1) % 2);
 
       renderer = new PageRenderer(this, model, index, currentPage, currentIndex, direction);
       renderers.append(renderer);
@@ -217,6 +224,7 @@ void BookRenderer::updateSection() {
     
     case SectionType::TITLE: {
       ((Title*)currentSection)->title = fields["title"];
+      ((Title*)currentSection)->author = fields["author"];
       break;
     }
 
@@ -226,6 +234,7 @@ void BookRenderer::updateSection() {
     }
 
     case SectionType::TABLE_OF_CONTENTS: {
+      ((TableOfContents*)currentSection)->title = fields["title"];
       break;
     }
 
@@ -312,4 +321,13 @@ void BookRenderer::reloadSection(int currentPage) {
 
   verticalScrollBar()->setValue(scrollBarposition);
   setUpdatesEnabled(true);
+}
+
+void BookRenderer::changeFont(QFont font) {
+  SwissTextEdit* textEdit = qobject_cast<SwissTextEdit*>(focusWidget());
+  if (textEdit == nullptr) return;
+  PageRenderer* pageRenderer = qobject_cast<PageRenderer*>(textEdit->parent());
+  if (pageRenderer == nullptr) return;
+  currentSection->fontMap[pageRenderer->fields.key(textEdit)] = font;
+  loadSection(index);
 }

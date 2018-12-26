@@ -34,7 +34,7 @@ void SwissTextEdit::insertFromMimeData(const QMimeData* source) {
 }
 
 void SwissTextEdit::ensureCursorVisible() {
-  qDebug() << "ensureCursorVisible";
+  return;
 }
 
 void SwissTextEdit::timerEvent(QTimerEvent *e) {
@@ -43,6 +43,6 @@ void SwissTextEdit::timerEvent(QTimerEvent *e) {
 }
 
 void SwissTextEdit::mousePressEvent(QMouseEvent *e) {
-  QCoreApplication::sendEvent(parent(), e); // Forward mouse events to parent
+  if (!isReadOnly()) QCoreApplication::sendEvent(parent(), e); // Forward mouse events to parent
   QTextEdit::mousePressEvent(e);
 }
