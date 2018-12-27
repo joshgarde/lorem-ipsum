@@ -250,7 +250,10 @@ QString PageRenderer::generateFormattedHtml(QString raw, Qt::Alignment alignment
   QString formatted = fieldHtmlTemplate
     .arg(lineSpacing)
     .arg(align)
-    .arg(raw.replace("\n", QString("</p><p align=\"%1\">").arg(align)));
+    .arg(raw
+      .replace("\n", QString("</p><p align=\"%1\">").arg(align))
+      .replace(QString("<p align=\"%1\"></p>").arg(align), QString("<p align=\"%1\"> </p>").arg(align))
+    );
 
   return formatted;
 }

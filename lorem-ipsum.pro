@@ -51,8 +51,8 @@ SOURCES += src/main.cpp \
            src/renderer/pagerenderer.cpp \
            src/renderer/addsectiondialog.cpp \
            src/renderer/bookoptions.cpp
-        
-QMAKE_CXXFLAGS += -g # Debug
+
+#QMAKE_CXXFLAGS += -g # Debug
 
 DESTDIR = build
 OBJECTS_DIR = out
