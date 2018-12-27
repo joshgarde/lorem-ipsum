@@ -15,7 +15,7 @@
 SectionModel::SectionModel(QObject *parent) : QAbstractListModel(parent), size(QSize(6, 9)) {
   QFont titleFont("Times New Roman");
   titleFont.setPixelSize(36);
-  
+
   QFont authorFont("Times New Roman");
   authorFont.setPixelSize(18);
 
@@ -35,10 +35,10 @@ SectionModel::SectionModel(QObject *parent) : QAbstractListModel(parent), size(Q
   chapterNameFont.setPixelSize(24);
 
   QFont chapterContentsFont("Times New Roman");
-  chapterContentsFont.setPixelSize(18);
+  chapterContentsFont.setPixelSize(16);
 
   QFont pageNumberFont("Times New Roman");
-  chapterContentsFont.setPixelSize(8);
+  pageNumberFont.setPixelSize(16);
 
   fontMap.insert("title", titleFont);
   fontMap.insert("author", authorFont);
@@ -167,7 +167,7 @@ QJsonDocument SectionModel::serialize() {
   jsonSize["width"] = size.width();
   jsonSize["height"] = size.height();
   jsonBook["size"] = jsonSize;
-  
+
   QJsonObject jsonOptions;
   jsonOptions["chapterLineSpacing"] = optionMap["chapterLineSpacing"].toDouble();
   jsonBook["options"] = jsonOptions;
@@ -203,7 +203,7 @@ void SectionModel::deserialize(QJsonDocument json) {
 
   QJsonObject jsonSize = jsonBook["size"].toObject();
   size = QSize(jsonSize["width"].toInt(), jsonSize["height"].toInt());
-  
+
   QJsonObject jsonOptions = jsonBook["options"].toObject();
   optionMap["chapterLineSpacing"] = QVariant(jsonOptions["chapterLineSpacing"].toDouble());
 
@@ -235,9 +235,9 @@ void SectionModel::deserialize(QJsonDocument json) {
     } else {
       throw std::runtime_error("Unimplemented section selection");
     }
-    
+
     section->deserialize(jsonSection);
-    
+
     setData(modelIdx, QVariant::fromValue(section), 0);
     QJsonObject jsonSectionFontMap = jsonSection["fontMap"].toObject();
     for (auto jt = jsonSectionFontMap.begin(); jt != jsonSectionFontMap.end(); jt++) {

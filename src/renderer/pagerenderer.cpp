@@ -16,7 +16,7 @@ const QString PageRenderer::fieldHtmlTemplate =
   "<body><p align=\"%2\">%3</p></div></html>";
 
 PageRenderer::PageRenderer(BookRenderer* renderer, SectionModel* model, QModelIndex index, int page, int contentIdx, PageDirection direction) :
-    QWidget(renderer), renderer(renderer), model(model), index(index), page(page), direction(direction) {
+    QWidget(renderer), renderer(renderer), model(model), index(index), page(page), dir(direction) {
 
   section = model->data(index, Qt::UserRole).value<Section*>();
 
@@ -29,7 +29,7 @@ PageRenderer::PageRenderer(BookRenderer* renderer, SectionModel* model, QModelIn
   setLayout(&layout);
   setFixedSize(QSize(model->size.width() * PPI, model->size.height() * PPI));
   setStyleSheet("SwissTextEdit:focus { background-color: rgba(230, 230, 230, 100%); }");
-  
+
   int left, top, right, bottom;
   if (direction == RIGHT) {
     left = (model->size.width() * PPI * .25f * .6f);
@@ -48,14 +48,15 @@ PageRenderer::PageRenderer(BookRenderer* renderer, SectionModel* model, QModelIn
       SwissTextEdit* titleField = new SwissTextEdit(this);
       titleField->setFont(section->fontMap["title"]);
       connect(titleField, SIGNAL(textChanged()), this, SLOT(fieldResize()));
+      titleField->show();
       titleField->setHtml(generateFormattedHtml(((HalfTitle*)section)->title, Qt::AlignCenter, 1));
       connect(titleField, SIGNAL(textChanged()), renderer, SLOT(updateSection()));
       fields.insert("title", titleField);
-      
+
       QFrame* line = new QFrame();
       line->setFrameShape(QFrame::HLine);
       line->setFrameShadow(QFrame::Plain);
-      
+
       layout.addWidget(titleField);
       layout.addWidget(line);
 
@@ -69,21 +70,22 @@ PageRenderer::PageRenderer(BookRenderer* renderer, SectionModel* model, QModelIn
       SwissTextEdit* titleField = new SwissTextEdit(this);
       titleField->setFont(section->fontMap["title"]);
       connect(titleField, SIGNAL(textChanged()), this, SLOT(fieldResize()));
+      titleField->show();
       titleField->setHtml(generateFormattedHtml(((Title*)section)->title, Qt::AlignCenter, 1));
       connect(titleField, SIGNAL(textChanged()), renderer, SLOT(updateSection()));
       fields.insert("title", titleField);
-      
+
       QFrame* line = new QFrame();
       line->setFrameShape(QFrame::HLine);
       line->setFrameShadow(QFrame::Plain);
-      
+
       SwissTextEdit* authorField = new SwissTextEdit(this);
       authorField->setFont(section->fontMap["author"]);
       connect(authorField, SIGNAL(textChanged()), this, SLOT(fieldResize()));
       authorField->setHtml(generateFormattedHtml(((Title*)section)->author, Qt::AlignCenter, 1));
       connect(authorField, SIGNAL(textChanged()), renderer, SLOT(updateSection()));
       fields.insert("author", authorField);
-      
+
       layout.addWidget(titleField);
       layout.addWidget(line);
       layout.addWidget(authorField);
@@ -120,11 +122,11 @@ PageRenderer::PageRenderer(BookRenderer* renderer, SectionModel* model, QModelIn
         title->setHtml(generateFormattedHtml(((TableOfContents*)section)->title, Qt::AlignCenter));
         connect(title, SIGNAL(textChanged()), renderer, SLOT(updateSection()));
         fields.insert("title", title);
-        
+
         QFrame* line = new QFrame();
         line->setFrameShape(QFrame::HLine);
         line->setFrameShadow(QFrame::Plain);
-        
+
         layout.addWidget(title);
         layout.addWidget(line);
 
@@ -155,6 +157,7 @@ PageRenderer::PageRenderer(BookRenderer* renderer, SectionModel* model, QModelIn
 
         SwissTextEdit* chapterNameField = new SwissTextEdit(this);
         chapterNameField->setFont(section->fontMap["chapterName"]);
+        chapterNameField->show();
         connect(chapterNameField, SIGNAL(textChanged()), this, SLOT(fieldResize()));
         chapterNameField->setPlainText(((Chapter*)section)->name);
         chapterNameField->setAlignment(Qt::AlignCenter);
@@ -162,29 +165,30 @@ PageRenderer::PageRenderer(BookRenderer* renderer, SectionModel* model, QModelIn
 
         fields.insert("chapterNumber", chapterNumberField);
         fields.insert("chapterName", chapterNameField);
-        
+
         QFrame* line = new QFrame();
         line->setFrameShape(QFrame::HLine);
         line->setFrameShadow(QFrame::Plain);
-        
+
         layout.addWidget(chapterNumberField);
         layout.addWidget(chapterNameField);
         layout.addWidget(line);
-        
+
         layout.addStretch(1);
       }
 
       SwissTextEdit* chapterContentsField = new SwissTextEdit(this);
       chapterContentsField->setFont(section->fontMap["chapterContents"]);
+      chapterContentsField->setTabStopDistance(40);
       QString chapterContents = ((Chapter*)section)->contents.mid(
         contentIdx,
-        ((Chapter*)section)->contents.size()
+        ((Chapter*)section)->contents.size() - contentIdx + 1
       );
       chapterContentsField->setHtml(generateFormattedHtml(chapterContents, Qt::AlignJustify, ((Chapter*)section)->lineSpacing));
       chapterContentsField->setAlignment(Qt::AlignJustify);
       fields.insert("chapterContents", chapterContentsField);
       layout.addWidget(chapterContentsField, 3);
-      connect(chapterContentsField, SIGNAL(textChanged()), renderer, SLOT(updateSection()));
+      //connect(chapterContentsField, SIGNAL(textChanged()), renderer, SLOT(updateSection()));
       connect(chapterContentsField, SIGNAL(textChanged()), this, SLOT(sendReload()));
 
       SwissTextEdit* pageNumberField = new SwissTextEdit(this);
@@ -193,16 +197,16 @@ PageRenderer::PageRenderer(BookRenderer* renderer, SectionModel* model, QModelIn
       connect(pageNumberField, SIGNAL(textChanged()), this, SLOT(fieldResize()));
       pageNumberField->setPlainText(QString::number(page));
       pageNumberField->show();
-      
+
       if (direction == LEFT) {
         pageNumberField->setAlignment(Qt::AlignLeft);
       } else {
         pageNumberField->setAlignment(Qt::AlignRight);
       }
-      
+
       fields.insert("pageNumber", pageNumberField);
       layout.addWidget(pageNumberField);
-      
+
       bottom -= fields["pageNumber"]->height();
 
       break;
@@ -241,13 +245,13 @@ QString PageRenderer::generateFormattedHtml(QString raw, Qt::Alignment alignment
       break;
     }
   }
-  
+
 
   QString formatted = fieldHtmlTemplate
     .arg(lineSpacing)
     .arg(align)
     .arg(raw.replace("\n", QString("</p><p align=\"%1\">").arg(align)));
-    
+
   return formatted;
 }
 
@@ -284,9 +288,9 @@ int PageRenderer::truncate() {
       return 1;
   }
 
-  disconnect(field, SIGNAL(textChanged()), renderer, SLOT(updateSection()));
+  //disconnect(field, SIGNAL(textChanged()), renderer, SLOT(updateSection()));
   disconnect(field, SIGNAL(textChanged()), this, SLOT(sendReload()));
-  
+
   field->verticalScrollBar()->setValue(0);
 
   QFontMetrics fontMetrics(field->currentFont());
@@ -306,8 +310,7 @@ int PageRenderer::truncate() {
   }
 
   endIndex = cursor.position();
-
-  if (contents.at(endIndex) == '\n') {
+  if (endIndex < contents.size() && contents.at(endIndex) == '\n') {
     endIndex++;
   }
 
@@ -317,7 +320,7 @@ int PageRenderer::truncate() {
   QByteArray textData = field->toPlainText().toUtf8();
   checksum = qChecksum(textData.data(), textData.size());
 
-  connect(field, SIGNAL(textChanged()), renderer, SLOT(updateSection()));
+  //connect(field, SIGNAL(textChanged()), renderer, SLOT(updateSection()));
   connect(field, SIGNAL(textChanged()), this, SLOT(sendReload()));
 
   this->endIndex = endIndex;
@@ -338,6 +341,10 @@ int PageRenderer::contentSize() {
 
 int PageRenderer::pageNumber() {
   return page;
+}
+
+PageDirection PageRenderer::direction() {
+  return dir;
 }
 
 int PageRenderer::restoreCursor(int position) {
@@ -384,11 +391,9 @@ int PageRenderer::restoreCursor(int position) {
     overflow = position - textSize;
     cursor.movePosition(QTextCursor::End);
     field->setTextCursor(cursor);
-    field->setFocus();
   } else {
     cursor.setPosition(position);
     field->setTextCursor(cursor);
-    field->setFocus();
   }
 
   field->verticalScrollBar()->setValue(0);
@@ -399,11 +404,11 @@ int PageRenderer::restoreCursor(int position) {
 void PageRenderer::fieldResize() {
   SwissTextEdit* field = (SwissTextEdit*)sender();
   QFontMetrics metrics(field->currentFont());
-  int width = model->size.width() * PPI - 20;
-  int height = model->size.height() * PPI - 20;
+  int width = model->size.width() * PPI * .75f - 20;
+  int height = model->size.height() * PPI;
   QRect rect = metrics.boundingRect(QRect(0, 0, width, height),
       Qt::AlignVCenter | Qt::TextWordWrap, field->toPlainText());
-  field->setFixedHeight(rect.height() + 20);
+  field->setFixedHeight(rect.height() + 5);
 }
 
 void PageRenderer::sendReload() {

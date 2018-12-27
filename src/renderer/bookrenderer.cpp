@@ -100,7 +100,7 @@ int BookRenderer::calculateTargetIndex(Section* section) {
     }
 
     case SectionType::CHAPTER: {
-      return ((Chapter*)section)->contents.size();
+      return ((Chapter*)section)->contents.size() - 1;
     }
 
     default: {
@@ -136,7 +136,7 @@ int BookRenderer::renderSection(QPagedPaintDevice* paintDevice, QPainter* painte
     direction = (PageDirection)((direction + 1) % 2);
     if (contentIndex < targetIndex) paintDevice->newPage();
   } while (contentIndex < targetIndex);
-  
+
   // Ensures pages before start always begin at the right hand side
   if (index.row() <= start && (page - 1) % 2 == 1) {
     page++;
@@ -174,7 +174,7 @@ void BookRenderer::loadSection(QModelIndex index) {
 
   reset();
   generateTableOfContents();
-  
+
   PageDirection direction = (PageDirection)((basePageNumber - 1) % 2);
 
   PageRenderer* renderer = new PageRenderer(this, model, index, basePageNumber, 0, direction);
@@ -189,7 +189,9 @@ void BookRenderer::loadSection(QModelIndex index) {
     while (true) {
       renderer->repaint();
       renderer->show();
+      qDebug() << "Before:" << currentIndex;
       currentIndex += renderer->truncate();
+      qDebug() << "After:" << currentIndex;
       if (currentIndex >= targetIndex) break;
 
       direction = (PageDirection)((direction + 1) % 2);
@@ -221,7 +223,7 @@ void BookRenderer::updateSection() {
       ((HalfTitle*)currentSection)->title = fields["title"];
       break;
     }
-    
+
     case SectionType::TITLE: {
       ((Title*)currentSection)->title = fields["title"];
       ((Title*)currentSection)->author = fields["author"];
@@ -253,6 +255,7 @@ void BookRenderer::reloadSection(int currentPage) {
   if (field == nullptr) return;
   int cursorPosition = field->textCursor().position();
   int scrollBarposition = verticalScrollBar()->value();
+  updateSection();
 
   int contentIdx = 0;
   QMutableListIterator<PageRenderer*> it(renderers);
@@ -273,6 +276,7 @@ void BookRenderer::reloadSection(int currentPage) {
     }
 
     int startPage = renderer->pageNumber();
+    PageDirection direction = renderer->direction();
 
     setUpdatesEnabled(false);
 
@@ -286,20 +290,21 @@ void BookRenderer::reloadSection(int currentPage) {
     int targetIndex = calculateTargetIndex(currentSection);
 
     while (targetIndex > contentIdx || startPage == basePageNumber) {
-      renderer = new PageRenderer(this, model, index, startPage, contentIdx);
+      renderer = new PageRenderer(this, model, index, startPage, contentIdx, direction);
       renderers.append(renderer);
       layout.addWidget(renderer);
       renderer->show();
       int latestIdx = renderer->truncate();
-      
+
       if (latestIdx == 0 && renderers.size() > 1) {
         layout.removeWidget(renderer);
         renderers.removeAt(renderers.size() - 1);
         delete renderer;
         break;
       }
-      
+
       contentIdx += latestIdx;
+      direction = (PageDirection)((direction + 1) % 2);
       startPage++;
     }
     break;
@@ -308,14 +313,18 @@ void BookRenderer::reloadSection(int currentPage) {
   // Restore cursor
   int overflow = cursorPosition;
   int rendererIdx = currentPage - basePageNumber - 1;
-  if (rendererIdx > renderers.size() || rendererIdx < 0) {
+  if (rendererIdx > renderers.size()) {
     rendererIdx = renderers.size() - 1;
+  } else if (rendererIdx < 0) {
+    rendererIdx = 0;
   }
 
   do {
     overflow = renderers[rendererIdx]->restoreCursor(overflow);
     rendererIdx++;
   } while (overflow > 0 && rendererIdx < renderers.size());
+
+  renderers[--rendererIdx]->fields["chapterContents"]->setFocus();
 
   QApplication::processEvents();
 

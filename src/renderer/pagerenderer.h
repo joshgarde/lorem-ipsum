@@ -20,7 +20,6 @@ enum PageDirection : uint8_t {
 class PageRenderer : public QWidget {
   Q_OBJECT
 
-public:
   BookRenderer* renderer;
   SectionModel* model;
   QModelIndex index;
@@ -29,7 +28,7 @@ public:
   quint16 checksum;
   QList<QPair<QString, int>> tableOfContents;
   int page;
-  PageDirection direction;
+  PageDirection dir;
   int startIndex = 0;
   int endIndex = 0;
   bool initialized = false;
@@ -45,6 +44,7 @@ public:
   bool requiresRerender();
   int contentSize();
   int pageNumber();
+  PageDirection direction();
   int truncate();
   int restoreCursor(int position);
 

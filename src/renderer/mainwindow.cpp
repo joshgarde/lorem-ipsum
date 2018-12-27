@@ -21,7 +21,7 @@
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
   this->setWindowTitle("Lorem Ipsum");
-  
+
   QMenu* fileMenu = menuBar()->addMenu("File");
   QAction* fileNewAction = fileMenu->addAction("New");
   QAction* fileOpenAction = fileMenu->addAction("Open");
@@ -30,12 +30,12 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
   fileSaveAction->setShortcut(QKeySequence("Ctrl+S"));
   fileMenu->addSeparator();
   QAction* fileRenderAction = fileMenu->addAction("Render PDF");
-  
+
   QMenu* editMenu = menuBar()->addMenu("Edit");
 
   QMenu* optionsMenu = menuBar()->addMenu("Options");
   QAction* optionBookOptionsMenu = optionsMenu->addAction("Book Options");
-  
+
   QMenu* aboutMenu = menuBar()->addMenu("Help");
   aboutMenu->addAction("Update");
   aboutMenu->addAction("About");
@@ -92,9 +92,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
   connect(fileOpenAction, SIGNAL(triggered()), this, SLOT(openBook()));
   connect(fileSaveAction, SIGNAL(triggered()), this, SLOT(saveBook()));
   connect(fileRenderAction, SIGNAL(triggered()), this, SLOT(renderBook()));
-  
+
   connect(optionBookOptionsMenu, SIGNAL(triggered()), this, SLOT(showBookOptions()));
-  
+
   connect(newBookAction, SIGNAL(triggered()), this, SLOT(newBook()));
   connect(openBookAction, SIGNAL(triggered()), this, SLOT(openBook()));
   connect(saveBookAction, SIGNAL(triggered()), this, SLOT(saveBook()));
@@ -136,10 +136,24 @@ void MainWindow::openBook() {
 
   qDebug() << "[DEBUG] Opening book: " << filename.toUtf8();
   currentFile = new QFile(filename);
-  currentFile->open(QIODevice::ReadWrite);
+  if (!currentFile->open(QIODevice::ReadWrite)) {
+    currentFile->close();
+    QMessageBox statusMessage(this);
+    statusMessage.setText(QString("Error opening file: ") + currentFile->errorString());
+    statusMessage.exec();
+    return;
+  }
   currentBook = new SectionModel();
 
-  QJsonDocument document = QJsonDocument::fromJson(currentFile->readAll());
+  QJsonParseError jsonError;
+  QJsonDocument document = QJsonDocument::fromJson(currentFile->readAll(), &jsonError);
+  if (jsonError.error != QJsonParseError::NoError) {
+    currentFile->close();
+    QMessageBox statusMessage(this);
+    statusMessage.setText(QString("Error parsing file: ") + jsonError.errorString());
+    statusMessage.exec();
+    return;
+  }
   currentBook->deserialize(document);
 
   tableOfContents.setModel(currentBook);
@@ -153,9 +167,10 @@ void MainWindow::saveBook() {
   statusbar.showMessage("Saving book...");
 
   QJsonDocument document = currentBook->serialize();
-  
+
   QTextStream fileStream(currentFile);
   currentFile->resize(0);
+  fileStream.setCodec("UTF-8");
   fileStream << document.toJson();
 
   statusbar.showMessage("Ready");
@@ -236,6 +251,9 @@ void MainWindow::deleteSection() {
     QModelIndex index = tableOfContents.selectionModel()->currentIndex();
     Section* section = currentBook->data(index, Qt::UserRole).value<Section*>();
     currentBook->removeRows(index.row(), 1);
+    if (index == currentSectionIdx) {
+      viewer.reset();
+    }
     delete section;
   }
 }
@@ -252,13 +270,13 @@ void MainWindow::reloadTocItem() {
 void MainWindow::updateFontSelectors(const QFont& font) {
   disconnect(&fontSelector, SIGNAL(currentFontChanged(const QFont&)), this, SLOT(fontSelectorsChanged()));
   disconnect(&sizeSelector, SIGNAL(currentIndexChanged(int)), this, SLOT(fontSelectorsChanged()));
-  
+
   // A workaround for a bug in QFontComboBox TODO: Open a issue about this
   // fontSelector.setCurrentFont(font); -> accessibility bug
   int fontIndex = fontSelector.findText(font.family());
   fontSelector.setCurrentIndex(fontIndex);
   sizeSelector.setCurrentIndex(font.pixelSize() - 1);
-  
+
   connect(&fontSelector, SIGNAL(currentFontChanged(const QFont&)), this, SLOT(fontSelectorsChanged()));
   connect(&sizeSelector, SIGNAL(currentIndexChanged(int)), this, SLOT(fontSelectorsChanged()));
 }

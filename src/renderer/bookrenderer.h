@@ -22,7 +22,6 @@ class BookRenderer : public QScrollArea {
   double scale = 1;
   int basePageNumber;
 
-  void reset();
   int calculatePages(QModelIndex index);
   int locateStart(int max = -1);
   void generateTableOfContents();
@@ -34,6 +33,7 @@ public:
   int renderSection(QPagedPaintDevice* paintDevice, QPainter* painter, QModelIndex index, int page, PageDirection& direction);
   QList<QPair<QString, int>> tableOfContents();
   int calculateChapterNumber(QModelIndex index);
+  void reset();
 
 protected:
   void mousePressEvent(QMouseEvent *event);
